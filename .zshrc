@@ -86,10 +86,14 @@ fi
 
 # rbenv
 eval "$(rbenv init -)"
-
-HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
+# hub
+eval "$(hub alias -s)"
 export EDITOR=vim
+# ansible local
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+# go
+export GOPATH=$HOME/.go
+export PATH=$PATH:$GOPATH/bin
 
 # alias
 alias v=vim
@@ -103,9 +107,6 @@ alias gs='git status'
 alias gc='git commit -m'
 alias gco='git checkout'
 alias gp='git push'
-
-# ansible local
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # peco
 function peco-select-history() {
@@ -137,4 +138,3 @@ bindkey "\\en" history-beginning-search-forward-end
 
 # 登録済コマンド行は古い方を削除
 setopt hist_ignore_all_dups
-

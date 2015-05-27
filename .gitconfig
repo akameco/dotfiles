@@ -23,4 +23,4 @@
 [push]
   default = simple
 [ghq]
-  root = ~/github
+  root = ~/src

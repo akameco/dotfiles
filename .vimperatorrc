@@ -1,8 +1,10 @@
 " akameco vimperatorrc
+colorscheme desert
 
 " プラグイン読み込み {{{
-let g:plugin_loader_roots = "~/Dropbox/dotfiles/vimperator-plugins ~/Dropbox/vimperator-plugin"
-let g:plugin_loader_plugins = "_libly,direct_bookmark,sbmcommentsviewer,caret-hint,appendAnchor,stella,feedSomeKeys_3,commandBookmarklet,copy,PDF.js,migemo-find,_smooziee,maine_coon,echopy,pushfind,tombloo,treestyletab"
+let g:plugin_loader_roots = "~/src/github.com/vimpr/vimperator-plugins"
+let g:plugin_loader_plugins = "_libly,sbmcommentsviewer,caret-hint,stella,feedSomeKeys_3,commandBookmarklet,copy,PDF.js,_smooziee,echopy,tombloo,treestyletab,google-exopen,toggler"
+" hints-ext
 " }}}
 
 " color {{{
@@ -13,7 +15,6 @@ hi ErrorMsg color:white; background-color: #ec6aa1;
 "}}}
 
 " settings {{{ 
-colorscheme desert
 set! browser.sessionstore.max_tabs_undo=30
 set! ui.key.generalAccessKey=0
 set ignorecase
@@ -161,16 +162,16 @@ EOM
 " }}}
 
 " treestyletab {{{
-javascript liberator.beep = function() true
-tabbrowser[treestyletab-style][treestyletab-mode]
-.tabs-stack,
-  tabbrowser[treestyletab-style][treestyletab-mode]
-  .tabbrowser-tabs,
-  tabbrowser[treestyletab-style][treestyletab-tabbar-position]
-  .tabbrowser-tabs {
-background: transparent !important;
-  }
-" }}}
+" javascript liberator.beep = function() true
+" tabbrowser[treestyletab-style][treestyletab-mode]
+" .tabs-stack,
+"   tabbrowser[treestyletab-style][treestyletab-mode]
+"   .tabbrowser-tabs,
+"   tabbrowser[treestyletab-style][treestyletab-tabbar-position]
+"   .tabbrowser-tabs {
+" background: transparent !important;
+"   }
+" " }}}
 
 " copy.js {{{
 javascript <<EOM
@@ -183,27 +184,20 @@ javascript <<EOM
 EOM
 " }}}
 
-"ツリー型タブ {{{
-nnoremap e :js<Space>TreeStyleTabBrowserAutoHide.toggleMode();<CR>
-noremap <C-i> :js<Space>modes.passAllKeys=true<CR>
+" ツリー型タブ {{{
 style! -name=treestyletab chrome://* .tabbrowser-tab { z-index: 0 !important; }
+
+js <<EOM
+liberator.globalVariables.toggler = {
+  tab: ["set gui=tabs", "set gui=notabs"],
+};
+EOM
+
+map e :toggle tab<CR>:js TreeStyleTabBrowserAutoHide.toggleMode();<CR>
 " }}}
 
-" ツリー型タブの自動開閉 {{{
-js <<EOM
-var timer=false;
-window.addEventListener('resize',function () {
-  if(timer !== false) {
-    clearTimeout(timer);
-  }
-  timer = setTimeout(function() {
-    if(window.outerWidth < 700) {
-      if(TreeStyleTabService.isAutoHide == 0)
-        TreeStyleTabService.toggleAutoHide();
-    }
-  },30);
-},false);
-EOM
+" hatebu {{{
+javascript if (typeof hBookmark != 'undefined') liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this});
 " }}}
 
 " vim: set filetype=vim :
