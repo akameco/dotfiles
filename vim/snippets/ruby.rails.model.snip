@@ -1,0 +1,30 @@
+include ruby.snip
+
+snippet     validates
+abbr        validates
+options     word
+  validates :${1:name}, ${2}
+
+snippet     presence
+abbr        validates
+options     word
+  validates :${1:name}, presence: ${2:true}
+
+snippet     belongs_to
+abbr        belongs_to
+options     word
+  belongs_to :${1:name}, ${2}
+
+snippet     has_many
+abbr        has_many
+options     word
+  has_many :${1:name}, ${2}
+
+snippet     before_save
+abbr        before_save
+options     word
+ before_save  :${1:name}, ${2}
+
+snippet     has_secure_password
+alias       hsp
+  has_secure_password

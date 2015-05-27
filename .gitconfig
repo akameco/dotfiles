@@ -1,0 +1,26 @@
+[user]
+  email = akameco.t@gmail.com
+  name = akameco
+[core]
+  excludesfile = ~/.gitignore
+  editor = vim -f
+[color]
+  ui = auto
+[alias]
+  a = add .
+  c = commit -m
+  co = checkout
+  cl = clone
+  b = branch
+  m = merge
+  p = push
+  po = push origin master
+  pl = pull
+  s = status
+  sh = show
+  l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
+  la='git log --graph --color'
+[push]
+  default = simple
+[ghq]
+  root = ~/github
