@@ -272,8 +272,8 @@ vnoremap <silent> k gk
 " vvで文末まで選択
 vnoremap v $h
 
-inoremap '' ''<Esc>i
-inoremap "" ""<Esc>i
+inoremap ' ''<Left>
+inoremap " ""<Left>
 
 " ハイライトを消す
 nnoremap <silent> <ESC><ESC> :nohlsearch<CR><Esc>

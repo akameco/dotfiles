@@ -12,7 +12,6 @@
     homebrew_packages:
       - readline
       - openssl
-      - { name: openssl, state: linked, install_options: force }
       - python
       - ansible
       - coreutils
@@ -38,6 +37,7 @@
       - phantomjs
       - gibo
       - node
+      - thefuck
     homebrew_cask_packages:
       - iterm2
       - firefox-ja
@@ -67,6 +67,7 @@
       - qlmarkdown
       - hyperswitch
       - bettertouchtool
+      - dia
     rbenv_ruby_version: 2.2.2
     rbenv_global_gems:
       - bundler
@@ -77,8 +78,8 @@
       homebrew_tap: tap={{ item }} state=present
       with_items: homebrew_taps
 
-    # - name: homebrew をアップデート
-    #  homebrew: update_homebrew=yes
+    - name: homebrew をアップデート
+      homebrew: update_homebrew=yes
 
     # brew
     - name: brew パッケージをインストール
@@ -92,11 +93,20 @@
         }}
       with_items: homebrew_packages
       register: brew_result
-    - name: brew パッケージの情報保存先ディレクトリを作成
-      file: path=brew_info state=directory
-    - name: brew パッケージの情報を保存
-      shell: brew info {{ item }} > brew_info/{{ item }}
-      with_items: brew_result.results | selectattr('changed') | map(attribute='item') | map(attribute='name') | list
+
+    # - name: brew パッケージの情報保存先ディレクトリを作成
+    #   file: path=brew_info state=directory
+    # - name: brew パッケージの情報を保存
+    #   shell: brew info {{ item }} > brew_info/{{ item }}
+    #   with_items: brew_result.results | selectattr('changed') | map(attribute='item') | map(attribute='name') | list
+
+    # openssl
+    - name: opensslをインストール
+      homebrew: >
+        name=openssl
+        state=linked
+        install_options=force
+      changed_when: false
 
     # cask
     - name: homebrew-cask のインストール
@@ -122,12 +132,16 @@
       shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
       args:
         creates: ~/.oh-my-zsh/
+      tags: shell
     - name: check zsh
       command: echo $SHELL
       register: shell
+      changed_when: false
+      tags: shell
     - name: shellをzshへ変更
       command: shell -s /bin/zsh
       when: shell.stdout.find('/bin/zsh') == -1
+      tags: shell
 
     # Ricty
     - name: xquartz のインストール (for Ricty)

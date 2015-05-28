@@ -99,7 +99,9 @@ export PATH=$PATH:$GOPATH/bin
 alias v=vim
 alias la='ls -la'
 alias ll='ls -a'
+alias g='brew cask'
 alias g=git
+alias provi='HOMEBREW_CASK_OPTS="--appdir=/Applications" ansible-playbook -i hosts -vv ~/.provi/localhost.yml'
 
 # git
 alias ga='git add .'
@@ -138,3 +140,6 @@ bindkey "\\en" history-beginning-search-forward-end
 
 # 登録済コマンド行は古い方を削除
 setopt hist_ignore_all_dups
+
+# the fuck
+alias fuck='eval $(thefuck $(fc -ln -1 | tail -n 1)); fc -R'
