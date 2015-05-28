@@ -126,6 +126,7 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
+cd $(ghq list -p | peco)
 
 # beepを鳴らさないようにする
 setopt nolistbeep
