@@ -64,7 +64,7 @@ map S :set gui=navigation<cr>
 " nmap p Y<Esc>P
 
 " panorama
-" noremap m :panorama<Space>switch<Space> 
+noremap m :panorama<Space>switch<Space> 
 " }}}
 
 " config {{{

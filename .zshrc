@@ -8,7 +8,7 @@ export ZSH=/Users/akameco/.oh-my-zsh
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+CASE_SENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -20,10 +20,10 @@ ZSH_THEME="robbyrussell"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -45,8 +45,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git osx ruby brew bundler node vagrant npm rails)
-
+plugins=(git)
 # User configuration
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -79,7 +78,6 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-
 ###############
 # my settings #
 ###############
@@ -91,16 +89,13 @@ eval "$(hub alias -s)"
 export EDITOR=vim
 # ansible local
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-# go
-export GOPATH=$HOME/.go
-export PATH=$PATH:$GOPATH/bin
 
 # alias
-alias v=vim
+# alias v=vim
 alias la='ls -la'
 alias ll='ls -a'
-alias g='brew cask'
-alias g=git
+# alias g='brew cask'
+# alias g=git
 alias provi='HOMEBREW_CASK_OPTS="--appdir=/Applications" ansible-playbook -i hosts -vv ~/.provi/localhost.yml'
 
 # git
@@ -109,6 +104,7 @@ alias gs='git status'
 alias gc='git commit -m'
 alias gco='git checkout'
 alias gp='git push'
+alias gla="git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
 
 # peco
 function peco-select-history() {
@@ -126,7 +122,12 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
-cd $(ghq list -p | peco)
+
+alias k='cd $(ghq list -p | peco)'
+
+function p() {
+  peco | while read LINE; do $@ $LINE; done
+}
 
 # beepを鳴らさないようにする
 setopt nolistbeep
@@ -143,4 +144,24 @@ bindkey "\\en" history-beginning-search-forward-end
 setopt hist_ignore_all_dups
 
 # the fuck
-alias fuck='eval $(thefuck $(fc -ln -1 | tail -n 1)); fc -R'
+# alias fuck='eval $(thefuck $(fc -ln -1 | tail -n 1)); fc -R'
+
+# fpathの追加
+# for cmd in git gem rails ; do
+    # fpath=(~/.oh-my-zsh/plugins/$cmd $fpath)
+# done
+
+# 補完を有効化
+autoload -Uz compinit
+compinit -u
+
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
+zstyle ':completion:*:messages' format $YELLOW'%d'$DEFAULT
+zstyle ':completion:*:warnings' format $RED'No matches for:'$YELLOW' %d'$DEFAULT
+zstyle ':completion:*:descriptions' format $YELLOW'completing %B%d%b'$DEFAULT
+zstyle ':completion:*:corrections' format $YELLOW'%B%d '$RED'(errors: %e)%b'$DEFAULT
+zstyle ':completion:*:options' description 'yes'
+# グループ名に空文字列を指定すると，マッチ対象のタグ名がグループ名に使われる。
+# したがって，すべての マッチ種別を別々に表示させたいなら以下のようにする
+zstyle ':completion:*' group-name ''

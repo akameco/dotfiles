@@ -38,6 +38,10 @@
       - gibo
       - node
       - thefuck
+      - graphviz
+      - postgresql
+      - redis
+      - terminal-notifier
     homebrew_cask_packages:
       - iterm2
       - firefox-ja
@@ -67,7 +71,11 @@
       - qlmarkdown
       - hyperswitch
       - bettertouchtool
-      - dia
+      - evernote
+      - eclipse-jee
+      - cyberduck
+      - hosts
+      - processing
     rbenv_ruby_version: 2.2.2
     rbenv_global_gems:
       - bundler
@@ -94,12 +102,6 @@
       with_items: homebrew_packages
       register: brew_result
 
-    # - name: brew パッケージの情報保存先ディレクトリを作成
-    #   file: path=brew_info state=directory
-    # - name: brew パッケージの情報を保存
-    #   shell: brew info {{ item }} > brew_info/{{ item }}
-    #   with_items: brew_result.results | selectattr('changed') | map(attribute='item') | map(attribute='name') | list
-
     # openssl
     - name: opensslをインストール
       homebrew: >
@@ -122,17 +124,13 @@
     - name: cask パッケージの情報保存先ディレクトリを作成
       file: path=cask_info state=directory
       tags: cask
-    - name: cask パッケージの情報を保存
-      shell: brew cask info {{ item }} > cask_info/{{ item }}
-      with_items: cask_result.results | selectattr('changed') | map(attribute='item') | map(attribute='name') | list
-      tags: cask
 
     # oh-my-zsh
-    - name: oh-my-zsh のインストール
-      shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
-      args:
-        creates: ~/.oh-my-zsh/
-      tags: shell
+    # - name: oh-my-zsh のインストール
+    #  shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+    #  args:
+    #    creates: ~/.oh-my-zsh/
+    #  tags: shell
     - name: check zsh
       command: echo $SHELL
       register: shell
@@ -149,7 +147,7 @@
     - name: fontforge のインストール (for Ricty)
       homebrew: name=fontforge
     - name: Ricty のインストール
-      homebrew: name=ricty
+      homebrew: name=ricty install_options=vim-powerline
     - name: 生成されたフォントファイルをコピー
       shell: cp -f $(brew --cellar ricty)/*/share/fonts/Ricty*.ttf ~/Library/Fonts/
       args:

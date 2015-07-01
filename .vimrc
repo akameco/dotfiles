@@ -9,9 +9,7 @@ set fileformats=unix,dos,mac
 if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
-
 call neobundle#begin(expand('~/.vim/bundle/'))
-
 filetype off
 
 NeoBundleFetch 'Shougo/neobundle.vim'
@@ -26,12 +24,9 @@ NeoBundle 'Shougo/vimproc.vim', {
       \ }
 " }}}
 
-" Unite {{{
+" Shougo {{{
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
-"}}}
-
-" neocon{{{
 NeoBundleLazy 'Shougo/neosnippet', { 'autoload' : {
       \   'insert' : 1,
       \ }}
@@ -62,7 +57,6 @@ NeoBundleLazy 'slim-template/vim-slim', {'autoload':{'filetypes': 'slim'}}
 NeoBundle 'godlygeek/tabular'
 NeoBundle 'vim-scripts/surround.vim'
 NeoBundle 'godlygeek/tabular'
-" NeoBundle 'cohama/lexima.vim'
 NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'koron/imcsc-vim'             " IM制御
 " }}}
@@ -98,6 +92,7 @@ NeoBundleLazy 'lilydjwg/colorizer', {
       \ 'autoload': { 'filetypes': ['html', 'css', 'scss'] }}
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'mattn/yamada-vim'
+NeoBundle 'sophacles/vim-processing'
 " }}}
 
 " textobj {{{
@@ -135,7 +130,6 @@ NeoBundleCheck
 augroup vimrc
   autocmd!
 augroup END
-
 command!
       \ -bang -nargs=*
       \ MyAutocmd
@@ -143,7 +137,6 @@ command!
 "}}}
 
 " vimrc{{{
-" vimrcを素早く読み込み
 nnoremap <Space>. :<C-u>edit $MYVIMRC<CR>
 nnoremap <Space>, :<C-u>source $MYVIMRC<CR>
 "}}}
@@ -156,7 +149,7 @@ set nobackup              " バックアップを取らない
 set noswapfile            " バックアップを取らない
 set autoread              " 外部で変更された時自動読み込み
 set infercase             " 補完時大/小文字修正
-set virtualedit=block       " カーソル移動の制限をなくす
+set virtualedit=block     " カーソル移動の制限をなくす
 set tabstop=2             " タブを何文字として表示するか
 set shiftwidth=2          " タブの幅
 set shiftround            " swの分の倍数で丸め込み
@@ -258,12 +251,10 @@ MyAutocmd FileType coffee,javascript setlocal shiftwidth=2 softtabstop=2 tabstop
 " MyAutocmd FileType coffee setlocal sw=2 sts=2 ts=2 et
 " MyAutocmd FileType yaml setlocal expandtab ts=2 sw=2 fenc=utf-8
 " MyAutocmd BufNewFile,BufRead *.md setlocal filetype=markdown
-" markdown で改行がおかしくなるので(謎)
 " MyAutocmd FileType markdown setlocal indentkeys-=o,O
 "}}}
 
 " key mapping {{{
-
 nnoremap <silent> j gj
 nnoremap <silent> k gk
 vnoremap <silent> j gj
@@ -293,22 +284,11 @@ nnoremap <silent> gs :tab split<CR>
 " ,.変換
 nnoremap ,. :%s/\./。/g<CR>
 nnoremap ,, :%s/\,/、/g<CR>
-
-" visual mode 括弧入力  {{{
-" from http://vim-users.jp/2011/04/hack214/
-vnoremap ( t(
-vnoremap ) t)
-vnoremap ] t]
-vnoremap [ t[
-onoremap ( t(
-onoremap ) t)
-onoremap ] t]
-onoremap [ t[
-" }}}
-
 "}}}
 
 " Display{{{
+colorscheme gruvbox
+set background=dark
 set title
 set number         " 行数を表示 
 set wrap           " 表示を改行
@@ -347,7 +327,6 @@ nnoremap <silent> [unite]l   :<C-u>Unite -buffer-name=lines line<CR>
 " nnoremap <silent> [unite]e   :<C-u>Unite file_rec/async:!<CR>
 nnoremap <silent> [unite]f   :<C-u>UniteWithBufferDir -buffer-name=files file file/new<CR>
 nnoremap <silent> [unite]c   :<C-u>Unite -buffer-name=commands history/command<CR>
-nnoremap <silent> [unite]o   :<C-u>Unite -vertical -winwidth=45 -wrap -no-quit -toggle -buffer-name=outline outline<CR>
 nnoremap <silent> [unite]b   :<C-u>Unite -buffer-name=bookmark -prompt=bookmark> bookmark<CR>
 nnoremap <silent> [unite]r   :<C-u>Unite -buffer-name=register -prompt=">\  register<CR>
 " nnoremap <silent> [unite]g   :<C-u>Unite -buffer-name=grep grep<CR>
@@ -382,7 +361,6 @@ MyAutocmd FileType vimshell setlocal wrap
 let s:bundle = neobundle#get("vimshell")
 function! s:bundle.hooks.on_source(bundle)
   let g:vimshell_prompt = "- "
-
   let g:vimshell_max_command_history = 3000
 endfunction
 unlet s:bundle
@@ -472,7 +450,6 @@ MyAutocmd BufEnter *rb NeoSnippetSource ~/.vim/snippets/ruby.snip
 "}}}
 
 " neocomplete {{{
-
 " Enable omni completion.
 MyAutocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 MyAutocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -555,25 +532,13 @@ if has('lua')
 endif
 "}}}
 
-" surround.vim {{{
-nmap ,( csw(
-nmap ,) csw)
-nmap ,{ csw{
-nmap ,} csw}
-nmap ,[ csw[
-nmap ,] csw]
-nmap ,' csw'
-nmap ," csw"
-nmap <C-s> ysW"
-"}}}
-
 " indentguide {{{
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_guide_size =  1
-let g:indent_guides_auto_colors = 0
-let g:indent_guides_color_change_percent = 25
-MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#2f4f4f ctermbg=darkgrey
-MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#696969 ctermbg=12
+" let g:indent_guides_enable_on_vim_startup = 1
+" let g:indent_guides_guide_size =  1
+" let g:indent_guides_auto_colors = 0
+" let g:indent_guides_color_change_percent = 25
+" MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#2f4f4f ctermbg=darkgrey
+" MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#696969 ctermbg=12
 " }}}
 
 " other plugins{{{
@@ -583,10 +548,6 @@ let g:NERDSpaceDelims = 1
 nmap <Space>/ <Plug>NERDCommenterToggle
 vmap <Space>/ <Plug>NERDCommenterToggle
 
-" clever f
-let g:clever_f_smart_case = 1
-let g:clever_f_use_migemo = 1
-
 " memo(これが最速)
 nnoremap <Space>mm :edit ~/Dropbox/Memo/todo.md<CR>
 
@@ -595,62 +556,66 @@ omap ab <Plug>(textobj-multiblock-a)
 omap ib <Plug>(textobj-multiblock-i)
 vmap ab <Plug>(textobj-multiblock-a)
 vmap ib <Plug>(textobj-multiblock-i)
+
+" sround.vim
+nmap <C-s> ysW"
+
+" quickrun
+nnoremap <silent> ,r :QuickRun<CR>
+let g:quickrun_config = {}
+let g:quickrun_config.processing = {
+\     'command': 'processing-java',
+\     'exec': '%c --sketch=%s:p:h/ --output=~/Library/Processing/tmp --run --force' }
 "}}}
 
 " lightline {{{
-command! -bar LightlineUpdate    call lightline#init()|
-      \ call lightline#colorscheme()|
-      \ call lightline#update()
 let g:lightline = {
       \ 'colorscheme': 'wombat',
+      \ 'mode_map': { 'c': 'NORMAL' },
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \           [ 'fugitive', 'filename', 'gitgutter']],
-      \   'right': [ [ 'percent' , 'absolute'],
-      \            [ 'fileformat', 'fileencoding', 'filetype']]
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
       \ },
       \ 'component_function': {
+      \   'modified': 'MyModified',
+      \   'readonly': 'MyReadonly',
       \   'fugitive': 'MyFugitive',
       \   'filename': 'MyFilename',
       \   'fileformat': 'MyFileformat',
       \   'filetype': 'MyFiletype',
       \   'fileencoding': 'MyFileencoding',
       \   'mode': 'MyMode',
-      \   'gitgutter': 'MyGitGutter', 
       \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' }
+      \ 'separator': { 'left': '⮀', 'right': '⮂' },
+      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
       \ }
 
 function! MyModified()
-  return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler' && &readonly ? '' : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
 endfunction
 
 function! MyFilename()
-  let fname = expand('%:t')
-  return fname == 'Tagbar' ? g:lightline.fname :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft == 'unite' ? unite#get_status_string() :
-        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() : 
+        \  &ft == 'unite' ? unite#get_status_string() : 
+        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
-  if &ft !~? 'vimfiler' && exists("*fugitive#head")
+  if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
     let _ = fugitive#head()
-    return strlen(_) ? ' '._ : ''
+    return strlen(_) ? '⭠ '._ : ''
   endif
   return ''
 endfunction
 
 function! MyFileformat()
-  return winwidth(0) > 80 ? &fileformat : ''
+  return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
 function! MyFiletype()
@@ -658,37 +623,11 @@ function! MyFiletype()
 endfunction
 
 function! MyFileencoding()
-  return winwidth(0) > 80 ? (strlen(&fenc) ? &fenc : &enc) : ''
+  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
 function! MyMode()
-  let fname = expand('%:t')
-  return fname == 'Tagbar' ? 'Tagbar' :
-        \ &ft == 'unite' ? 'Unite' :
-        \ &ft == 'vimfiler' ? 'VimFiler' :
-        \ &ft == 'vimshell' ? 'VimShell' :
-        \ winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
-
-function! MyGitGutter()
-  if ! exists('*GitGutterGetHunkSummary')
-        \ || ! get(g:, 'gitgutter_enabled', 0)
-        \ || winwidth('.') <= 90
-    return ''
-  endif
-  let symbols = [
-        \  g:gitgutter_sign_added . ' ' ,
-        \  g:gitgutter_sign_modified . ' ' ,
-        \  g:gitgutter_sign_removed . ' '
-        \ ]
-  let hunks = GitGutterGetHunkSummary()
-  let ret = []
-  for i in [0, 1, 2]
-    if hunks[i] > 0
-      call add(ret, symbols[i] . hunks[i])
-    endif
-  endfor
-  return join(ret, ' ')
+  return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
 let g:unite_force_overwrite_statusline = 0

@@ -7,7 +7,7 @@ if has('kaoriya')
 endif
 
 if has('mac')
-  set guifont=Ricty:h13
+  set guifont=Ricty\ for\ Powerline:h13
 endif
 
 colorscheme gruvbox
