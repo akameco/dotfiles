@@ -74,6 +74,8 @@ NeoBundle 'airblade/vim-gitgutter'
 " }}}}
 
 " javascript{{{
+NeoBundleLazy 'pangloss/vim-javascript', {
+      \'autoload': { 'filetypes': ['javascript'] }}
 NeoBundleLazy 'moll/vim-node', {
       \'autoload': { 'filetypes': ['javascript'] }}
 NeoBundleLazy 'jelera/vim-javascript-syntax',{
@@ -93,6 +95,7 @@ NeoBundleLazy 'lilydjwg/colorizer', {
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'mattn/yamada-vim'
 NeoBundle 'sophacles/vim-processing'
+NeoBundle 'cohama/lexima.vim'
 " }}}
 
 " textobj {{{
@@ -566,6 +569,13 @@ let g:quickrun_config = {}
 let g:quickrun_config.processing = {
 \     'command': 'processing-java',
 \     'exec': '%c --sketch=%s:p:h/ --output=~/Library/Processing/tmp --run --force' }
+
+nnoremap <silent> ,b :QuickRun babel<CR>
+let g:quickrun_config = {}
+let g:quickrun_config.babel = {
+      \ 'cmdopt': '--stage 0',
+      \ 'exec': "babel %o %s | node"
+      \ }
 "}}}
 
 " lightline {{{
@@ -673,3 +683,5 @@ endfunction
 call <SID>MapFT('<C-J>', '。')
 call <SID>MapFT('<C-K>', '、')
 "}}}
+
+let g:syntastic_javascript_checkers = ['eslint']
