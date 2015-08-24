@@ -9,6 +9,7 @@
       - caskroom/cask
       - sanemat/font
       - caskroom/versions
+      - tcnksm/ghr
     homebrew_packages:
       - readline
       - openssl
@@ -25,7 +26,7 @@
       - go
       - lua
       - cscope
-      - { name: macvim, state: head, install_options: with-lua, with-cscope ,override-systems }
+      - { name: macvim, state: head, install_options: with-lua, with-cscope, override-systems }
       - direnv
       - peco
       - hub
@@ -42,6 +43,9 @@
       - postgresql
       - redis
       - terminal-notifier
+      - libsass
+      - jq
+      - ghr
     homebrew_cask_packages:
       - iterm2
       - firefox-ja
@@ -57,8 +61,8 @@
       - webstorm
       - rubymine
       - intellij-idea
-      - vagrant
       - virtualbox
+      - vagrant
       - dropbox
       - karabiner
       - alfred
@@ -67,15 +71,15 @@
       - android-studio
       - gyazo
       - skitch
-      - arduino
-      - qlmarkdown
       - hyperswitch
       - bettertouchtool
       - evernote
       - eclipse-jee
-      - cyberduck
-      - hosts
       - processing
+      - gimp
+      - arduino
+      - unity
+      - xamarin-studio 
     rbenv_ruby_version: 2.2.2
     rbenv_global_gems:
       - bundler
@@ -136,10 +140,20 @@
       register: shell
       changed_when: false
       tags: shell
-    - name: shellをzshへ変更
-      command: shell -s /bin/zsh
-      when: shell.stdout.find('/bin/zsh') == -1
-      tags: shell
+    # - name: shellをzshへ変更
+      # command: shell -s /bin/zsh
+      # when: shell.stdout.find('/bin/zsh') == -1
+      # tags: shell
+    # - name: install prezto
+      # command: git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+      # args:
+        # creates: ~/.zprezto
+    # - name: setup prezto
+      # shell: >-
+        # setopt EXTENDED_GLOB
+        # for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+        # ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+        # done
 
     # Ricty
     - name: xquartz のインストール (for Ricty)
