@@ -180,8 +180,11 @@ javascript <<EOM
     { label: 'plain', value: '%TITLE% %URL%' },
     { label: 'anchor', value: '<a href="%URL%">%TITLE%</a>' },
     { label: 'md', value: '[%TITLE%](%URL%)' },
+    { label: 'hatena', value: '[%URL%:embed:cite]' },
   ];
 EOM
+noremap ,cm :copy md<CR>
+noremap ,ch :copy hatena<CR>
 " }}}
 
 " ツリー型タブ {{{
