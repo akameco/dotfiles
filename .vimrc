@@ -552,7 +552,9 @@ nmap <Space>/ <Plug>NERDCommenterToggle
 vmap <Space>/ <Plug>NERDCommenterToggle
 
 " memo(これが最速)
-nnoremap <Space>mm :edit ~/Dropbox/Memo/todo.md<CR>
+nnoremap <Space>mm :edit ~/Dropbox/Memo/memo.md<CR>
+nnoremap <Space>md :edit ~/Dropbox/Memo/todo.md<CR>
+nnoremap <Space>mn :edit ~/Dropbox/Memo/now.md<CR>
 
 " textobj
 omap ab <Plug>(textobj-multiblock-a)
