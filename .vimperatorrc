@@ -183,8 +183,8 @@ javascript <<EOM
     { label: 'hatena', value: '[%URL%:embed:cite]' },
   ];
 EOM
-noremap ,cm :copy md<CR>
-noremap ,ch :copy hatena<CR>
+noremap ym :copy md<CR>
+noremap yh :copy hatena<CR>
 " }}}
 
 " ツリー型タブ {{{
