@@ -2,10 +2,12 @@
   email = akameco.t@gmail.com
   name = akameco
 [core]
-  excludesfile = ~/.gitignore
+	excludesfile = /Users/akameco/.gitignore_global
   editor = vim -f
 [color]
   ui = auto
+[init]
+  templatedir=~/.git_template
 [alias]
   a = add .
   c = commit -m
@@ -23,4 +25,4 @@
 [push]
   default = simple
 [ghq]
-  root = ~/src
+ root = ~/src

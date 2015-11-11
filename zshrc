@@ -1,7 +1,5 @@
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+# antigen
+source $HOME/.zshrc.antigen
 
 # git
 alias g='git'
@@ -62,28 +60,42 @@ setopt hist_ignore_all_dups
 autoload -Uz compinit
 compinit -u
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 # rbenv
-eval "$(rbenv init -)"
-
-## cdr
-autoload -Uz add-zsh-hock
-autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-
-## antigen
-if [[ -f $HOME/.zsh/antigen/antigen.zsh ]]; then
-  source $HOME/.zsh/antigen/antigen.zsh
-  antigen bundle mollifier/anyframe # 追加
-  antigen apply
-fi
-
-# alias j=anyframe-widget-cdr
-# bindkey "^f" anyframe-widget-cdr
-alias j=ecd
+eval "$(rbenv init - --no-rehash)"
 
 # direnv
 eval "$(direnv hook zsh)"
 
-# zsh-complete
-fpath=(/usr/local/share/zsh-completions $fpath)
+# docker-machine
+# eval "$(docker-machine env default)"
+
+# zsh-completions
+# fpath=(/usr/local/share/zsh-completions $fpath)
+# fpath=(/usr/local/share/zsh/site-functions $fpath)
+
+function peco-z-search {
+  which peco z > /dev/null
+  if [ $? -ne 0 ]; then
+    echo "Please install peco and z"
+    return 1
+  fi
+  local res=$(z | sort -rn | cut -c 12- | peco)
+  if [ -n "$res" ]; then
+    BUFFER+="cd $res"
+    zle accept-line
+  else
+    return 1
+  fi
+}
+
+zle -N peco-z-search
+bindkey '^f' peco-z-search
+
+alias rm="gomi"
+alias awk='gawk'
+
+# if (which zprof > /dev/null) ;then
+  # zprof | less
+# fi
+

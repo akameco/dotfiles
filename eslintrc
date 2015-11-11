@@ -7,7 +7,6 @@
       "linebreak-style": [2, "unix"],
       "semi": [2, "never"],
       "default-case": 2,
-      "no-var": 2,
       "no-void": 2,
       "space-before-function-paren": [2, "never"],
       "no-nested-ternary": 2,

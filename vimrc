@@ -27,13 +27,9 @@ NeoBundle 'Shougo/vimproc.vim', {
 " Shougo {{{
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
-NeoBundleLazy 'Shougo/neosnippet', { 'autoload' : {
-      \   'insert' : 1,
-      \ }}
+NeoBundleLazy 'Shougo/neosnippet', { 'autoload' : { 'insert' : 1, }}
 NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundleLazy 'Shougo/neocomplete', { 'autoload' : {
-      \   'insert' : 1,
-      \ }}
+NeoBundleLazy 'Shougo/neocomplete', { 'autoload' : { 'insert' : 1}}
 "}}}
 
 " colorschemes plugin {{{
@@ -41,20 +37,10 @@ NeoBundle 'morhetz/gruvbox'
 NeoBundle 'altercation/vim-colors-solarized'
 " }}}
 
-" ruby rails{{{
 NeoBundleLazy 'thinca/vim-quickrun',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['ruby','javascript']}}
-NeoBundleLazy 'vim-ruby/vim-ruby',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'tpope/vim-rails',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'tpope/vim-endwise',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'kchmck/vim-coffee-script', {
-      \ 'autoload':{ 'filetypes': 'coffee'}}
-NeoBundleLazy 'basyura/unite-rails',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'slim-template/vim-slim', {'autoload':{'filetypes': 'slim'}}
-"}}}
+" NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
 
 " 編集 {{{
-NeoBundle 'godlygeek/tabular'
 NeoBundle 'vim-scripts/surround.vim'
 NeoBundle 'godlygeek/tabular'
 NeoBundle 'scrooloose/nerdcommenter'
@@ -70,43 +56,21 @@ NeoBundle 'LeafCage/foldCC'
 " git {{{
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'gregsexton/gitv'
-NeoBundle 'airblade/vim-gitgutter'
-" }}}}
+" NeoBundle 'airblade/vim-gitgutter'
+" }}}
 
-" javascript{{{
 NeoBundleLazy 'pangloss/vim-javascript', {
-      \'autoload': { 'filetypes': ['javascript'] }}
-NeoBundleLazy 'moll/vim-node', {
       \'autoload': { 'filetypes': ['javascript'] }}
 NeoBundleLazy 'jelera/vim-javascript-syntax',{
       \ 'autoload':{ 'filetypes':['javascript'] }}
-"}}}
-
-" html {{{
-NeoBundleLazy 'othree/html5.vim', {
-      \ 'autoload': { 'filetypes': 'html' }}
-NeoBundleLazy 'mattn/emmet-vim', {
-      \ 'autoload': { 'filetypes': 'html' }}
-"}}}
-
-" other plugin {{{
-NeoBundleLazy 'lilydjwg/colorizer', {
-      \ 'autoload': { 'filetypes': ['html', 'css', 'scss'] }}
-NeoBundle 'vim-jp/vimdoc-ja'
-NeoBundle 'mattn/yamada-vim'
+NeoBundleLazy 'marijnh/tern_for_vim', { 'autoload':{ 'filetypes':['javascript'] }}
+NeoBundleLazy 'othree/html5.vim', { 'autoload': { 'filetypes': 'html' }}
+NeoBundleLazy 'mattn/emmet-vim', { 'autoload': { 'filetypes': 'html' }}
+NeoBundleLazy 'lilydjwg/colorizer', { 'autoload': { 'filetypes': ['html', 'css', 'scss'] }}
 NeoBundle 'sophacles/vim-processing'
-NeoBundle 'cohama/lexima.vim'
-" }}}
-
-" textobj {{{
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle "osyo-manga/vim-textobj-multiblock"
-NeoBundleLazy 'nelstrom/vim-textobj-rubyblock', {
-      \ 'autoload':{ 'filetypes': 'ruby' }}
-" }}}
-
-" vimshell, vimfiler {{{
 NeoBundleLazy 'Shougo/vimfiler', {
       \   'depends' : 'Shougo/unite.vim',
       \   'autoload' : {
@@ -114,12 +78,6 @@ NeoBundleLazy 'Shougo/vimfiler', {
       \       'mappings' : ['<Plug>(vimfiler_switch)'],
       \       'explorer' : 1,
       \   }}
-
-NeoBundleLazy 'Shougo/vimshell', {
-      \ 'depends' : 'Shougo/vimproc',
-      \ 'autoload' : {
-      \   'commands' : ['VimShell', 'VimShellExecute', 'VimShellPop', 'VimShellBufferDir'],
-      \ }}
 " }}}
 
 call neobundle#end()
@@ -189,29 +147,8 @@ nohlsearch                " vimrcのhighlightをリセット
 
 " コメントアウトを継続しない
 MyAutocmd FileType * setlocal formatoptions-=ro 
-
-" 編集履歴を保存して終了する{{{
-" if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
-  " set undodir=~/.vim/undo
-  " set undofile
-" endif
 "}}}
 
-" windows環境では.un~を一箇所にまとめる{{{
-if has('kaoriya')
-  set undodir=~/.vim/undo
-endif
-"}}}
-
-" 最後に編集した場所にカーソルを移動する{{{
-" MyAutocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-"}}}
-
-" ファイルの位置をカレントディレクトリに{{{
-" gitvでエラー出るので除外設定したい
-if has('unix')
-  " MyAutocmd BufEnter * execute 'lcd ' fnameescape(expand('%:p:h'))
-endif
 " 編集中のファイルのディレクトリに移動
 nnoremap ,d :execute ":lcd" . expand("%:p:h")<CR>
 "}}}
@@ -225,8 +162,6 @@ set foldtext=FoldCCtext()
 
 " クリップボード{{{
 set clipboard^=unnamedplus,unnamed
-" set paste
-" nnoremap <silent> <F1> :<C-u>set paste!<CR>:<C-U>echo("Toggle PasteMode => " . (&paste == 0 ? "Off" : "On"))<CR>
 "}}}
 
 " ファイルを整形 {{{
@@ -238,23 +173,10 @@ endfunction
 nnoremap <Space>i :call <SID>format_file()<CR>
 "}}}
 
-" Tab {{{
-" nnoremap <silent> gc :tablast <bar> tabnew<CR>
-" nnoremap <silent> gl :tabnext<CR>
-" nnoremap <silent> gh :tabprevious<CR>
-" nnoremap <silent> gs :tab split<CR>
-"}}}
 "}}}
 
 " File別シンタックス設定{{{
-" MyAutocmd BufRead,BufNewFile,BufReadPre *.slim setlocal filetype=slim
-" MyAutocmd FileType slim setlocal sw=2 sts=2 ts=2 et
-" MyAutocmd BufRead,BufNewFile,BufReadPre *.coffee setlocal filetype=coffee
 MyAutocmd FileType coffee,javascript setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
-" MyAutocmd FileType coffee setlocal sw=2 sts=2 ts=2 et
-" MyAutocmd FileType yaml setlocal expandtab ts=2 sw=2 fenc=utf-8
-" MyAutocmd BufNewFile,BufRead *.md setlocal filetype=markdown
-" MyAutocmd FileType markdown setlocal indentkeys-=o,O
 "}}}
 
 " key mapping {{{
@@ -310,12 +232,6 @@ if has('gui_running')
   set t_Co=256
 endif
 
-" 全角スペースをハイライト{{{
-if has('gui_running')
-  " MyAutocmd ColorScheme * highlight ZenkakuSpace ctermbg=239 guibg=#405060
-  " MyAutocmd VimEnter,WinEnter * call matchadd('ZenkakuSpace', '　')
-endif
-"}}}
 "}}}
 
 " Unite {{{
@@ -329,7 +245,6 @@ nnoremap <silent> [unite]a   :<C-u>Unite file_mru -buffer-name=files directory_m
 nnoremap <silent> [unite]l   :<C-u>Unite -buffer-name=lines line<CR>
 " nnoremap <silent> [unite]e   :<C-u>Unite file_rec/async:!<CR>
 nnoremap <silent> [unite]f   :<C-u>UniteWithBufferDir -buffer-name=files file file/new<CR>
-nnoremap <silent> [unite]c   :<C-u>Unite -buffer-name=commands history/command<CR>
 nnoremap <silent> [unite]b   :<C-u>Unite -buffer-name=bookmark -prompt=bookmark> bookmark<CR>
 nnoremap <silent> [unite]r   :<C-u>Unite -buffer-name=register -prompt=">\  register<CR>
 " nnoremap <silent> [unite]g   :<C-u>Unite -buffer-name=grep grep<CR>
@@ -353,22 +268,6 @@ endfunction
 unlet s:bundle
 " }}}
 
-" VimShell{{{
-nnoremap <silent> <Space>vs :<C-u>VimShellBufferDir -split<CR>
-nnoremap <silent> ,vs :<C-u>VimShell<CR>
-
-" vimshllの時はwrapしていた方が見やすい
-MyAutocmd FileType vimshell setlocal wrap
-" MyAutocmd FileType vimshell AnsiEsc
-
-let s:bundle = neobundle#get("vimshell")
-function! s:bundle.hooks.on_source(bundle)
-  let g:vimshell_prompt = "- "
-  let g:vimshell_max_command_history = 3000
-endfunction
-unlet s:bundle
-"}}}
-
 " VimFiler{{{
 nnoremap <silent> ,vf :<C-u>VimFilerBufferDir -simple<CR>
 nnoremap <silent> <Space>e :<C-u>VimFilerBufferDir -split -simple -winwidth=35<CR>
@@ -388,29 +287,11 @@ unlet s:bundle
 "}}}
 
 " rubycomplete.vim {{{
-MyAutocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-let g:rubycomplete_rails = 1
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_include_object = 1
 let g:rubycomplete_include_object_space = 1
-" let ruby_operators = 1
 " }}}
-
-" Rails {{{
-" nnoremap [rails] <Nop>
-nmap ,j [rails]
-
-" unite rails
-nnoremap <silent> [rails]m :<C-u>Unite rails/model<CR>
-nnoremap <silent> [rails]v :<C-u>Unite rails/view<CR>
-nnoremap <silent> [rails]c :<C-u>Unite rails/controller<CR>
-nnoremap <silent> [rails]h :<C-u>Unite rails/helper<CR>
-nnoremap <silent> [rails]l :<C-u>Unite rails/lib<CR>
-nnoremap <silent> [rails]d :<C-u>Unite rails/db<CR>
-nnoremap <silent> [rails]s :<C-u>Unite rails/spec<CR>
-nnoremap <silent> [rails]r :<C-u>Unite rails/route<CR>
-"}}}
 
 " neosnippet {{{
 let g:neosnippet#snippets_directory='~/.vim/bundle/neosnippet-snippets/neosnippets,~/.vim/snippets'
@@ -447,7 +328,7 @@ xmap <C-l> <Plug>(neosnippet_start_unite_snippet_target)
 " endfunction
 
 " MyAutocmd BufEnter *.rb call s:RailsSnippet()
-MyAutocmd BufEnter *rb NeoSnippetSource ~/.vim/snippets/ruby.snip
+" MyAutocmd BufEnter *rb NeoSnippetSource ~/.vim/snippets/ruby.snip
 " MyAutocmd BufEnter *_spec.rb NeoSnippetSource ~/.vim/snippets/rspec.snip
 " MyAutocmd BufEnter Gemfile NeoSnippetSource ~/.vim/snippets/Gemfile.snip
 "}}}
@@ -508,8 +389,8 @@ if has('lua')
     if !exists('g:neocomplete#sources#omni#input_patterns')
       let g:neocomplete#sources#omni#input_patterns = {}
     endif
-    let g:neocomplete#sources#omni#input_patterns.ruby =
-          \ '[^. *\t]\.\w*\|\h\w*::'
+    " let g:neocomplete#sources#omni#input_patterns.ruby =
+          " \ '[^. *\t]\.\w*\|\h\w*::'
     " if !exists('g:neocomplete#force_omni_input_patterns')
     " let g:neocomplete#force_omni_input_patterns = {}
     " endif
@@ -535,15 +416,6 @@ if has('lua')
 endif
 "}}}
 
-" indentguide {{{
-" let g:indent_guides_enable_on_vim_startup = 1
-" let g:indent_guides_guide_size =  1
-" let g:indent_guides_auto_colors = 0
-" let g:indent_guides_color_change_percent = 25
-" MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#2f4f4f ctermbg=darkgrey
-" MyAutocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#696969 ctermbg=12
-" }}}
-
 " other plugins{{{
 " nerdcommenter
 let g:NERDCreateDefaultMappings = 0
@@ -556,12 +428,6 @@ nnoremap <Space>mm :edit ~/Dropbox/Memo/memo.md<CR>
 nnoremap <Space>md :edit ~/Dropbox/Memo/todo.md<CR>
 nnoremap <Space>mn :edit ~/Dropbox/Memo/now.md<CR>
 
-" textobj
-omap ab <Plug>(textobj-multiblock-a)
-omap ib <Plug>(textobj-multiblock-i)
-vmap ab <Plug>(textobj-multiblock-a)
-vmap ib <Plug>(textobj-multiblock-i)
-
 " sround.vim
 nmap <C-s> ysW"
 
@@ -573,7 +439,6 @@ let g:quickrun_config.processing = {
 \     'exec': '%c --sketch=%s:p:h/ --output=~/Library/Processing/tmp --run --force' }
 
 nnoremap <silent> ,b :QuickRun babel<CR>
-let g:quickrun_config = {}
 let g:quickrun_config.babel = {
       \ 'cmdopt': '--stage 0',
       \ 'exec': "babel %o %s | node"
@@ -647,32 +512,6 @@ let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
 "}}}
 
-" Fugitive {{{
-" nnoremap [git] <Nop>
-nmap ,g [git]
-nnoremap [git]d :<C-u>Gdiff HEAD<CR>
-nnoremap [git]s :<C-u>Gstatus<CR>
-nnoremap [git]l :<C-u>Glog<CR>
-nnoremap [git]a :<C-u>Gwrite<CR>
-nnoremap [git]c :<C-u>Gcommit<CR>
-nnoremap [git]C :<C-u>Git commit --amend<CR>
-nnoremap [git]b :<C-u>Gblame<CR>
-MyAutocmd BufEnter * if expand("%") =~ ".git/COMMIT_EDITMSG" | set ft=gitcommit | endif
-MyAutocmd BufEnter * if expand("%") =~ ".git/rebase-merge" | set ft=gitrebase | endif
-" }}}
-
-" gitv {{{
-nnoremap [git]v :<C-u>Gitv<CR>
-MyAutocmd FileType gitv setlocal foldlevel=99
-" }}}
-
-" tabular {{{
-nmap ,a= :<C-u>Tabularize /=<CR>
-vmap ,a= :<C-u>Tabularize /=<CR>
-nmap ,a: :<C-u>Tabularize /:\zs<CR>
-vmap ,a: :<C-u>Tabularize /:\zs<CR>
-" }}}
-
 " 日本語{{{
 " 日本語向け設定: Jで行をつなげた時に日本語の場合はスペースを入れない
 set formatoptions+=Mm
@@ -687,3 +526,11 @@ call <SID>MapFT('<C-K>', '、')
 "}}}
 
 let g:syntastic_javascript_checkers = ['eslint']
+
+if !has('gui_running')
+  MyAutocmd VimEnter,ColorScheme * highlight Normal ctermbg=none
+  MyAutocmd VimEnter,ColorScheme * highlight LineNr ctermbg=none
+  MyAutocmd VimEnter,ColorScheme * highlight SignColumn ctermbg=none
+  MyAutocmd VimEnter,ColorScheme * highlight VertSplit ctermbg=none
+  MyAutocmd VimEnter,ColorScheme * highlight NonText ctermbg=none
+endif
