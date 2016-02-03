@@ -5,80 +5,65 @@ set encoding=utf-8
 set fileformats=unix,dos,mac
 
 " NeoBundle{{{
-" NeoBundle setting {{{
 if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+	set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 call neobundle#begin(expand('~/.vim/bundle/'))
 filetype off
 
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc.vim', {
-      \ 'build' : {
-      \     'windows' : 'tools\\update-dll-mingw',
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac' : 'make -f make_mac.mak',
-      \     'linux' : 'make',
-      \     'unix' : 'gmake',
-      \    },
-      \ }
-" }}}
+			\ 'build' : {
+			\     'windows' : 'tools\\update-dll-mingw',
+			\     'cygwin' : 'make -f make_cygwin.mak',
+			\     'mac' : 'make -f make_mac.mak',
+			\     'linux' : 'make',
+			\     'unix' : 'gmake',
+			\    },
+			\ }
 
-" Shougo {{{
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundleLazy 'Shougo/neosnippet', { 'autoload' : { 'insert' : 1, }}
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundleLazy 'Shougo/neocomplete', { 'autoload' : { 'insert' : 1}}
-"}}}
 
-" colorschemes plugin {{{
 NeoBundle 'morhetz/gruvbox'
-NeoBundle 'altercation/vim-colors-solarized'
-" }}}
 
 NeoBundleLazy 'thinca/vim-quickrun',{ 'autoload':{ 'filetypes': 'ruby'}}
 " NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
 
-" 編集 {{{
 NeoBundle 'vim-scripts/surround.vim'
-NeoBundle 'godlygeek/tabular'
+" NeoBundle 'godlygeek/tabular'
 NeoBundle 'scrooloose/nerdcommenter'
-NeoBundle 'koron/imcsc-vim'             " IM制御
-" }}}
+" NeoBundle 'koron/imcsc-vim' " IM制御
 
-" スタイル{{{
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'LeafCage/foldCC'
-"}}}
 
-" git {{{
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'gregsexton/gitv'
-" NeoBundle 'airblade/vim-gitgutter'
-" }}}
+NeoBundle 'airblade/vim-gitgutter'
 
-NeoBundleLazy 'pangloss/vim-javascript', {
-      \'autoload': { 'filetypes': ['javascript'] }}
-NeoBundleLazy 'jelera/vim-javascript-syntax',{
-      \ 'autoload':{ 'filetypes':['javascript'] }}
-NeoBundleLazy 'marijnh/tern_for_vim', { 'autoload':{ 'filetypes':['javascript'] }}
-NeoBundleLazy 'othree/html5.vim', { 'autoload': { 'filetypes': 'html' }}
-NeoBundleLazy 'mattn/emmet-vim', { 'autoload': { 'filetypes': 'html' }}
-NeoBundleLazy 'lilydjwg/colorizer', { 'autoload': { 'filetypes': ['html', 'css', 'scss'] }}
-NeoBundle 'sophacles/vim-processing'
+" NeoBundleLazy 'pangloss/vim-javascript', {
+" \'autoload': { 'filetypes': ['javascript'] }}
+" NeoBundleLazy 'jelera/vim-javascript-syntax',{
+" \ 'autoload':{ 'filetypes':['javascript'] }}
+" NeoBundleLazy 'marijnh/tern_for_vim', { 'autoload':{ 'filetypes':['javascript'] }}
+" NeoBundleLazy 'othree/html5.vim', { 'autoload': { 'filetypes': 'html' }}
+" NeoBundleLazy 'mattn/emmet-vim', { 'autoload': { 'filetypes': 'html' }}
+" NeoBundleLazy 'lilydjwg/colorizer', { 'autoload': { 'filetypes': ['html', 'css', 'scss'] }}
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle "osyo-manga/vim-textobj-multiblock"
 NeoBundleLazy 'Shougo/vimfiler', {
-      \   'depends' : 'Shougo/unite.vim',
-      \   'autoload' : {
-      \       'commands' : [ 'VimFilerTab', 'VimFiler', 'VimFilerExplorer', 'VimFilerBufferDir' ],
-      \       'mappings' : ['<Plug>(vimfiler_switch)'],
-      \       'explorer' : 1,
-      \   }}
-" }}}
+			\   'depends' : 'Shougo/unite.vim',
+			\   'autoload' : {
+			\       'commands' : [ 'VimFilerTab', 'VimFiler', 'VimFilerExplorer', 'VimFilerBufferDir' ],
+			\       'mappings' : ['<Plug>(vimfiler_switch)'],
+			\       'explorer' : 1,
+			\   }}
 
 call neobundle#end()
 filetype plugin indent on
@@ -89,12 +74,12 @@ NeoBundleCheck
 
 " augroup init (from tyru's vimrc){{{
 augroup vimrc
-  autocmd!
+	autocmd!
 augroup END
 command!
-      \ -bang -nargs=*
-      \ MyAutocmd
-      \ autocmd<bang> vimrc <args>
+			\ -bang -nargs=*
+			\ MyAutocmd
+			\ autocmd<bang> vimrc <args>
 "}}}
 
 " vimrc{{{
@@ -114,8 +99,8 @@ set virtualedit=block     " カーソル移動の制限をなくす
 set tabstop=2             " タブを何文字として表示するか
 set shiftwidth=2          " タブの幅
 set shiftround            " swの分の倍数で丸め込み
-set smarttab              " shiftwidthの分だけスペース挿入
-set expandtab             " タブをスペースに
+" set smarttab              " shiftwidthの分だけスペース挿入
+" set expandtab             " タブをスペースに
 set incsearch             " 即時検索
 set ignorecase            " 検索で大/小文字区別しない
 set smartcase             " 検索で大文字で区別
@@ -166,17 +151,13 @@ set clipboard^=unnamedplus,unnamed
 
 " ファイルを整形 {{{
 function! s:format_file()
-  let view = winsaveview()
-  normal gg=G
-  silent call winrestview(view)
+	let view = winsaveview()
+	normal gg=G
+	silent call winrestview(view)
 endfunction
 nnoremap <Space>i :call <SID>format_file()<CR>
 "}}}
 
-"}}}
-
-" File別シンタックス設定{{{
-MyAutocmd FileType coffee,javascript setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
 "}}}
 
 " key mapping {{{
@@ -229,7 +210,7 @@ nnoremap ,bl :<C-u>set background=light<CR>
 nnoremap ,bd :<C-u>set background=dark<CR>
 
 if has('gui_running')
-  set t_Co=256
+	set t_Co=256
 endif
 
 "}}}
@@ -252,18 +233,18 @@ nnoremap <silent> [unite]r   :<C-u>Unite -buffer-name=register -prompt=">\  regi
 
 let s:bundle = neobundle#get("unite.vim")
 function! s:bundle.hooks.on_source(bundle)
-  " 高速化
-  let g:unite_source_file_mru_filename_format = ''
-  " インサートモードで開始
-  " let g:unite_enable_start_insert = 1
-  let g:unite_enable_ignore_case = 1
-  let g:unite_enable_smart_case = 1
-  " windows環境
-  let g:unite_source_grep_encoding='utf-8'
+	" 高速化
+	let g:unite_source_file_mru_filename_format = ''
+	" インサートモードで開始
+	" let g:unite_enable_start_insert = 1
+	let g:unite_enable_ignore_case = 1
+	let g:unite_enable_smart_case = 1
+	" windows環境
+	let g:unite_source_grep_encoding='utf-8'
 
-  let g:unite_winheight = 15
-  let g:unite_winwidth = 45
-  let g:unite_source_grep_max_candidates = 500
+	let g:unite_winheight = 15
+	let g:unite_winwidth = 45
+	let g:unite_source_grep_max_candidates = 500
 endfunction
 unlet s:bundle
 " }}}
@@ -273,15 +254,15 @@ nnoremap <silent> ,vf :<C-u>VimFilerBufferDir -simple<CR>
 nnoremap <silent> <Space>e :<C-u>VimFilerBufferDir -split -simple -winwidth=35<CR>
 let s:bundle = neobundle#get('vimfiler')
 function! s:bundle.hooks.on_source(bundle)
-  let g:vimfiler_safe_mode_by_default = 0
-  let g:vimfiler_as_default_explorer = 1
-  let g:vimfiler_max_directory_histories = 100
-  " Like Textmate icons.
-  let g:vimfiler_tree_leaf_icon = ' '
-  let g:vimfiler_tree_opened_icon = '▾'
-  let g:vimfiler_tree_closed_icon = '▸'
-  let g:vimfiler_file_icon = '-'
-  let g:vimfiler_marked_file_icon = '*'
+	let g:vimfiler_safe_mode_by_default = 0
+	let g:vimfiler_as_default_explorer = 1
+	let g:vimfiler_max_directory_histories = 100
+	" Like Textmate icons.
+	let g:vimfiler_tree_leaf_icon = ' '
+	let g:vimfiler_tree_opened_icon = '▾'
+	let g:vimfiler_tree_closed_icon = '▸'
+	let g:vimfiler_file_icon = '-'
+	let g:vimfiler_marked_file_icon = '*'
 endfunction
 unlet s:bundle
 "}}}
@@ -305,26 +286,26 @@ xmap <C-l> <Plug>(neosnippet_start_unite_snippet_target)
 " enable ruby & rails snippet
 
 " function! s:RailsSnippet()
-  " if exists("b:rails_root")
-    " let s:current_file_path = expand("%:p:h")
-    " app/modlesフォルダ内
-    " if ( s:current_file_path =~ "app/models" )
-      " NeoSnippetSource ~/.vim/snippets/ruby.rails.model.snip
-      " app/controllersフォルダ内
-    " elseif ( s:current_file_path =~ "app/controllers" )
-      " NeoSnippetSource ~/.vim/snippets/ruby.action_controller.snip
-      " NeoSnippetSource ~/.vim/snippets/ruby.abstract_controller.snip
-      " app/viewsフォルダ内
-    " elseif ( s:current_file_path =~ "app/views" )
-      " NeoSnippetSource ~/.vim/snippets/ruby.action_view.snip
-      " configフォルダ内
-    " elseif ( s:current_file_path =~ "config" )
-      " NeoSnippetSource ~/.vim/snippets/ruby.rails.route.snip
-      " dbフォルダ内
-    " elseif ( s:current_file_path =~ "db" )
-      " NeoSnippetSource ~/.vim/snippets/ruby.active_record.migration.snip
-    " endif
-  " endif
+" if exists("b:rails_root")
+" let s:current_file_path = expand("%:p:h")
+" app/modlesフォルダ内
+" if ( s:current_file_path =~ "app/models" )
+" NeoSnippetSource ~/.vim/snippets/ruby.rails.model.snip
+" app/controllersフォルダ内
+" elseif ( s:current_file_path =~ "app/controllers" )
+" NeoSnippetSource ~/.vim/snippets/ruby.action_controller.snip
+" NeoSnippetSource ~/.vim/snippets/ruby.abstract_controller.snip
+" app/viewsフォルダ内
+" elseif ( s:current_file_path =~ "app/views" )
+" NeoSnippetSource ~/.vim/snippets/ruby.action_view.snip
+" configフォルダ内
+" elseif ( s:current_file_path =~ "config" )
+" NeoSnippetSource ~/.vim/snippets/ruby.rails.route.snip
+" dbフォルダ内
+" elseif ( s:current_file_path =~ "db" )
+" NeoSnippetSource ~/.vim/snippets/ruby.active_record.migration.snip
+" endif
+" endif
 " endfunction
 
 " MyAutocmd BufEnter *.rb call s:RailsSnippet()
@@ -340,79 +321,79 @@ MyAutocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
 MyAutocmd FileType sql setlocal omnifunc=sqlcomplete#Complete
 
 if has('lua')
-  let s:bundle = neobundle#get('neocomplete')
-  function! s:bundle.hooks.on_source(bundle)
-    " Disable AutoComplPop.
-    let g:acp_enableAtStartup = 0
-    " Enable at startup
-    let g:neocomplete#enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplete#enable_smart_case = 1
+	let s:bundle = neobundle#get('neocomplete')
+	function! s:bundle.hooks.on_source(bundle)
+		" Disable AutoComplPop.
+		let g:acp_enableAtStartup = 0
+		" Enable at startup
+		let g:neocomplete#enable_at_startup = 1
+		" Use smartcase.
+		let g:neocomplete#enable_smart_case = 1
 
-    " length need to start completion  
-    let g:neocomplete#auto_completion_start_length = 2
-    let g:neocomplete#manual_completion_start_length = 0
-    " 3文字からキャッシュ
-    let g:neocomplete#sources#syntax#min_keyword_length = 3
-    let g:neocomplete#enable_prefetch = 1
+		" length need to start completion  
+		let g:neocomplete#auto_completion_start_length = 2
+		let g:neocomplete#manual_completion_start_length = 0
+		" 3文字からキャッシュ
+		let g:neocomplete#sources#syntax#min_keyword_length = 3
+		let g:neocomplete#enable_prefetch = 1
 
-    let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+		let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
-    " Define dictionary.
-    let g:neocomplete#sources#dictionary#dictionaries = {
-          \ 'default' : '',
-          \ 'vimshell' : $HOME . '/.vimshell/command-history',
-          \ }
+		" Define dictionary.
+		let g:neocomplete#sources#dictionary#dictionaries = {
+					\ 'default' : '',
+					\ 'vimshell' : $HOME . '/.vimshell/command-history',
+					\ }
 
-    " キャッシュしないファイル名
-    let g:neocomplete#sources#buffer#disabled_pattern = '\.log\|\.log\.\|\.jax'
-    " 自動補完を行わないバッファ名
-    let g:neocomplete#lock_buffer_name_pattern = '\.log\|\.log\.\|.*quickrun.*\|.jax'
+		" キャッシュしないファイル名
+		let g:neocomplete#sources#buffer#disabled_pattern = '\.log\|\.log\.\|\.jax'
+		" 自動補完を行わないバッファ名
+		let g:neocomplete#lock_buffer_name_pattern = '\.log\|\.log\.\|.*quickrun.*\|.jax'
 
-    " Define keyword.
-    if !exists('g:neocomplete#keyword_patterns')
-      let g:neocomplete#keyword_patterns = {}
-    endif
-    let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+		" Define keyword.
+		if !exists('g:neocomplete#keyword_patterns')
+			let g:neocomplete#keyword_patterns = {}
+		endif
+		let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
-    " Plugin key-mappings.
-    inoremap <expr><C-l> neocomplete#complete_common_string()
+		" Plugin key-mappings.
+		inoremap <expr><C-l> neocomplete#complete_common_string()
 
-    " Recommended key-mappings.
-    " <C-h>, <BS>: close popup and delete backword char.
-    inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS>  neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><C-y> neocomplete#close_popup()
-    inoremap <expr><C-n> pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
+		" Recommended key-mappings.
+		" <C-h>, <BS>: close popup and delete backword char.
+		inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+		inoremap <expr><BS>  neocomplete#smart_close_popup()."\<C-h>"
+		inoremap <expr><C-y> neocomplete#close_popup()
+		inoremap <expr><C-n> pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
 
-    " Enable heavy omni completion.
-    if !exists('g:neocomplete#sources#omni#input_patterns')
-      let g:neocomplete#sources#omni#input_patterns = {}
-    endif
-    " let g:neocomplete#sources#omni#input_patterns.ruby =
-          " \ '[^. *\t]\.\w*\|\h\w*::'
-    " if !exists('g:neocomplete#force_omni_input_patterns')
-    " let g:neocomplete#force_omni_input_patterns = {}
-    " endif
-    " let g:neocomplete#force_omni_input_patterns.ruby =
-    " \ '[^. *\t]\.\w*\|\h\w*::'
+		" Enable heavy omni completion.
+		if !exists('g:neocomplete#sources#omni#input_patterns')
+			let g:neocomplete#sources#omni#input_patterns = {}
+		endif
+		" let g:neocomplete#sources#omni#input_patterns.ruby =
+		" \ '[^. *\t]\.\w*\|\h\w*::'
+		" if !exists('g:neocomplete#force_omni_input_patterns')
+		" let g:neocomplete#force_omni_input_patterns = {}
+		" endif
+		" let g:neocomplete#force_omni_input_patterns.ruby =
+		" \ '[^. *\t]\.\w*\|\h\w*::'
 
-    "インクルード文のパターンを指定
-    let g:neocomplete#include_patterns = {
-          \ 'ruby' : '^\s*require',
-          \ 'javascript' : '^\s*require',
-          \ }
+		"インクルード文のパターンを指定
+		let g:neocomplete#include_patterns = {
+					\ 'ruby' : '^\s*require',
+					\ 'javascript' : '^\s*require',
+					\ }
 
-    "インクルード先のファイル名の解析パターン
-    let g:neocomplete#include_exprs = {
-          \ 'ruby' : substitute(v:fname,'::','/','g')
-          \ }
+		"インクルード先のファイル名の解析パターン
+		let g:neocomplete#include_exprs = {
+					\ 'ruby' : substitute(v:fname,'::','/','g')
+					\ }
 
-    " ファイルを探す際に、この値を末尾に追加したファイルも探す。
-    let g:neocomplete#include_suffixes = {
-          \ 'ruby' : '.rb',
-          \ }
-  endfunction
+		" ファイルを探す際に、この値を末尾に追加したファイルも探す。
+		let g:neocomplete#include_suffixes = {
+					\ 'ruby' : '.rb',
+					\ }
+	endfunction
 endif
 "}}}
 
@@ -435,76 +416,76 @@ nmap <C-s> ysW"
 nnoremap <silent> ,r :QuickRun<CR>
 let g:quickrun_config = {}
 let g:quickrun_config.processing = {
-\     'command': 'processing-java',
-\     'exec': '%c --sketch=%s:p:h/ --output=~/Library/Processing/tmp --run --force' }
+			\     'command': 'processing-java',
+			\     'exec': '%c --sketch=%s:p:h/ --output=~/Library/Processing/tmp --run --force' }
 
 nnoremap <silent> ,b :QuickRun babel<CR>
 let g:quickrun_config.babel = {
-      \ 'cmdopt': '--stage 0',
-      \ 'exec': "babel %o %s | node"
-      \ }
+			\ 'cmdopt': '--stage 0',
+			\ 'exec': "babel %o %s | node"
+			\ }
 "}}}
 
 " lightline {{{
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'mode_map': { 'c': 'NORMAL' },
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
-      \ },
-      \ 'component_function': {
-      \   'modified': 'MyModified',
-      \   'readonly': 'MyReadonly',
-      \   'fugitive': 'MyFugitive',
-      \   'filename': 'MyFilename',
-      \   'fileformat': 'MyFileformat',
-      \   'filetype': 'MyFiletype',
-      \   'fileencoding': 'MyFileencoding',
-      \   'mode': 'MyMode',
-      \ },
-      \ 'separator': { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
-      \ }
+			\ 'colorscheme': 'wombat',
+			\ 'mode_map': { 'c': 'NORMAL' },
+			\ 'active': {
+			\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+			\ },
+			\ 'component_function': {
+			\   'modified': 'MyModified',
+			\   'readonly': 'MyReadonly',
+			\   'fugitive': 'MyFugitive',
+			\   'filename': 'MyFilename',
+			\   'fileformat': 'MyFileformat',
+			\   'filetype': 'MyFiletype',
+			\   'fileencoding': 'MyFileencoding',
+			\   'mode': 'MyMode',
+			\ },
+			\ 'separator': { 'left': '⮀', 'right': '⮂' },
+			\ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+			\ }
 
 function! MyModified()
-  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+	return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+	return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
 endfunction
 
 function! MyFilename()
-  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() : 
-        \  &ft == 'unite' ? unite#get_status_string() : 
-        \  &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
+	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() : 
+				\  &ft == 'unite' ? unite#get_status_string() : 
+				\  &ft == 'vimshell' ? vimshell#get_status_string() :
+				\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+				\ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
-  if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
-    let _ = fugitive#head()
-    return strlen(_) ? '⭠ '._ : ''
-  endif
-  return ''
+	if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
+		let _ = fugitive#head()
+		return strlen(_) ? '⭠ '._ : ''
+	endif
+	return ''
 endfunction
 
 function! MyFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
+	return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
 function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! MyFileencoding()
-  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+	return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
 function! MyMode()
-  return winwidth(0) > 60 ? lightline#mode() : ''
+	return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
 let g:unite_force_overwrite_statusline = 0
@@ -517,9 +498,9 @@ let g:vimshell_force_overwrite_statusline = 0
 set formatoptions+=Mm
 " 。、に移動(f<C-K>._ を打つのは少し長いので)。cf<C-J>等の使い方も可。
 function! s:MapFT(key, char)
-  for cmd in ['f', 'F', 't', 'T']
-    execute 'noremap <silent> ' . cmd . a:key . ' ' . cmd . a:char
-  endfor
+	for cmd in ['f', 'F', 't', 'T']
+		execute 'noremap <silent> ' . cmd . a:key . ' ' . cmd . a:char
+	endfor
 endfunction
 call <SID>MapFT('<C-J>', '。')
 call <SID>MapFT('<C-K>', '、')
@@ -528,9 +509,9 @@ call <SID>MapFT('<C-K>', '、')
 let g:syntastic_javascript_checkers = ['eslint']
 
 if !has('gui_running')
-  MyAutocmd VimEnter,ColorScheme * highlight Normal ctermbg=none
-  MyAutocmd VimEnter,ColorScheme * highlight LineNr ctermbg=none
-  MyAutocmd VimEnter,ColorScheme * highlight SignColumn ctermbg=none
-  MyAutocmd VimEnter,ColorScheme * highlight VertSplit ctermbg=none
-  MyAutocmd VimEnter,ColorScheme * highlight NonText ctermbg=none
+	MyAutocmd VimEnter,ColorScheme * highlight Normal ctermbg=none
+	MyAutocmd VimEnter,ColorScheme * highlight LineNr ctermbg=none
+	MyAutocmd VimEnter,ColorScheme * highlight SignColumn ctermbg=none
+	MyAutocmd VimEnter,ColorScheme * highlight VertSplit ctermbg=none
+	MyAutocmd VimEnter,ColorScheme * highlight NonText ctermbg=none
 endif

@@ -1,28 +1,34 @@
 [user]
-  email = akameco.t@gmail.com
-  name = akameco
+	email = akameco.t@gmail.com
+	name = akameco
 [core]
 	excludesfile = /Users/akameco/.gitignore_global
-  editor = vim -f
+	editor = vim -f
 [color]
-  ui = auto
+	ui = auto
 [init]
-  templatedir=~/.git_template
+	templatedir=~/.git_template
 [alias]
-  a = add .
-  c = commit -m
-  co = checkout
-  cl = clone
-  b = branch
-  m = merge
-  p = push
-  po = push origin master
-  pl = pull
-  s = status
-  sh = show
-  l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
-  la='git log --graph --color'
+	a = add .
+	c = commit -m
+	co = checkout
+	cl = clone
+	b = branch
+	m = merge
+	p = push
+	po = push origin master
+	pl = pull
+	s = status
+	sh = show
+	l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
+	la='git log --graph --color'
 [push]
-  default = simple
+	default = simple
 [ghq]
- root = ~/src
+	root = ~/src
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

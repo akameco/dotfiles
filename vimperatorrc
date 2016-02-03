@@ -1,5 +1,5 @@
 " akameco vimperatorrc
-colorscheme desert
+" colorscheme desert
 
 " プラグイン読み込み {{{
 let g:plugin_loader_roots = "~/src/github.com/vimpr/vimperator-plugins"

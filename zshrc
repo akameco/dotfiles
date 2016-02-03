@@ -26,23 +26,19 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^r' peco-select-history
 
-function peco-cd() {
-    local dir="$( find . -maxdepth 1 -type d | sed -e 's;\./;;' | peco )"
-    if [ ! -z "$dir" ] ; then
-        cd "$dir"
-    fi
-}
-
 function p() {
   peco | while read LINE; do $@ $LINE; done
 }
 
-# alias k='cd $(ghq list -p | peco)'
-alias o='git ls-files | peco | xargs open'
-alias p="pushd +\$(dirs -p -v -l | sort -k 2 -k 1n | uniq -f 1 | sort -n | peco | head -n 1 | awk '{print \$1}')"
-alias l='peco-cd'
+function ghq_list() {
+	cd $(ghq list -p | peco)
+	zle clear-screen
+}
 
-# beepを鳴らさないようにする
+zle -N ghq_list
+bindkey "^k" ghq_list
+alias k=ghq_list
+
 setopt nolistbeep
 
 autoload history-search-end
@@ -59,7 +55,6 @@ setopt hist_ignore_all_dups
 # 補完を有効化
 autoload -Uz compinit
 compinit -u
-
 
 # rbenv
 eval "$(rbenv init - --no-rehash)"
@@ -92,10 +87,9 @@ function peco-z-search {
 zle -N peco-z-search
 bindkey '^f' peco-z-search
 
-alias rm="gomi"
+# alias rm="gomi"
 alias awk='gawk'
 
 # if (which zprof > /dev/null) ;then
   # zprof | less
 # fi
-
