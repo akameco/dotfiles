@@ -24,16 +24,3 @@ source $VIMRUNTIME/delmenu.vim
 set langmenu=ja_jp.utf-8
 source $VIMRUNTIME/menu.vim
 
-" function! GuiTabLabel()
-"   let l:label = ''
-"   let l:bufnrlist = tabpagebuflist(v:lnum)
-"   let l:bufname = fnamemodify(bufname(l:bufnrlist[tabpagewinnr(v:lnum) - 1]), ':t')
-"   let l:label .= l:bufname == '' ? 'No title' : l:bufname
-"   for bufnr in l:bufnrlist
-"     if getbufvar(bufnr, "&modified")
-"       let l:label .= ' ☆彡 '
-"       break
-"     endif
-"   endfor
-"   return l:label
-" endfunction
