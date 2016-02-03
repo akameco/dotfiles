@@ -1,11 +1,15 @@
 # dotfiles
+> akameco's dotfiles'
 
-```
+## Installation
+```sh
 $ git clone https://github.com/akameco/dotfiles.git 
 ```
 
-## Install Xcode
+## Usage
+```sh
+$ ./setup.sh
+```
 
-## Using Ansible
-
-## Copy dotfiles
+## License
+MIT
