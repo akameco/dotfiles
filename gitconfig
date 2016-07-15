@@ -7,7 +7,7 @@
 [color]
 	ui = auto
 [init]
-	templatedir=~/.git_template
+	templatedir = ~/.git_template
 [alias]
 	a = add .
 	c = commit -m
@@ -34,3 +34,9 @@
 	trustExitCode = true
 [credential]
 	helper = osxkeychain
+[filter "lfs"]
+	smudge = git-lfs smudge %f
+	required = true
+	clean = git-lfs clean %f
+[commit]
+	template = /Users/akameco/.gitmessage.txt
