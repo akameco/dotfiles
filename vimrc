@@ -31,7 +31,7 @@ NeoBundleLazy 'Shougo/neocomplete', { 'autoload' : { 'insert' : 1}}
 NeoBundle 'morhetz/gruvbox'
 
 NeoBundleLazy 'thinca/vim-quickrun',{ 'autoload':{ 'filetypes': 'ruby'}}
-" NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
+NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
 
 NeoBundle 'vim-scripts/surround.vim'
 " NeoBundle 'godlygeek/tabular'
@@ -516,3 +516,8 @@ if !has('gui_running')
 	MyAutocmd VimEnter,ColorScheme * highlight VertSplit ctermbg=none
 	MyAutocmd VimEnter,ColorScheme * highlight NonText ctermbg=none
 endif
+
+let g:syntastic_javascript_eslint_generic = 1
+let g:syntastic_javascript_eslint_exec = 'xo'
+let g:syntastic_javascript_eslint_args = '--compact'
+let g:syntastic_javascript_checkers = ['eslint']
