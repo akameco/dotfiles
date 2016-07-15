@@ -46,10 +46,9 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'gregsexton/gitv'
 NeoBundle 'airblade/vim-gitgutter'
 
-" NeoBundleLazy 'pangloss/vim-javascript', {
-" \'autoload': { 'filetypes': ['javascript'] }}
-" NeoBundleLazy 'jelera/vim-javascript-syntax',{
-" \ 'autoload':{ 'filetypes':['javascript'] }}
+NeoBundleLazy 'pangloss/vim-javascript', { 'autoload': { 'filetypes': ['javascript'] }}
+NeoBundleLazy 'kchmck/vim-coffee-script', { 'autoload': { 'filetypes': ['coffeescript'] }}
+" NeoBundleLazy 'jelera/vim-javascript-syntax',{ 'autoload':{ 'filetypes':['javascript'] }}
 " NeoBundleLazy 'marijnh/tern_for_vim', { 'autoload':{ 'filetypes':['javascript'] }}
 " NeoBundleLazy 'othree/html5.vim', { 'autoload': { 'filetypes': 'html' }}
 " NeoBundleLazy 'mattn/emmet-vim', { 'autoload': { 'filetypes': 'html' }}
@@ -133,6 +132,7 @@ nohlsearch                " vimrcのhighlightをリセット
 
 " コメントアウトを継続しない
 MyAutocmd FileType * setlocal formatoptions-=ro 
+au BufEnter *.coffee set filetype=coffeescript
 "}}}
 
 " 編集中のファイルのディレクトリに移動
@@ -320,6 +320,7 @@ xmap <C-l> <Plug>(neosnippet_start_unite_snippet_target)
 MyAutocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 MyAutocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
 MyAutocmd FileType sql setlocal omnifunc=sqlcomplete#Complete
+" MyAutocmd FileType json setlocal expandtab
 
 if has('lua')
 	let s:bundle = neobundle#get('neocomplete')
