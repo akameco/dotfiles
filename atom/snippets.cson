@@ -1,0 +1,240 @@
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# https://atom.io/docs/latest/using-atom-basic-customization#cson
+
+'.source.js':
+# js default
+	'var':
+		'prefix': 'v'
+		'body': 'var'
+	'let':
+		'prefix': 'l'
+		'body': 'let '
+	'const':
+		'prefix': 'c'
+		'body': 'const '
+	'arrow':
+		'prefix': 'a'
+		'body': '=>'
+	'return':
+		'prefix': 'r'
+		'body': 'return ${1};'
+	'export':
+		'prefix': 'e'
+		'body': 'export'
+	'export':
+		'prefix': 'P'
+		'body': 'Promise'
+	'export':
+		'prefix': 'pr'
+		'body': 'new Promise(resolve => {${1}});'
+	'setTimeout':
+	  'prefix': 'st'
+	  'body': """
+			setTimeout(() => {
+				${2}
+			}, ${1});
+		"""
+	'arrow func':
+		'prefix': 'af'
+		'body': '() => {${1}};'
+	'arrow func oneline':
+		'prefix': 'afo'
+		'body': '${1} => ${2}'
+	'export default':
+		'prefix': 'ed'
+		'body': 'export default'
+	'constructor':
+		'prefix': 'con'
+		'body': """
+			constructor() {
+				${1}
+			}'
+		"""
+	'import':
+		'prefix': 'im'
+		'body': "import $1 from '$2';$3"
+	'class properties func':
+		'prefix': 'cf'
+		'body': """
+			${1} = (${2}) => {
+				${3}
+			}
+		"""
+
+#
+# React prefix r
+#
+	'react import':
+		'prefix': 'rim'
+		'body': "import React, {Component} from 'react';$3"
+
+	'React init':
+		'prefix': 'rrc'
+		'body': """
+			import React, {Component} from 'react';
+			import CSSModules from 'react-css-modules';
+			import type {State} from '../types';
+			import styles from '.';
+
+			type Props = {
+			};
+
+			@CSSModules(styles)
+			class $1 extends Component {
+				render() {
+					return (
+						<div>
+						</div>
+					);
+				}
+			}
+
+		function mapStateToProps(state: State, ownProps) {
+			return {
+			};
+		}
+
+		export default connect(mapStateToProps)($1);
+		"""
+
+	'React constructor':
+		'prefix': 'rcon'
+		'body': """
+			constructor(props: Props) {
+				super(props);
+				this.state = {${1:value}};
+			}'
+		"""
+
+	'React Create with Props':
+		'prefix': 'rccp'
+		'body': """
+			type Props: {
+
+			};
+
+			class ${1:"class"} extends Component {
+				props: Props;
+
+				render() {
+					return (
+						<div></div>${2}
+					);
+				}
+			}
+		"""
+
+	'React render':
+		'prefix': 'rren'
+		'body': """
+			render() {
+				return (
+					<div></div>${1}
+				);
+			}
+		"""
+
+	'React Create Class':
+		'prefix': 'rcc'
+		'body': """
+			class ${1:"class"} extends Component {
+				render() {
+					return (
+						<div></div>${2}
+					);
+				}
+			}
+		"""
+
+	'this props':
+		'prefix': 'tp'
+		'body': 'this.props'
+
+	'this state':
+		'prefix': 'ts'
+		'body': 'this.state'
+
+	'handle react':
+		'prefix': 'rh'
+		'body': """
+			handle${1} = () => {
+				${2}
+			}
+		"""
+
+#
+# flow prefix f
+#
+	'flow':
+		'prefix': 'fl'
+		'body': "// @flow"
+	# 打ちやすさ的に
+	'import flow type':
+		'prefix': 'imt'
+		'body': "import type {$1} from '$2';$3"
+	'flow type':
+		'prefix': 'ft'
+		'body': "type $1"
+	'Props':
+		'prefix': 'fp'
+		'body': "type Props = {${1}};"
+	'State':
+		'prefix': 'fs'
+		'body': "type State = {${1}};"
+
+#
+# redux prefix rd
+#
+	'redux action':
+		'prefix': 'rda'
+		'body': """
+			export function ${1}(): Action {
+				return {type: '${2}'};
+			}
+		"""
+
+	'redux reducer':
+		'prefix': 'rdr'
+		'body': """
+			case '${1}':
+				return {...state, ${2}};
+		"""
+
+	'redux reducer':
+		'prefix': 'rdr'
+		'body': """
+			export default (store: Store) => (next: Dispatch) => (action: Action) => {
+				${1}
+				next(action);
+			}
+		"""
+
+#
+# CSSModules prefix css
+#
+	'css deco':
+		'prefix': 'cssd'
+		'body': "@CSSModules(styles)"
+
+	'CSSModules':
+		'prefix': 'cssm'
+		'body': "import styles from '.${1}';"
