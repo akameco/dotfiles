@@ -64,6 +64,7 @@ NeoBundleLazy 'Shougo/vimfiler', {
 			\       'mappings' : ['<Plug>(vimfiler_switch)'],
 			\       'explorer' : 1,
 			\   }}
+NeoBundle 'editorconfig/editorconfig-vim'
 
 call neobundle#end()
 filetype plugin indent on
