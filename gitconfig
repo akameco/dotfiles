@@ -19,6 +19,7 @@
 	po = push origin master
 	pl = pull
 	s = status
+	st = stash
 	sh = show
 	l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
 	la='git log --graph --color'
