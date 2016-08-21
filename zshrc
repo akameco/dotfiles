@@ -57,9 +57,8 @@ alias gge=git-grep-edit
 alias pgup='postgres -D /usr/local/var/postgres'
 alias gh=gh-home
 alias gg='ghq get -p'
-alias s='source'
-alias cg='cd "$GHQ/akameco"'
-alias cs='cd "$HOME/sandbox"'
+alias c='cd "$GHQ/akameco"'
+alias s='cd "$HOME/sandbox"'
 
 # peco
 h() {
@@ -114,6 +113,7 @@ u() {
 
 source $GHQ/robbyrussell/oh-my-zsh/lib/completion.zsh
 source $GHQ/rupa/z/z.sh
+source $GHQ/zsh-users/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $GHQ/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # if (which zprof > /dev/null) ;then
