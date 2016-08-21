@@ -7,7 +7,7 @@ autoload -U promptinit && promptinit
 prompt pure
 
 GHQ=$HOME/src/github.com
-fpath=(/usr/local/share/zsh/site-functions $GHQ/zsh-completions/src $fpath)
+fpath=(/usr/local/share/zsh/site-functions $GHQ/zsh-users/zsh-completions/src $fpath)
 
 # 補完を有効化
 autoload -Uz compinit
