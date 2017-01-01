@@ -5,7 +5,6 @@ PWD=`pwd`
 ln -sf ${PWD}/zshrc ~/.zshrc
 ln -sf ${PWD}/zshenv ~/.zshenv
 ln -sf ${PWD}/zprofile ~/.zprofile
-ln -sf ${PWD}/zshrc.antigen ~/.zshrc.antigen
 ln -sf ${PWD}/gitconfig ~/.gitconfig
 ln -sf ${PWD}/vimrc ~/.vimrc
 ln -sf ${PWD}/gvimrc ~/.gvimrc
