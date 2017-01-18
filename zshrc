@@ -1,6 +1,29 @@
 # zmodload zsh/zprof && zprof
 
-bindkey -e
+# vim like key
+bindkey -v
+
+# emacs key
+bindkey -M viins '\er' history-incremental-pattern-search-forward
+bindkey -M viins '^?'  backward-delete-char
+bindkey -M viins '^A'  beginning-of-line
+bindkey -M viins '^B'  backward-char
+bindkey -M viins '^D'  delete-char-or-list
+bindkey -M viins '^E'  end-of-line
+bindkey -M viins '^F'  forward-char
+bindkey -M viins '^G'  send-break
+bindkey -M viins '^H'  backward-delete-char
+bindkey -M viins '^K'  kill-line
+bindkey -M viins '^N'  down-line-or-history
+bindkey -M viins '^P'  up-line-or-history
+bindkey -M viins '^R'  history-incremental-pattern-search-backward
+bindkey -M viins '^U'  backward-kill-line
+bindkey -M viins '^W'  backward-kill-word
+bindkey -M viins '^Y'  yank
+
+autoload -Uz colors; colors
+autoload -Uz add-zsh-hook
+autoload -Uz terminfo
 
 # theme
 autoload -U promptinit && promptinit
@@ -162,3 +185,23 @@ fi
 # if (which zprof > /dev/null) ;then
 	# zprof | less
 # fi
+
+VIM_PROMPT="❯"
+PROMPT='%(?.%F{magenta}.%F{red})${VIM_PROMPT}%f '
+
+prompt_pure_update_vim_prompt() {
+	zle || {
+		print "error: pure_update_vim_prompt must be called when zle is active"
+		return 1
+	}
+	VIM_PROMPT=${${KEYMAP/vicmd/❮}/(main|viins)/❯}
+	zle .reset-prompt
+}
+
+function zle-line-init zle-keymap-select zle-line-finish { 
+	prompt_pure_update_vim_prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
