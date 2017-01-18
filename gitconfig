@@ -4,6 +4,7 @@
 [core]
 	excludesfile = /Users/akameco/.gitignore_global
 	editor = vim -f
+	quotepath = false
 [color]
 	ui = auto
 [init]
