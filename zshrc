@@ -46,7 +46,11 @@ setopt nolistbeep
 # http://qiita.com/syui/items/c1a1567b2b76051f50c4
 setopt hist_ignore_dups
 setopt EXTENDED_HISTORY
-setopt hist_ignore_all_dups 
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+
+# 履歴を共有する
+setopt share_history
 
 # docker-machine
 # eval "$(docker-machine env default)"
@@ -81,6 +85,7 @@ alias vz='vim ~/.zshrc'
 alias sz='source ~/.zshrc'
 
 alias ls='ls -G'
+alias l=ls
 alias awk=gawk
 alias vi=vim
 alias ..='cd ..'
@@ -109,8 +114,10 @@ alias plugin="/usr/local/Cellar/elasticsearch/2.4.0/libexec/bin/plugin"
 
 alias sp='speed-test'
 alias la='ls -la'
-alias npm='prioritize-yarn'
+# alias npm='prioritize-yarn'
+# alias npm=prioritize-yarn
 alias y='yarn'
+alias m='vim $HOME/Dropbox/Memo/memo.md'
 
 # peco
 h() {
@@ -186,6 +193,21 @@ fi
 	# zprof | less
 # fi
 
+open-github() {
+	open https://github.com/$1
+}
+
+alias og='open https://github.com/akameco'
+alias ogt='open https://github.com/trending'
+alias otw='open https://tweetdeck.twitter.com/#'
+
+get-ghq-repo () {
+	ghq get -p $1
+	cd $GHQ/$1
+}
+
+alias gr=get-ghq-repo
+
 VIM_PROMPT="❯"
 PROMPT='%(?.%F{magenta}.%F{red})${VIM_PROMPT}%f '
 
@@ -198,7 +220,7 @@ prompt_pure_update_vim_prompt() {
 	zle .reset-prompt
 }
 
-function zle-line-init zle-keymap-select zle-line-finish { 
+function zle-line-init zle-keymap-select zle-line-finish {
 	prompt_pure_update_vim_prompt
 }
 
