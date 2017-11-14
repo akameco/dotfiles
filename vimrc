@@ -30,8 +30,8 @@ NeoBundleLazy 'Shougo/neocomplete', { 'autoload' : { 'insert' : 1}}
 
 NeoBundle 'morhetz/gruvbox'
 
-NeoBundleLazy 'thinca/vim-quickrun',{ 'autoload':{ 'filetypes': 'ruby'}}
-NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
+" NeoBundleLazy 'thinca/vim-quickrun',{ 'autoload':{ 'filetypes': 'ruby'}}
+" NeoBundleLazy 'scrooloose/syntastic',{ 'autoload':{ 'filetypes': ['javascript']}}
 
 NeoBundle 'vim-scripts/surround.vim'
 " NeoBundle 'godlygeek/tabular'
@@ -47,7 +47,7 @@ NeoBundle 'gregsexton/gitv'
 NeoBundle 'airblade/vim-gitgutter'
 
 NeoBundleLazy 'pangloss/vim-javascript', { 'autoload': { 'filetypes': ['javascript'] }}
-NeoBundleLazy 'kchmck/vim-coffee-script', { 'autoload': { 'filetypes': ['coffeescript'] }}
+" NeoBundleLazy 'kchmck/vim-coffee-script', { 'autoload': { 'filetypes': ['coffeescript'] }}
 " NeoBundleLazy 'jelera/vim-javascript-syntax',{ 'autoload':{ 'filetypes':['javascript'] }}
 " NeoBundleLazy 'marijnh/tern_for_vim', { 'autoload':{ 'filetypes':['javascript'] }}
 " NeoBundleLazy 'othree/html5.vim', { 'autoload': { 'filetypes': 'html' }}
@@ -132,7 +132,7 @@ nohlsearch                " vimrcのhighlightをリセット
 
 " コメントアウトを継続しない
 MyAutocmd FileType * setlocal formatoptions-=ro 
-au BufEnter *.coffee set filetype=coffeescript
+" au BufEnter *.coffee set filetype=coffeescript
 "}}}
 
 " 編集中のファイルのディレクトリに移動
@@ -147,7 +147,8 @@ set foldtext=FoldCCtext()
 "}}}
 
 " クリップボード{{{
-set clipboard^=unnamedplus,unnamed
+" set clipboard^=unnamedplus,unnamed
+set clipboard+=unnamed
 "}}}
 
 " ファイルを整形 {{{
@@ -281,38 +282,6 @@ imap <C-k> <Plug>(neosnippet_expand_or_jump)
 smap <C-k> <Plug>(neosnippet_expand_or_jump)
 xmap <C-k> <Plug>(neosnippet_expand_target)
 xmap <C-l> <Plug>(neosnippet_start_unite_snippet_target)
-
-" http://qiita.com/alpaca_taichou/items/ab2ad83ddbaf2f6ce7fb
-" http://qiita.com/muran001/items/4a8ffafb9c6564313893
-" enable ruby & rails snippet
-
-" function! s:RailsSnippet()
-" if exists("b:rails_root")
-" let s:current_file_path = expand("%:p:h")
-" app/modlesフォルダ内
-" if ( s:current_file_path =~ "app/models" )
-" NeoSnippetSource ~/.vim/snippets/ruby.rails.model.snip
-" app/controllersフォルダ内
-" elseif ( s:current_file_path =~ "app/controllers" )
-" NeoSnippetSource ~/.vim/snippets/ruby.action_controller.snip
-" NeoSnippetSource ~/.vim/snippets/ruby.abstract_controller.snip
-" app/viewsフォルダ内
-" elseif ( s:current_file_path =~ "app/views" )
-" NeoSnippetSource ~/.vim/snippets/ruby.action_view.snip
-" configフォルダ内
-" elseif ( s:current_file_path =~ "config" )
-" NeoSnippetSource ~/.vim/snippets/ruby.rails.route.snip
-" dbフォルダ内
-" elseif ( s:current_file_path =~ "db" )
-" NeoSnippetSource ~/.vim/snippets/ruby.active_record.migration.snip
-" endif
-" endif
-" endfunction
-
-" MyAutocmd BufEnter *.rb call s:RailsSnippet()
-" MyAutocmd BufEnter *rb NeoSnippetSource ~/.vim/snippets/ruby.snip
-" MyAutocmd BufEnter *_spec.rb NeoSnippetSource ~/.vim/snippets/rspec.snip
-" MyAutocmd BufEnter Gemfile NeoSnippetSource ~/.vim/snippets/Gemfile.snip
 "}}}
 
 " neocomplete {{{
@@ -518,7 +487,7 @@ if !has('gui_running')
 	MyAutocmd VimEnter,ColorScheme * highlight NonText ctermbg=none
 endif
 
-let g:syntastic_javascript_eslint_generic = 1
-let g:syntastic_javascript_eslint_exec = 'xo'
-let g:syntastic_javascript_eslint_args = '--compact'
-let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_eslint_generic = 1
+" let g:syntastic_javascript_eslint_exec = 'xo'
+" let g:syntastic_javascript_eslint_args = '--compact'
+" let g:syntastic_javascript_checkers = ['eslint']
