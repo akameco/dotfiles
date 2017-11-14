@@ -32,7 +32,8 @@ prompt pure
 # 重複パスを登録しない
 typeset -U path cdpath fpath manpath
 
-GHQ=$HOME/src/github.com
+GHQ=`ghq root`/github.com
+
 fpath=(/usr/local/share/zsh/site-functions $GHQ/zsh-users/zsh-completions/src $fpath)
 
 # 補完を有効化
@@ -56,12 +57,12 @@ setopt share_history
 # eval "$(docker-machine env default)"
 
 # rbenv
-rbenv_init() {
-	eval "$(rbenv init - --no-rehash)"
-}
+# rbenv_init() {
+	# eval "$(rbenv init - --no-rehash)"
+# }
 
 travis_init() {
-	rbenv_init
+	# rbenv_init
 
 	[ -f /Users/akameco/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 	travis enable
@@ -101,15 +102,14 @@ alias da='direnv allow'
 alias gge=git-grep-edit
 # alias pgup='postgres -D /usr/local/var/postgres'
 alias gh=gh-home
+alias gl='git see'
 alias gg='ghq get -p'
 # alias d='cd ~/dotfiles'
 alias c='cd "$GHQ/akameco"'
 alias s='cd "$HOME/sandbox"'
 alias sl='imgcat /Users/akameco/Pictures/rezero/10000/hamasa00-レム.png'
-alias a='atom'
+alias a='atom-beta'
 
-alias activate="source $PYENV_ROOT/versions/anaconda3-4.1.0/bin/activate"
-alias deactivate="source $PYENV_ROOT/versions/anaconda3-4.1.0/bin/deactivate"
 alias plugin="/usr/local/Cellar/elasticsearch/2.4.0/libexec/bin/plugin"
 
 alias sp='speed-test'
@@ -154,10 +154,6 @@ bindkey '^g' peco-z-search
 cpp () {
 	g++ $1 && ./a.out
 }
-
-# dm() {
-	# eval "$(docker-machine env default)"
-# }
 
 # u() {
 	# cd ./$(git rev-parse --show-cdup)
@@ -227,3 +223,41 @@ function zle-line-init zle-keymap-select zle-line-finish {
 zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
+
+# if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+
+qiita-items() {
+	curl "qiita.com/api/v2/items?query=user%3A$1&per_page=100"
+}
+
+alias rm=trash
+eval "$(direnv hook zsh)"
+alias touch=touch-alt
+alias b='cd "$GHQ/akameco/blog"'
+alias cp='cp -r'
+
+# ME="akameco"
+ME=`git config --get user.name`
+
+gcd() {
+	ghq get -p $1
+	if [ `dirname "$1"` = "." ]; then
+		cd $GHQ/$ME/$1
+	else
+		cd $GHQ/$1
+	fi
+}
+
+alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
+alias e='cd $GHQ/akameco/toy-box'
+
+curl-local() {
+  curl "http://localhost:$1"
+}
+alias cl=curl-local
+
+alias git=hub
+alias today='open https://github.com/akameco/works/issues?q=is%3Aissue+is%3Aopen+label%3A%E4%BB%8A%E6%97%A5%E4%B8%AD'
+alias todo='open https://github.com/akameco/works/issues'
+
+alias tw='yarn run test:watch --coverage'

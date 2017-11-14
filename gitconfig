@@ -10,27 +10,34 @@
 [init]
 	templatedir = ~/.git_template
 [alias]
-	a = add .
-	c = commit -m
-	co = checkout
-	cl = clone
-	b = branch
-	m = merge
-	p = push
-	po = push origin master
-	pl = pull
-	s = status
-	st = stash
-	sh = show
-	l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
-	la='git log --graph --color'
+  a = add .
+  c = commit -m
+  co = checkout
+  cl = clone
+  b = branch
+  m = merge
+  p = push
+  po = push origin master
+  pl = pull
+  s = status
+  st = stash
+  sh = show
+  l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
+  la='git log --graph --color'
+  see=!hub browse -- pull/$(git symbolic-ref --short HEAD)
+	ec = !git commit --allow-empty -m \"WIP \"
+  mkpr = !"f() { git checkout -b $1; git ec; git push -u origin $1; hub pull-request; git see; }; f"
+  d = !git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %
+	end = !"f() { git checkout $1; git pull; git d; }; f"
+	pro = !git push -u origin $(git symbolic-ref --short HEAD) && git see
+  is=!hub browse -- issues/new
 [push]
 	default = simple
 [ghq]
 	root = ~/src
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+  path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

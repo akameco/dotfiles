@@ -18,6 +18,8 @@
 	<integer>0</integer>
 	<key>AppleSmoothFixedFontsSizeThreshold</key>
 	<integer>1</integer>
+	<key>AppleWindowTabbingMode</key>
+	<string>manual</string>
 	<key>AutoHideTmuxClientSession</key>
 	<false/>
 	<key>CheckTestRelease</key>
@@ -1095,7 +1097,7 @@
 	gAKACoAN0xAJChEVGVdOUy5rZXlzoxITFIADgASABaMWFxiABoAHgAiACVpJZGVudGlm
 	aWVyVVdpZHRoVkhpZGRlblEwI0BowAAAAAAACNIhIiMkWiRjbGFzc25hbWVYJGNsYXNz
 	ZXNcTlNEaWN0aW9uYXJ5oiMlWE5TT2JqZWN00xAJCicrGaMSExSAA4AEgAWjLC0YgAuA
-	DIAIgAlRMSNAdCAAAAAAANIhIjM0Xk5TTXV0YWJsZUFycmF5ozM1JVdOU0FycmF5XxAP
+	DIAIgAlRMSNAdKAAAAAAANIhIjM0Xk5TTXV0YWJsZUFycmF5ozM1JVdOU0FycmF5XxAP
 	TlNLZXllZEFyY2hpdmVy0Tg5VUFycmF5gAEACAARABoAIwAtADIANwBGAEwAUQBcAGMA
 	ZgBoAGoAbABzAHsAfwCBAIMAhQCJAIsAjQCPAJEAnACiAKkAqwC0ALUAugDFAM4A2wDe
 	AOcA7gDyAPQA9gD4APwA/gEAAQIBBAEGAQ8BFAEjAScBLwFBAUQBSgAAAAAAAAIBAAAA
@@ -1117,19 +1119,21 @@
 		<integer>1</integer>
 	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>243 87 957 293 0 0 1440 877 </string>
+	<string>156 285 957 159 0 0 1440 877 </string>
 	<key>NSWindow Frame Preferences</key>
 	<string>1 197 606 456 0 0 1680 1027 </string>
+	<key>NSWindow Frame SUStatusFrame</key>
+	<string>438 486 400 129 0 0 1280 777 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>463 1298 620 392 -187 800 1920 1057 </string>
+	<string>309 1928 620 392 79 800 1080 1897 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
-	<string>82 939 606 456 -187 800 1920 1057 </string>
+	<string>176 1138 606 469 79 800 1080 1897 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>110 179 918 498 0 0 1440 877 </string>
+	<string>750 247 918 512 0 0 1650 1027 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>123 443 592 584 0 0 1650 1027 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-187 840 960 1017 -187 800 1920 1057 </string>
+	<string>80 818 1070 930 79 800 1080 1897 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>0 550 650 477 0 0 1680 1027 </string>
 	<key>NeverWarnAboutShortLivedSessions_B9D8ABAC-8BAF-4483-A539-02BE25D1533C</key>
@@ -2230,7 +2234,7 @@
 			<key>Custom Command</key>
 			<string>No</string>
 			<key>Custom Directory</key>
-			<string>No</string>
+			<string>Recycle</string>
 			<key>Default Bookmark</key>
 			<string>No</string>
 			<key>Disable Printing</key>
@@ -4320,7 +4324,7 @@
 			<key>Terminal Type</key>
 			<string>xterm-256color</string>
 			<key>Transparency</key>
-			<real>0.0</real>
+			<real>0.012527760152284264</real>
 			<key>Triggers</key>
 			<array/>
 			<key>Unlimited Scrollback</key>
@@ -4357,12 +4361,14 @@
 	<integer>0</integer>
 	<key>NoSyncHaveShownPromoWithId_4</key>
 	<true/>
+	<key>NoSyncHaveUsedCopyMode</key>
+	<true/>
 	<key>NoSyncHaveWarnedAboutIncompatibleSoftware</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>22DB458D-600E-4FBA-BBE5-B2BF6E5B77B9</string>
 	<key>NoSyncLastTipTime</key>
-	<real>484898416.03162801</real>
+	<real>523297563.67446399</real>
 	<key>NoSyncPermissionToShowTip</key>
 	<true/>
 	<key>NoSyncSuppressAnnyoingBellOffer</key>
@@ -4446,6 +4452,12 @@
 		<string>0063</string>
 		<string>0064</string>
 		<string>0065</string>
+		<string>0066</string>
+		<string>0067</string>
+		<string>0068</string>
+		<string>0069</string>
+		<string>0070</string>
+		<string>0071</string>
 	</array>
 	<key>OnlyWhenMoreTabs</key>
 	<false/>
@@ -4499,7 +4511,7 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>/Users/akameco</string>
+	<string>/Users/akameco/dotfiles</string>
 	<key>Print In Black And White</key>
 	<true/>
 	<key>PromptOnQuit</key>
@@ -4519,13 +4531,13 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2017-03-09T17:44:26Z</date>
+	<date>2017-10-23T17:01:34Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<true/>
 	<key>ShowFullScreenTabBar</key>
-	<false/>
+	<true/>
 	<key>ShowNewOutputIndicator</key>
 	<false/>
 	<key>ShowPaneTitles</key>
@@ -4534,6 +4546,8 @@
 	<true/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.40000000596046448</real>
+	<key>StretchTabsToFillBar</key>
+	<false/>
 	<key>SwitchTabModifier</key>
 	<integer>4</integer>
 	<key>SwitchWindowModifier</key>
@@ -4566,10 +4580,12 @@
 	<string>/-+\~_.</string>
 	<key>findIgnoreCase_iTerm</key>
 	<true/>
+	<key>findMode_iTerm</key>
+	<integer>0</integer>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.0.15</string>
+	<string>3.1.4.beta.1</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
