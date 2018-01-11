@@ -8,7 +8,7 @@
 [color]
 	ui = auto
 [init]
-	templatedir = ~/.git_template
+;	templatedir = ~/.git_template
 [alias]
   a = add .
   c = commit -m
