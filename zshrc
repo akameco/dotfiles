@@ -261,3 +261,24 @@ alias today='open https://github.com/akameco/works/issues?q=is%3Aissue+is%3Aopen
 alias todo='open https://github.com/akameco/works/issues'
 
 alias tw='yarn run test:watch --coverage'
+alias gh='git browse'
+
+nippo() {
+	cd $GHQ/akameco/blog
+	yarn run nippo
+}
+alias ni=nippo
+
+add-article() {
+	cd $GHQ/akameco/blog
+	yarn run add-page $1
+}
+
+alias aa=add-article
+
+add-js() {
+	cd $GHQ/akameco/toy-box
+	yarn run add-script $1
+	cd js/$1
+}
+
