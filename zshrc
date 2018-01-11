@@ -282,3 +282,4 @@ add-js() {
 	cd js/$1
 }
 
+alias cra=create-react-app
