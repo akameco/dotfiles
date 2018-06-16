@@ -6,8 +6,10 @@ export GOPATH=$HOME/src
 
 # miniconda=miniconda3-4.1.11
 
+
 path=(
 	$GOPATH/bin
+	$HOME/.cargo/bin
 	# $PYENV_ROOT/versions/$miniconda/bin
 	$path
 )
