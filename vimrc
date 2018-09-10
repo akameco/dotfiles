@@ -100,7 +100,7 @@ set tabstop=2             " タブを何文字として表示するか
 set shiftwidth=2          " タブの幅
 set shiftround            " swの分の倍数で丸め込み
 " set smarttab              " shiftwidthの分だけスペース挿入
-" set expandtab             " タブをスペースに
+set expandtab             " タブをスペースに
 set incsearch             " 即時検索
 set ignorecase            " 検索で大/小文字区別しない
 set smartcase             " 検索で大文字で区別
