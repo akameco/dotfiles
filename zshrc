@@ -107,6 +107,7 @@ alias gg='ghq get -p'
 # alias d='cd ~/dotfiles'
 alias c='cd "$GHQ/akameco"'
 alias s='cd "$HOME/sandbox"'
+alias toy='cd "$GHQ/akameco/toy-box"'
 alias sl='imgcat /Users/akameco/Pictures/rezero/10000/hamasa00-レム.png'
 alias a='atom-beta'
 
@@ -256,25 +257,20 @@ curl-local() {
 }
 alias cl=curl-local
 
-alias git=hub
 alias today='open https://github.com/akameco/works/issues?q=is%3Aissue+is%3Aopen+label%3A%E4%BB%8A%E6%97%A5%E4%B8%AD'
 alias todo='open https://github.com/akameco/works/issues'
 
 alias tw='yarn run test:watch --coverage'
-alias gh='git browse'
 
 nippo() {
 	cd $GHQ/akameco/blog
 	yarn run nippo
 }
-alias ni=nippo
 
 add-article() {
 	cd $GHQ/akameco/blog
 	yarn run add-page $1
 }
-
-alias aa=add-article
 
 add-js() {
 	cd $GHQ/akameco/toy-box
@@ -282,4 +278,30 @@ add-js() {
 	cd js/$1
 }
 
+git-root() {
+	if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+		cd `pwd`/`git rev-parse --show-cdup`
+	fi
+}
+
+git-change-cd() {
+	cd `git ls-files -m -o --exclude-standard | peco | xargs dirname`
+}
+
+alias groot=git-root
+alias gro=git-root
+alias gccd=git-change-cd
+alias gge=git-grep-edit
+alias git=hub
+alias gh='git browse'
+alias ni=nippo
+alias aa=add-article
 alias cra=create-react-app
+
+# tabtab source for yarn package
+# uninstall by removing these lines or running `tabtab uninstall yarn`
+[[ -f /Users/akameco/.config/yarn/global/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh ]] && . /Users/akameco/.config/yarn/global/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh
+
+dockerList() {
+	docker ps -a | peco | cut -d" " -f1
+}
