@@ -19,7 +19,11 @@ fi;
 
 # npm
 if [ `which npm` ]; then
-  cat ${PWD}/js/npm-global | xargs npm i -g
+  cat ${PWD}/list/npm-global | xargs npm i -g
+fi
+
+if [ `which ghq` ]; then
+  ghq import -p < ${PWD}/list/sh-list
 fi
 
 # git pull origin master;
