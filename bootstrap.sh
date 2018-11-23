@@ -1,25 +1,25 @@
 #!/bin/sh
 
-git pull origin master;
-
 PWD=`pwd`
 
-doIt() {
-  ln -sf ${PWD}/.vimrc ~/.vimrc
-  ln -sf ${PWD}/.zshrc ~/.zshrc
-  ln -sf ${PWD}/.zshenv ~/.zshenv
-  ln -sf ${PWD}/.zprofile ~/.zprofile
-  ln -sf ${PWD}/.gitconfig ~/.gitconfig
-  ln -sf ${PWD}/.vim/snippets ~/.vim/snippets
-}
+# symlink作成
+ln -sf ${PWD}/.vimrc ~/.vimrc
+ln -sf ${PWD}/.zshrc ~/.zshrc
+ln -sf ${PWD}/.zshenv ~/.zshenv
+ln -sf ${PWD}/.zprofile ~/.zprofile
+ln -sf ${PWD}/.gitconfig ~/.gitconfig
+ln -sf ${PWD}/.vim/snippets ~/.vim/snippets
 
-if [ "$1" == "--force" -o "$1" == "-f" ]; then
-  doIt;
-else
-  read -p "上書きする? (y/n)" -n 1;
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    doIt;
-  fi
+# Install Neobundle
+if [ ! -d ~/.vim/bundle ]; then
+  mkdir -p ~/.vim/bundle
+  git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+  echo 'Install NeoBundle'
 fi;
-unset doIt;
+
+# npm
+if [ `which npm` ]; then
+  cat ${PWD}/js/npm-global | xargs npm i -g
+fi
+
+# git pull origin master;
