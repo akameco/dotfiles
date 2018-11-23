@@ -2,7 +2,7 @@
 	email = akameco.t@gmail.com
 	name = akameco
 [core]
-	excludesfile = /Users/akameco/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	editor = vim -f
 	quotepath = false
 [color]
