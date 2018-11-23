@@ -98,26 +98,11 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gco='git checkout'
 alias o='open'
-alias da='direnv allow'
-alias gge=git-grep-edit
-# alias pgup='postgres -D /usr/local/var/postgres'
 alias gh=gh-home
 alias gl='git see'
 alias gg='ghq get -p'
-# alias d='cd ~/dotfiles'
-alias c='cd "$GHQ/akameco"'
 alias s='cd "$HOME/sandbox"'
-alias toy='cd "$GHQ/akameco/toy-box"'
-alias sl='imgcat /Users/akameco/Pictures/rezero/10000/hamasa00-レム.png'
-alias a='atom-beta'
-
-alias plugin="/usr/local/Cellar/elasticsearch/2.4.0/libexec/bin/plugin"
-
-alias sp='speed-test'
 alias la='ls -la'
-# alias npm='prioritize-yarn'
-# alias npm=prioritize-yarn
-alias y='yarn'
 alias m='vim $HOME/Dropbox/Memo/memo.md'
 
 # peco
@@ -152,58 +137,16 @@ peco-z-search () {
 zle -N peco-z-search
 bindkey '^g' peco-z-search
 
-cpp () {
-	g++ $1 && ./a.out
-}
-
-# u() {
-	# cd ./$(git rev-parse --show-cdup)
-	# if [ $# = 1 ]; then
-		# cd $1
-	# fi
-# }
-
-d() {
-	cd $GHQ/akameco/daily-report/_posts
-	local t=$(date +"%Y-%m-%d")
-	local f="$t-report.md"
-	if [ -e $f ]; then
-		vim $f
-	else
-		touch $f
-	fi
-}
-
 # プラグイン読み込み
 source $GHQ/robbyrussell/oh-my-zsh/lib/completion.zsh
 source $GHQ/rupa/z/z.sh
 source $GHQ/zsh-users/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $GHQ/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-
 # http://qiita.com/vintersnow/items/7343b9bf60ea468a4180#zcompile
 if [ $DOTFILES/.zshrc -nt ~/.zshrc.zwc ]; then
   zcompile ~/.zshrc
 fi
-
-# if (which zprof > /dev/null) ;then
-	# zprof | less
-# fi
-
-open-github() {
-	open https://github.com/$1
-}
-
-alias og='open https://github.com/akameco'
-alias ogt='open https://github.com/trending'
-alias otw='open https://tweetdeck.twitter.com/#'
-
-get-ghq-repo () {
-	ghq get -p $1
-	cd $GHQ/$1
-}
-
-alias gr=get-ghq-repo
 
 VIM_PROMPT="❯"
 PROMPT='%(?.%F{magenta}.%F{red})${VIM_PROMPT}%f '
@@ -227,14 +170,9 @@ zle -N zle-line-finish
 
 # if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
-qiita-items() {
-	curl "qiita.com/api/v2/items?query=user%3A$1&per_page=100"
-}
-
 alias rm=trash
 eval "$(direnv hook zsh)"
 alias touch=touch-alt
-alias b='cd "$GHQ/akameco/blog"'
 alias cp='cp -r'
 
 # ME="akameco"
@@ -250,27 +188,9 @@ gcd() {
 }
 
 alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
-alias e='cd $GHQ/akameco/toy-box'
-
-curl-local() {
-  curl "http://localhost:$1"
-}
-alias cl=curl-local
 
 alias today='open https://github.com/akameco/works/issues?q=is%3Aissue+is%3Aopen+label%3A%E4%BB%8A%E6%97%A5%E4%B8%AD'
 alias todo='open https://github.com/akameco/works/issues'
-
-alias tw='yarn run test:watch --coverage'
-
-nippo() {
-	cd $GHQ/akameco/blog
-	yarn run nippo
-}
-
-add-article() {
-	cd $GHQ/akameco/blog
-	yarn run add-page $1
-}
 
 add-js() {
 	cd $GHQ/akameco/toy-box
@@ -278,24 +198,8 @@ add-js() {
 	cd js/$1
 }
 
-git-root() {
-	if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-		cd `pwd`/`git rev-parse --show-cdup`
-	fi
-}
-
-git-change-cd() {
-	cd `git ls-files -m -o --exclude-standard | peco | xargs dirname`
-}
-
-alias groot=git-root
-alias gro=git-root
-alias gccd=git-change-cd
-alias gge=git-grep-edit
 alias git=hub
 alias gh='git browse'
-alias ni=nippo
-alias aa=add-article
 alias cra=create-react-app
 
 # tabtab source for yarn package
