@@ -1,8 +1,5 @@
 #!/bin/sh
 
-set -e
-set -u
-
 git pull origin master;
 
 PWD=`pwd`
