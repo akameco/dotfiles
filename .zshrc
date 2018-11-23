@@ -82,9 +82,6 @@ init() {
 }
 
 # alias
-alias vz='vim ~/.zshrc'
-alias sz='source ~/.zshrc'
-
 alias ls='ls -G'
 alias l=ls
 alias awk=gawk
@@ -189,7 +186,6 @@ gcd() {
 
 alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
 
-alias today='open https://github.com/akameco/works/issues?q=is%3Aissue+is%3Aopen+label%3A%E4%BB%8A%E6%97%A5%E4%B8%AD'
 alias todo='open https://github.com/akameco/works/issues'
 
 add-js() {
@@ -202,10 +198,7 @@ alias git=hub
 alias gh='git browse'
 alias cra=create-react-app
 
-# tabtab source for yarn package
-# uninstall by removing these lines or running `tabtab uninstall yarn`
-[[ -f /Users/akameco/.config/yarn/global/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh ]] && . /Users/akameco/.config/yarn/global/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.zsh
-
 dockerList() {
 	docker ps -a | peco | cut -d" " -f1
 }
+# plugins=(git yarn)

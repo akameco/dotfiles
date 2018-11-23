@@ -1,0 +1,15 @@
+
+# type(scope): 変更内容 (issue番号)
+# chore(package) update: Other changes that don't modify src or test files
+# refactor: A code change that neither fixes a bug nor adds a feature
+# feat: A new feature
+# fix: A bug fix
+# docs(readme) update: Documentation only changes:
+# style: Changes that do not affect the meaning of the code (white-space formatting, missing semi-colons, etc)
+# perf: A code change that improves performance
+# test: Adding missing tests or correcting existing tests
+# build: Changes that affect the build system or external dependencies (scopes: gulp,npm)
+# ci: Changes to our CI configuration files and scripts (example scopes: Travis Circle)
+# revert: Reverts a previous commit
+# BREAKING CHANGE もし破壊的変更がある場合、Body or Footerに書く
+# https://github.com/commitizen/cz-cli

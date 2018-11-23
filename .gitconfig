@@ -51,4 +51,4 @@
 	required = true
 	clean = git-lfs clean %f
 [commit]
-	template = /Users/akameco/.gitmessage.txt
+  template = ~/.gitmessage
