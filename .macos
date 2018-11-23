@@ -1,0 +1,27 @@
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# ブート時のサウンドの無効化
+sudo nvram SystemAudioVolume=" "
+# フリーズすると自動的に再起動
+sudo systemsetup -setrestartfreeze on
+# 自動大文字の無効化
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+
+###### Dock ######
+# 開いているアプリケーションのみをdockに表示
+defaults write com.apple.dock static-only -bool true
+# Dashboard無効化
+defaults write com.apple.dashboard mcx-disabled -bool true
+
+###### Finder ######
+# USBやネットワークストレージに.DS_Storeファイルを作成しない
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+# Show the ~/Library folder
+chflags nohidden ~/Library
+# Show the /Volumes folder
+sudo chflags nohidden /Volumes
