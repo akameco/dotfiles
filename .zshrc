@@ -81,27 +81,6 @@ init() {
 	test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 }
 
-# alias
-alias ls='ls -G'
-alias l=ls
-alias awk=gawk
-alias vi=vim
-alias ..='cd ..'
-alias t='tig'
-alias g='git'
-alias ga='git add .'
-alias gs='git status'
-alias gc='git commit -m'
-alias gp='git push'
-alias gco='git checkout'
-alias o='open'
-alias gh=gh-home
-alias gl='git see'
-alias gg='ghq get -p'
-alias s='cd "$HOME/sandbox"'
-alias la='ls -la'
-alias m='vim $HOME/Dropbox/Memo/memo.md'
-
 # peco
 h() {
 	BUFFER=$(history -n 1 | tail -r | peco --query "$LBUFFER")
@@ -165,12 +144,7 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
 
-# if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-
-alias rm=trash
 eval "$(direnv hook zsh)"
-alias touch=touch-alt
-alias cp='cp -r'
 
 # ME="akameco"
 ME=`git config --get user.name`
@@ -184,9 +158,6 @@ gcd() {
 	fi
 }
 
-alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
-
-alias todo='open https://github.com/akameco/works/issues'
 
 add-js() {
 	cd $GHQ/akameco/toy-box
@@ -194,11 +165,35 @@ add-js() {
 	cd js/$1
 }
 
-alias git=hub
-alias gh='git browse'
-alias cra=create-react-app
-
 dockerList() {
 	docker ps -a | peco | cut -d" " -f1
 }
 # plugins=(git yarn)
+
+# alias
+alias ls='ls -G'
+alias la='ls -la'
+alias l=ls
+alias ..='cd ..'
+alias cp='cp -r'
+alias awk=gawk
+alias rm=trash
+alias touch=touch-alt
+
+alias git=hub
+alias g='git'
+alias ga='git add .'
+alias gs='git status'
+alias gc='git commit -m'
+alias gp='git push'
+alias gco='git checkout'
+alias o='open'
+alias gh=gh-home
+alias gl='git see'
+alias gg='ghq get -p'
+
+alias s='cd "$HOME/sandbox"'
+alias m='vim $HOME/Dropbox/Memo/memo.md'
+alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
+alias todo='open https://github.com/akameco/works/issues'
+alias cra=create-react-app

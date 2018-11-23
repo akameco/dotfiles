@@ -8,8 +8,8 @@ ln -sf ${PWD}/.zshrc ~/.zshrc
 ln -sf ${PWD}/.zshenv ~/.zshenv
 ln -sf ${PWD}/.zprofile ~/.zprofile
 ln -sf ${PWD}/.gitconfig ~/.gitconfig
-ln -sf ${PWD}/gitmessage ~/.gitmessage
 ln -sf ${PWD}/.vim/snippets ~/.vim/snippets
+ln -sf ${PWD}/gitmessage ~/.gitmessage
 
 # Install Neobundle
 if [ ! -d ~/.vim/bundle ]; then
