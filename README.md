@@ -11,5 +11,12 @@ $ git clone https://github.com/akameco/dotfiles.git
 $ ./bootstrap.sh
 ```
 
+## Brewfile
+
+```
+brew upgrade
+brew bundle dump -f
+```
+
 ## License
 MIT
