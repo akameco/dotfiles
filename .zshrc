@@ -115,7 +115,7 @@ bindkey '^g' peco-z-search
 
 # プラグイン読み込み
 source $GHQ/robbyrussell/oh-my-zsh/lib/completion.zsh
-source $GHQ/rupa/z/z.sh
+# source $GHQ/rupa/z/z.sh
 source $GHQ/zsh-users/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $GHQ/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -168,17 +168,18 @@ add-js() {
 dockerList() {
 	docker ps -a | peco | cut -d" " -f1
 }
-# plugins=(git yarn)
+plugins=(git yarn)
 
 # alias
-alias ls='ls -G'
-alias la='ls -la'
+alias ls='exa'
+# alias ls='ls -G'
+alias la='ls -la --header --git'
 alias l=ls
 alias ..='cd ..'
 alias cp='cp -r'
 alias awk=gawk
 alias rm=trash
-alias touch=touch-alt
+# alias touch=touch-alt
 
 alias git=hub
 alias g='git'
@@ -197,3 +198,4 @@ alias m='vim $HOME/Dropbox/Memo/memo.md'
 alias json='curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d'
 alias todo='open https://github.com/akameco/works/issues'
 alias cra=create-react-app
+source /usr/local/etc/profile.d/z.sh
