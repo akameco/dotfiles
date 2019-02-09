@@ -152,9 +152,9 @@ ME=`git config --get user.name`
 gcd() {
 	ghq get -p $1
 	if [ `dirname "$1"` = "." ]; then
-		cd $GHQ/$ME/$1
+		cd `ghq root`/github.com/`git config --get user.name`/$1
 	else
-		cd $GHQ/$1
+		cd `ghq root`/github.com/$1
 	fi
 }
 
@@ -199,3 +199,6 @@ alias json='curl -H "Accept: application/json" -H "Content-type: application/jso
 alias todo='open https://github.com/akameco/works/issues'
 alias cra=create-react-app
 source /usr/local/etc/profile.d/z.sh
+
+# added by travis gem
+[ -f /Users/akameco/.travis/travis.sh ] && source /Users/akameco/.travis/travis.sh
