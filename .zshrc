@@ -165,6 +165,12 @@ add-js() {
 	cd js/$1
 }
 
+add-ts() {
+	cd $GHQ/akameco/toy-box
+	yarn run add-script --lang=ts $1
+	cd ts/$1
+}
+
 dockerList() {
 	docker ps -a | peco | cut -d" " -f1
 }
@@ -179,7 +185,7 @@ alias ..='cd ..'
 alias cp='cp -r'
 alias awk=gawk
 alias rm=trash
-# alias touch=touch-alt
+alias touch=touch-alt
 
 alias git=hub
 alias g='git'
@@ -202,3 +208,9 @@ source /usr/local/etc/profile.d/z.sh
 
 # added by travis gem
 [ -f /Users/akameco/.travis/travis.sh ] && source /Users/akameco/.travis/travis.sh
+
+source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
+source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
+
+# alias npm=prioritize-yarn
+alias wip="git commit --no-verify -m 'wip'"
