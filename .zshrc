@@ -214,3 +214,4 @@ source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.
 
 # alias npm=prioritize-yarn
 alias wip="git commit --no-verify -m 'wip'"
+alias da="direnv allow ."
