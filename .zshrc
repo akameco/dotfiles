@@ -215,3 +215,6 @@ source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.
 # alias npm=prioritize-yarn
 alias wip="git commit --no-verify -m 'wip'"
 alias da="direnv allow ."
+
+TOY_BOX=$GHQ/akameco/toy-box
+alias toy='cd $TOY_BOX'
