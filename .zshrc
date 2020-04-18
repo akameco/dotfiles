@@ -217,4 +217,7 @@ alias wip="git commit --no-verify -m 'wip'"
 alias da="direnv allow ."
 
 TOY_BOX=$GHQ/akameco/toy-box
-alias toy='cd $TOY_BOX'
+alias t='cd $TOY_BOX'
+
+alias cdx='cd `find . -type d -name "node_modules" -prune -o -type d -name '.git' -prune -o -type d -print -maxdepth 3 | peco`'
+alias nodex=ts-node-switch
