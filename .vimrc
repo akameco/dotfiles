@@ -1,7 +1,5 @@
-set nocompatible
-
-" 文字コード, 改行コード
 set encoding=utf-8
+  
 set fileformats=unix,dos,mac
 
 " NeoBundle{{{
@@ -64,6 +62,7 @@ NeoBundleLazy 'Shougo/vimfiler', {
 			\       'explorer' : 1,
 			\   }}
 NeoBundle 'editorconfig/editorconfig-vim'
+NeoBundle 'skanehira/translate.vim'
 
 call neobundle#end()
 filetype plugin indent on
@@ -131,9 +130,12 @@ set noerrorbells          " エラー時にビープを鳴らさない
 nohlsearch                " vimrcのhighlightをリセット
 
 " コメントアウトを継続しない
-MyAutocmd FileType * setlocal formatoptions-=ro 
+MyAutocmd FileType * setlocal formatoptions-=ro
 " au BufEnter *.coffee set filetype=coffeescript
 "}}}
+augroup filetypedetect
+  au fileType markdown setlocal shiftwidth=2 softtabstop=2 tabstop=2 et
+augroup END
 
 " 編集中のファイルのディレクトリに移動
 nnoremap ,d :execute ":lcd" . expand("%:p:h")<CR>
@@ -198,7 +200,7 @@ nnoremap ,, :%s/\,/、/g<CR>
 colorscheme gruvbox
 set background=dark
 set title
-set number         " 行数を表示 
+set number         " 行数を表示
 set wrap           " 表示を改行
 set colorcolumn=80 " 80行目にライン
 set list           " 不可視文字表示
@@ -289,6 +291,7 @@ xmap <C-l> <Plug>(neosnippet_start_unite_snippet_target)
 MyAutocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 MyAutocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
 MyAutocmd FileType sql setlocal omnifunc=sqlcomplete#Complete
+MyAutocmd FileType md setlocal sw=2 sts=2 ts=2 et
 " MyAutocmd FileType json setlocal expandtab
 
 if has('lua')
@@ -301,7 +304,7 @@ if has('lua')
 		" Use smartcase.
 		let g:neocomplete#enable_smart_case = 1
 
-		" length need to start completion  
+		" length need to start completion
 		let g:neocomplete#auto_completion_start_length = 2
 		let g:neocomplete#manual_completion_start_length = 0
 		" 3文字からキャッシュ
@@ -428,8 +431,8 @@ endfunction
 
 function! MyFilename()
 	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() : 
-				\  &ft == 'unite' ? unite#get_status_string() : 
+				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+				\  &ft == 'unite' ? unite#get_status_string() :
 				\  &ft == 'vimshell' ? vimshell#get_status_string() :
 				\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
 				\ ('' != MyModified() ? ' ' . MyModified() : '')
@@ -491,3 +494,6 @@ endif
 " let g:syntastic_javascript_eslint_exec = 'xo'
 " let g:syntastic_javascript_eslint_args = '--compact'
 " let g:syntastic_javascript_checkers = ['eslint']
+
+" nmap gr <Plug>(Translate)
+vmap t <Plug>(VTranslate)

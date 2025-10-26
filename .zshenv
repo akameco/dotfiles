@@ -13,3 +13,4 @@ path=(
 	# $PYENV_ROOT/versions/$miniconda/bin
 	$path
 )
+. "$HOME/.cargo/env"
