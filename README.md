@@ -18,10 +18,5 @@ brew upgrade
 brew bundle dump -f
 ```
 
-## TODO
-- 1Password
-- vscode
-- karabiner
-
 ## License
 MIT
