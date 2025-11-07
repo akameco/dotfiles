@@ -50,5 +50,36 @@ brew bundle dump -f --file Brewfile
 
 `--file Brewfile` を付与するとリポジトリ直下のファイルが更新されるため、忘れずにコミットします。
 
+## Brewfile 収録ツール
+### CLI ツール (brew)
+| 名前 | 用途 | GitHub |
+| --- | --- | --- |
+| `bat` | `cat` 互換のシンタックスハイライト付きビューア | [sharkdp/bat](https://github.com/sharkdp/bat) |
+| `eza` | `ls` 互換のモダンなファイルリスト表示 | [eza-community/eza](https://github.com/eza-community/eza) |
+| `fzf` | シェルで使える汎用ファジーファインダ | [junegunn/fzf](https://github.com/junegunn/fzf) |
+| `gawk` | GNU awk。テキスト処理や集計用の AWK 実装 | - |
+| `gh` | GitHub CLI。Issue/PR 操作や Actions 実行をターミナルから行う | [cli/cli](https://github.com/cli/cli) |
+| `ghq` | Git リポジトリを規則的なディレクトリに集約管理するツール | [x-motemen/ghq](https://github.com/x-motemen/ghq) |
+| `git` | バージョン管理システム。CLI での基本操作を担う | [git/git](https://github.com/git/git) |
+| `jq` | JSON の抽出や変形を行うフィルタ | [jqlang/jq](https://github.com/jqlang/jq) |
+| `mise` | Node/Python など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
+| `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
+| `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
+| `vim` | ターミナルテキストエディタ。軽量編集用途 | [vim/vim](https://github.com/vim/vim) |
+| `zoxide` | 頻繁に使うディレクトリへ学習ベースでジャンプできる `cd` 代替 | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide) |
+
+### GUI / バックグラウンドアプリ (cask)
+| 名前 | 用途 | GitHub |
+| --- | --- | --- |
+| `bettertouchtool` | トラックパッド・キーボード・マウスジェスチャの高度なカスタマイズ | - |
+| `claude-code` | Claude Code クライアント。AI ペアプロやコード生成をデスクトップで利用 | - |
+| `codex` | Codex CLI のデスクトップアプリ。ローカル開発補助エージェントとの連携用 | - |
+| `ghostty` | GPU レンダリングに対応した高速ターミナルエミュレータ | [mitchellh/ghostty](https://github.com/mitchellh/ghostty) |
+| `google-japanese-ime` | Google 日本語入力。辞書や変換精度を重視した IME | - |
+| `karabiner-elements` | 修飾キー入れ替えや多段マクロが可能なキーボードリマッパ | [pqrs-org/Karabiner-Elements](https://github.com/pqrs-org/Karabiner-Elements) |
+| `raycast` | Spotlight 代替のランチャー。スクリプト拡張やワークフロー集約向け | [raycast/extensions](https://github.com/raycast/extensions) |
+| `slack` | チームコミュニケーションクライアント | - |
+| `vanilla` | メニューバーアイコンの表示/非表示を整理するユーティリティ | - |
+
 ## ライセンス
 MIT
