@@ -7,7 +7,6 @@ SAVEHIST=5000
 
 # Alias
 alias ..='cd ..'
-alias la='ls -la'
 
 # Homebrew (Apple Silicon)
 eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null
@@ -175,8 +174,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export DEV_DIR="${HOME}/dev/github.com/akameco"
 export DOT_DIR="${DEV_DIR}/dotfiles"
 
-# command -v eza >/dev/null 2>&1 && alias ls='eza --icons --group-directories-first'
-
 ls() {
   local hide='Applications|Desktop|Documents|Downloads|Movies|Music|Pictures|Public|Library'
   if (( $# == 0 )) && [[ $PWD == $HOME ]]; then
@@ -185,3 +182,6 @@ ls() {
     eza --icons --group-directories-first --grid --color=auto "$@"
   fi
 }
+
+alias la='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons'
+alias lad='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons --group-directories-first'
