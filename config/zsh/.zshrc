@@ -39,11 +39,15 @@ function ghq_cd() {
   [ -n "$selected_dir" ] && cd "$selected_dir"
 }
 
-# Ctrl+g にバインド
-bindkey -s '^g' 'ghq_cd\n'
+fzf-zoxide-cd() {
+  local dir
+  dir=$(zoxide query -i) || return   # 内部でfzfを使った対話検索
+  BUFFER+="cd -- ${dir:q}"
+  zle accept-line
+}
+zle -N fzf-zoxide-cd
+bindkey '^G' fzf-zoxide-cd
 
-# eza / bat (ls / cat の改善)
-# command -v eza >/dev/null 2>&1 && alias ls='eza --icons --group-directories-first'
 command -v bat >/dev/null 2>&1 && alias cat='bat'
 
 # 基本補完
