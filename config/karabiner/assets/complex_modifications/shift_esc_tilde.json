@@ -1,0 +1,22 @@
+{
+  "title": "Shift+Esc to Tilde",
+  "rules": [
+    {
+      "description": "Shift+Esc → ~ (tilde)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "escape",
+            "modifiers": {
+              "mandatory": ["shift"]
+            }
+          },
+          "to": [
+            { "key_code": "grave_accent_and_tilde", "modifiers": ["shift"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

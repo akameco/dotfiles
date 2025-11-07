@@ -1,0 +1,18 @@
+{
+  "title": "Esc sends EISUU then Esc",
+  "rules": [
+    {
+      "description": "Pressing Esc first switches to EISUU (alphanumeric) then sends Esc",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "escape" },
+          "to": [
+            { "key_code": "japanese_eisuu" },
+            { "key_code": "escape" }
+          ]
+        }
+      ]
+    }
+  ]
+}

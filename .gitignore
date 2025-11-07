@@ -26,3 +26,6 @@ Temporary Items
 .apdisk
 
 **/.claude/settings.local.json
+config/raycast/*
+config/zsh/.zcompdump
+config/zsh/.zsh_history
