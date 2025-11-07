@@ -1,8 +1,6 @@
 [user]
 	email = akameco.t@gmail.com
 	name = akameco
-  ; email = zcip.web@gmail.com
-  ; name = zcip
 [core]
 	excludesfile = ~/.gitignore_global
 	editor = vim -f
@@ -13,27 +11,14 @@
 	defaultBranch = main
 ;	templatedir = ~/.git_template
 [alias]
-  a = add .
   c = commit -m
   co = checkout
-  cl = clone
   b = branch
-  m = merge
-  p = push
-  po = push origin main
-  pl = pull
   s = status
-  st = stash
-  sh = show
-  l=log --graph --max-count=20  --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
-  la='git log --graph --color'
-  see=!hub browse -- pull/$(git symbolic-ref --short HEAD)
-  ec = !git commit --allow-empty -m \"WIP \"
   mkpr = !"f() { git checkout -b $1; git ec; git push -u origin $1; hub pull-request; git see; }; f"
   d = !git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %
 	end = \\!git-end
   pro = !git push -u origin $(git symbolic-ref --short HEAD) && git see
-  is=!hub browse -- issues/new
 
   # 前回のコミットメッセージを使ってamendする
   amend = commit --amend --reuse-message=HEAD
@@ -41,15 +26,7 @@
 [push]
 	default = simple
 [ghq]
-	root = ~/src
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-[credential]
-	helper = osxkeychain
+	root = ~/dev
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
 	required = true
@@ -57,12 +34,3 @@
 	process = git-lfs filter-process
 [commit]
   template = ~/.gitmessage
-; [url "git@github.com:"]
-  ; pushInsteadOf = git://github.com/
-  ; pushInsteadOf = https://github.com/
-; [url "git://github.com/"]
-  ; insteadOf = https://github.com/
-[includeIf "gitdir:~/zcip/"]
-    path = ~/zcip/.gitconfig
-[includeIf "gitdir:~/src/github.com/zcip/"]
-    path = ~/zcip/.gitconfig
