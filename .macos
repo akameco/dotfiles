@@ -14,7 +14,6 @@ echo "installing homebrew"
 # install homebrew https://brew.sh
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-
 brew install git hub
 
 # ここにhubの設定が必要
@@ -33,10 +32,8 @@ hub clone akameco/dotfiles
 echo "brew bundle"
 brew bundle --global
 
-ln -s "${DOT_DIR}/.zsh" "${HOME}/.zshrc"
-ln -s "${HOME}/dotfiles/.gitignore_global" "${HOME}/.gitignore_global"
-ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
-ln -s "${HOME}/dotfiles/.vimrc" "${HOME}/.vimrc"
+ln -s "${DOT_DIR}/.zshenv" "${HOME}/.zshenv"
+ln -s "${DOT_DIR}/config" "${HOME}/.config"
 
 ###############################################################################
 # 入力・キーボード・トラックパッド
