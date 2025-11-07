@@ -1,6 +1,15 @@
 # shell functions used by ~/.config/zsh/.zshrc
 
 function ghq_cd() {
+  if ! command -v ghq >/dev/null 2>&1; then
+    echo "ghq が見つかりません (brew install ghq)" >&2
+    return 1
+  fi
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf が見つかりません (brew install fzf)" >&2
+    return 1
+  fi
+
   local selected_dir
   selected_dir=$(ghq list -p | fzf --reverse --height 40%) || return
   [[ -n "$selected_dir" ]] && cd "$selected_dir"
@@ -123,10 +132,15 @@ function gwt-fzf() {
 }
 
 ls() {
-  local hide='Applications|Desktop|Documents|Downloads|Movies|Music|Pictures|Public|Library'
-  if (( $# == 0 )) && [[ $PWD == $HOME ]]; then
-    eza --icons --group-directories-first --grid --color=auto --ignore-glob "$hide"
-  else
-    eza --icons --group-directories-first --grid --color=auto "$@"
+  if command -v eza >/dev/null 2>&1; then
+    local hide='Applications|Desktop|Documents|Downloads|Movies|Music|Pictures|Public|Library'
+    if (( $# == 0 )) && [[ $PWD == $HOME ]]; then
+      command eza --icons --group-directories-first --grid --color=auto --ignore-glob "$hide"
+    else
+      command eza --icons --group-directories-first --grid --color=auto "$@"
+    fi
+    return
   fi
+
+  command ls "$@"
 }

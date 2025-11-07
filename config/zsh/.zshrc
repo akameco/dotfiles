@@ -6,6 +6,7 @@ fi
 
 # 履歴設定
 setopt histignorealldups sharehistory
+HISTFILE="${ZDOTDIR:-$HOME/.config/zsh}/.zsh_history"
 HISTSIZE=5000
 SAVEHIST=5000
 
@@ -36,8 +37,16 @@ bindkey '^G' fzf-zoxide-cd
 
 command -v bat >/dev/null 2>&1 && alias cat='bat'
 
-# 基本補完
-autoload -Uz compinit && compinit -u
+# 基本補完 (zcompdump が最新ならキャッシュを再利用)
+autoload -Uz compinit
+zmodload zsh/complist 2>/dev/null
+_zcompdump_file="${ZDOTDIR:-$HOME/.config/zsh}/.zcompdump"
+if [[ ! -f "$_zcompdump_file" || "${ZDOTDIR:-$HOME/.config/zsh}/.zshrc" -nt "$_zcompdump_file" ]]; then
+  compinit
+else
+  compinit -C
+fi
+unset _zcompdump_file
 
 # Alias
 alias ..='cd ..'
@@ -58,5 +67,10 @@ export PATH="$HOME/.local/bin:$PATH"
 export DEV_DIR="${HOME}/dev/github.com/akameco"
 export DOT_DIR="${DEV_DIR}/dotfiles"
 
-alias la='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons'
-alias lad='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons --group-directories-first'
+if command -v eza >/dev/null 2>&1; then
+  alias la='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons'
+  alias lad='eza -alh --no-user --time-style=long-iso --sort=modified --reverse --icons --group-directories-first'
+else
+  alias la='ls -alh'
+  alias lad='ls -alh'
+fi
