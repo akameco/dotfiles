@@ -9,7 +9,7 @@
 ## 前提条件
 - macOS (Apple Silicon)。Homebrew パスや `.macos` の手順は `arm64` を前提にしています。
 - Git とネットワークアクセス
-- `.macos` 内で `hub` を利用するため、GitHub への SSH/HTTPS 認証を済ませておくとスムーズ
+- `.macos` 内で `gh` (GitHub CLI) を利用するため、GitHub への SSH/HTTPS 認証を済ませておくとスムーズ
 
 ## セットアップ手順
 ```sh
@@ -25,11 +25,11 @@ ln -sF ~/.dotfiles/config ~/.config
 ```
 
 - `.macos` は **sudo パスワードを要求し、Homebrew や GUI アプリをインストールし、macOS の各種 defaults を書き換える**。毎回中身を眺めてから実行すること。
-- 一部処理で `hub clone akameco/dotfiles` を叩くので GitHub の認証準備は済ませておく。`hub` が不要なら適宜コメントアウト。
+- 一部処理で `gh repo clone akameco/dotfiles` を叩くので GitHub の認証準備は済ませておく。`gh` が不要なら適宜コメントアウト。
 
 ### `.macos` が行う主な処理
 1. System Settings を終了し、Xcode Command Line Tools の有無を確認（無い場合は `xcode-select --install` を起動し完了待ち）
-2. `sudo -v` と keep-alive で管理者権限を維持したまま Homebrew/hub/git をセットアップ
+2. `sudo -v` と keep-alive で管理者権限を維持したまま Homebrew/gh/git をセットアップ
 3. `~/dev/github.com/akameco/dotfiles` へリポジトリをクローン (未取得の場合のみ)
 4. `brew bundle --global` で CLI / GUI パッケージをまとめて適用
 5. `.zshenv` と `config/` ディレクトリをホームディレクトリにシンボリックリンク
@@ -65,7 +65,7 @@ brew bundle dump -f --file Brewfile
 
 ## トラブルシューティング
 - `.macos` 実行中に `xcode-select: note: install requested for command line developer tools` が出て進まない → ポップアップでインストール完了後、ターミナルに戻って Enter を押してください。
-- `hub clone` が失敗する → GitHub アカウントの SSH 鍵が設定済みか確認し、必要なら `.macos` の `hub clone` を好きなコマンドに書き換えてから再実行してください。
+- `gh repo clone` が失敗する → GitHub CLI で `gh auth login` 済みかと SSH 鍵設定を確認し、必要なら `.macos` の `gh repo clone` を別コマンドに書き換えてから再実行してください。
 - GUI アプリのインストールが終わったのに Dock に表示されない → `killall Dock` をもう一度実行すると最新状態に更新されます。
 
 ## Neovim 利用メモ

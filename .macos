@@ -24,20 +24,24 @@ echo "installing homebrew"
 # install homebrew https://brew.sh
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-brew install git hub
+brew install git gh
 
-# ここにhubの設定が必要
+# ここにghの設定が必要
 DEV_DIR="${HOME}/dev/github.com/akameco"
 DOT_DIR="${DEV_DIR}/dotfiles"
 
 echo "${DEV_DIR}"
 mkdir -p "${DEV_DIR}"
 
-echo "cd ${HOME}/dev/github.com/akameco/dotfiles"
-cd "${HOME}/dev/github.com/akameco/dotfiles"
+if [ ! -d "${DOT_DIR}" ]; then
+  echo "cloning dotfiles with gh"
+  gh repo clone akameco/dotfiles "${DOT_DIR}"
+else
+  echo "dotfiles repo already exists at ${DOT_DIR}"
+fi
 
-echo "cloning dotfiles"
-hub clone akameco/dotfiles
+echo "cd ${DOT_DIR}"
+cd "${DOT_DIR}"
 
 echo "brew bundle"
 brew bundle --global
