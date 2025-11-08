@@ -1,5 +1,5 @@
 # dotfiles
-> akameco の macOS 向けドットファイル／セットアップスクリプト集
+自分用の macOS (Apple Silicon) 向けドットファイル。
 
 ## 概要
 - `.macos` に Xcode Command Line Tools の導入、Homebrew インストール、`brew bundle`、macOS defaults、dotfiles のリンク処理をまとめてあり、新規マシンの初期化を 1 コマンドで再現できます。
@@ -24,8 +24,8 @@ ln -sF ~/.dotfiles/config ~/.config
 ./.macos
 ```
 
-- `.macos` は **sudo パスワードを要求し、Homebrew や GUI アプリをインストールし、macOS の各種 defaults を書き換えます**。実行前に内容を必ず確認してください。
-- 一部処理は `hub clone akameco/dotfiles` を伴うため、GitHub アカウント設定に依存します。必要なら `hub` 部分を `gh` 等へ差し替えてください。
+- `.macos` は **sudo パスワードを要求し、Homebrew や GUI アプリをインストールし、macOS の各種 defaults を書き換える**。毎回中身を眺めてから実行すること。
+- 一部処理で `hub clone akameco/dotfiles` を叩くので GitHub の認証準備は済ませておく。`hub` が不要なら適宜コメントアウト。
 
 ### `.macos` が行う主な処理
 1. System Settings を終了し、Xcode Command Line Tools の有無を確認（無い場合は `xcode-select --install` を起動し完了待ち）
@@ -35,7 +35,7 @@ ln -sF ~/.dotfiles/config ~/.config
 5. `.zshenv` と `config/` ディレクトリをホームディレクトリにシンボリックリンク
 6. Finder / Dock / 入力設定などの macOS defaults を `defaults write` で一括変更し、Finder / Dock / SystemUIServer を再起動
 
-> ヒント: `.macos` をそのまま使うのが怖い場合は、上記手順を参考に個別のコマンドだけ抜き出して実行することもできます。
+> メモ: まとめて走らせたくないときは上記ステップを個別に実行する。
 
 ## ディレクトリ構成
 | パス | 役割 |
@@ -61,7 +61,7 @@ brew bundle dump -f --file Brewfile
 - **Brewfile の同期**: 新規に入れたパッケージは上記 `brew bundle dump` で追記し、不要になったものは `brew bundle cleanup` で整理します。
 - **macOS defaults の追従**: OS アップデートでキーが変わった場合は `.macos` を編集し、コメントで出典をメモしておくと後で助かります。
 - **Zsh 設定**: `.zshenv` で `ZDOTDIR` を `~/.config/zsh` に切り替えているため、`config/zsh/` 以下を書き換えれば次のシェル起動で反映されます。関数は `config/zsh/functions.zsh` に集約しています。
-- **Neovim 設定**: `config/nvim/init.lua` が本体で、`lua/` 以下にオプション・キーマップ・プラグイン定義を分割しています。旧 Vim ベースの設定は `config/nvim/init.vim.legacy` にバックアップしているため、必要なら参照できます。
+- **Neovim 設定**: `config/nvim/init.lua` が本体で、`lua/` 以下にオプション・キーマップ・プラグイン定義を分割。
 
 ## トラブルシューティング
 - `.macos` 実行中に `xcode-select: note: install requested for command line developer tools` が出て進まない → ポップアップでインストール完了後、ターミナルに戻って Enter を押してください。
@@ -69,11 +69,10 @@ brew bundle dump -f --file Brewfile
 - GUI アプリのインストールが終わったのに Dock に表示されない → `killall Dock` をもう一度実行すると最新状態に更新されます。
 
 ## Neovim 利用メモ
-- 初回起動時に `lazy.nvim` が自動でクローンされます。`nvim` 起動後に `:Lazy sync` を一度実行すると必要なプラグイン（Telescope + Oil + Devicons）だけ導入されます。
-- Unite の代替として `<leader>f` プレフィックスで Telescope を呼び出すショートカットを用意しています（`<leader>fm`=MRU、`<leader>ff`=カレントディレクトリ検索、`<leader>fp`=Git ルート、`<leader>fs`=単語 grep など）。
-- VimFiler の代替は `oil.nvim` です。`,vf` でバッファディレクトリをフロート表示、`<leader>e` で左ペインに表示できます。
-- LSP や自動補完は入れていません（コード作業は VS Code 前提）。必要になったら `config/nvim/lua/plugins/init.lua` に追記してください。
-- 旧 Vim 設定は `config/nvim/init.vim.legacy` に残してあるので、以前のキーマップが必要になった際は参照できます。
+- `nvim` 初回起動時に `lazy.nvim` が自動クローンされる。`:Lazy sync` を一度叩けば Telescope / Oil / Devicons だけ入る。
+- `<leader>f` 系が Unite 代替。`fm`=MRU、`ff`=カレント dir、`fp`=Git ルート、`fs`=カーソル語 grep、`fg`=live grep など。
+- VimFiler 代替は `oil.nvim`。`,vf` でバッファディレクトリをフロート表示、`<leader>e` で左ペイン。中では `h`/`l` で移動。
+- LSP/補完は入れていない（コード作業は VS Code 前提）。必要になったら `config/nvim/lua/plugins/init.lua` に追記する。
 
 ## Brewfile 収録ツール
 ### CLI ツール (brew)
