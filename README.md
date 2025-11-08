@@ -73,6 +73,7 @@ brew bundle dump -f --file Brewfile
 - `<leader>f` 系が Unite 代替。`fm`=MRU、`ff`=カレント dir、`fp`=Git ルート、`fs`=カーソル語 grep、`fg`=live grep など。
 - VimFiler 代替は `oil.nvim`。`,vf` でバッファディレクトリをフロート表示、`<leader>e` で左ペイン。中では `h`/`l` で移動。
 - LSP/補完は入れていない（コード作業は VS Code 前提）。必要になったら `config/nvim/lua/plugins/init.lua` に追記する。
+- Git の差分・ブレームは `gitsigns.nvim` に任せている（行頭に記号、`current_line_blame` あり）。
 
 ## Brewfile 収録ツール
 ### CLI ツール (brew)
