@@ -23,14 +23,6 @@ local function oil_float(dir_fn)
   end
 end
 
-local function format_buffer()
-  if vim.lsp and next(vim.lsp.get_active_clients({ bufnr = 0 }) or {}) then
-    vim.lsp.buf.format({ async = false })
-    return
-  end
-  vim.cmd([[normal! gg=G]])
-end
-
 local function git_root()
   local root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
   if vim.v.shell_error == 0 and root and root ~= "" then
@@ -63,15 +55,6 @@ map("n", "N", "Nzzzv")
 map("n", "<leader>f", "<Nop>")
 map("n", "<leader>fm", telescope("oldfiles", { cwd_only = true }), { desc = "最近使ったファイル" })
 map("n", "<leader>fa", telescope("find_files", { follow = true }), { desc = "ファイル検索 (全体)" })
-map("n", "<leader>fl", telescope("current_buffer_fuzzy_find"), { desc = "バッファ内検索" })
-map("n", "<leader>ff", function()
-  local dir = vim.fn.expand("%:p:h")
-  if dir == "" then
-    telescope("find_files")()
-  else
-    telescope("find_files", { cwd = dir })()
-  end
-end, { desc = "バッファと同じディレクトリで検索" })
 map("n", "<leader>fp", function()
   local root = git_root()
   if root then
@@ -80,5 +63,3 @@ map("n", "<leader>fp", function()
     telescope("find_files")()
   end
 end, { desc = "Git ルートで検索" })
-map("n", "<leader>fs", telescope("grep_string"), { desc = "単語を grep" })
-map("n", "<leader>fg", telescope("live_grep"), { desc = "全文 grep" })
