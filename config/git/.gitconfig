@@ -3,7 +3,7 @@
 	name = akameco
 [core]
 	excludesfile = ~/.gitignore_global
-	editor = vim -f
+	editor = nvim -f
 	quotepath = false
 [color]
 	ui = auto

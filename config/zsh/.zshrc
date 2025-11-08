@@ -67,6 +67,13 @@ alias g='git'
 alias gs='git status'
 alias gc='git commit -m'
 alias gw='gwt-fzf'  # fzf でワークツリーを選択して移動
+alias vim='nvim'
+alias vi='nvim'
+
+if (( $+commands[nvim] )); then
+  export EDITOR='nvim'
+  export VISUAL='nvim'
+fi
 
 export PATH="$HOME/.local/bin:$PATH"
 

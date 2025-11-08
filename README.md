@@ -42,7 +42,7 @@ ln -sF ~/.dotfiles/config ~/.config
 | --- | --- |
 | `.macos` | macOS 初期設定および Homebrew セットアップスクリプト |
 | `Brewfile` | 使用する CLI / GUI アプリの一覧 |
-| `config/` | アプリ／ツールごとの設定群 (例: `config/zsh`, `config/raycast`) |
+| `config/` | アプリ／ツールごとの設定群 (例: `config/zsh`, `config/nvim`, `config/raycast`) |
 | `.zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 
 `config` にファイルを追加した場合は、`.macos` の「シンボリックリンク」セクションへ追記しておくと次回実行時に自動的にリンクされます。
@@ -61,11 +61,19 @@ brew bundle dump -f --file Brewfile
 - **Brewfile の同期**: 新規に入れたパッケージは上記 `brew bundle dump` で追記し、不要になったものは `brew bundle cleanup` で整理します。
 - **macOS defaults の追従**: OS アップデートでキーが変わった場合は `.macos` を編集し、コメントで出典をメモしておくと後で助かります。
 - **Zsh 設定**: `.zshenv` で `ZDOTDIR` を `~/.config/zsh` に切り替えているため、`config/zsh/` 以下を書き換えれば次のシェル起動で反映されます。関数は `config/zsh/functions.zsh` に集約しています。
+- **Neovim 設定**: `config/nvim/init.lua` が本体で、`lua/` 以下にオプション・キーマップ・プラグイン定義を分割しています。旧 Vim ベースの設定は `config/nvim/init.vim.legacy` にバックアップしているため、必要なら参照できます。
 
 ## トラブルシューティング
 - `.macos` 実行中に `xcode-select: note: install requested for command line developer tools` が出て進まない → ポップアップでインストール完了後、ターミナルに戻って Enter を押してください。
 - `hub clone` が失敗する → GitHub アカウントの SSH 鍵が設定済みか確認し、必要なら `.macos` の `hub clone` を好きなコマンドに書き換えてから再実行してください。
 - GUI アプリのインストールが終わったのに Dock に表示されない → `killall Dock` をもう一度実行すると最新状態に更新されます。
+
+## Neovim 利用メモ
+- 初回起動時に `lazy.nvim` が自動でクローンされます。`nvim` 起動後に `:Lazy sync` を一度実行すると必要なプラグイン（Telescope + Oil + Devicons）だけ導入されます。
+- Unite の代替として `<leader>f` プレフィックスで Telescope を呼び出すショートカットを用意しています（`<leader>fm`=MRU、`<leader>ff`=カレントディレクトリ検索、`<leader>fp`=Git ルート、`<leader>fs`=単語 grep など）。
+- VimFiler の代替は `oil.nvim` です。`,vf` でバッファディレクトリをフロート表示、`<leader>e` で左ペインに表示できます。
+- LSP や自動補完は入れていません（コード作業は VS Code 前提）。必要になったら `config/nvim/lua/plugins/init.lua` に追記してください。
+- 旧 Vim 設定は `config/nvim/init.vim.legacy` に残してあるので、以前のキーマップが必要になった際は参照できます。
 
 ## Brewfile 収録ツール
 ### CLI ツール (brew)
@@ -82,7 +90,7 @@ brew bundle dump -f --file Brewfile
 | `mise` | Node/Python など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
 | `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
 | `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
-| `vim` | ターミナルテキストエディタ。軽量編集用途 | [vim/vim](https://github.com/vim/vim) |
+| `neovim` | Vim 互換のモダンなターミナルエディタ。Lua ベースで設定拡張が容易 | [neovim/neovim](https://github.com/neovim/neovim) |
 | `zoxide` | 頻繁に使うディレクトリへ学習ベースでジャンプできる `cd` 代替 | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide) |
 
 ### GUI / バックグラウンドアプリ (cask)
