@@ -1,29 +1,35 @@
-# shell functions used by ~/.config/zsh/.zshrc
-
-function ghq_cd() {
-  if ! command -v ghq >/dev/null 2>&1; then
-    echo "ghq が見つかりません (brew install ghq)" >&2
+# 指定コマンドが存在するか確認し、無ければヒントを表示する
+require_command() {
+  local cmd="$1"
+  local hint="$2"
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    if [[ -n "$hint" ]]; then
+      echo "$hint" >&2
+    else
+      echo "$cmd が見つかりません" >&2
+    fi
     return 1
   fi
-  if ! command -v fzf >/dev/null 2>&1; then
-    echo "fzf が見つかりません (brew install fzf)" >&2
-    return 1
+}
+
+# eza があればリッチ表示、無ければ組み込み ls を使う
+ls() {
+  if command -v eza >/dev/null 2>&1; then
+    local hide='Applications|Desktop|Documents|Downloads|Movies|Music|Pictures|Public|Library'
+    if (( $# == 0 )) && [[ $PWD == $HOME ]]; then
+      command eza --icons --group-directories-first --grid --color=auto --ignore-glob "$hide"
+    else
+      command eza --icons --group-directories-first --grid --color=auto "$@"
+    fi
+    return
   fi
 
-  local selected_dir
-  selected_dir=$(ghq list -p | fzf --reverse --height 40%) || return
-  [[ -n "$selected_dir" ]] && cd "$selected_dir"
+  command ls "$@"
 }
 
-fzf-zoxide-cd() {
-  local dir
-  dir=$(zoxide query -i) || return
-  BUFFER+="cd -- ${dir:q}"
-  zle accept-line
-}
-
+# 指定したファイル/ディレクトリを Finder 経由でゴミ箱に移動する
 trash() {
-  if [[ $# -eq 0 ]]; then
+  if [[ $# == 0 ]]; then
     echo "Usage: trash <file_or_directory> [...]"
     return 1
   fi
@@ -61,12 +67,28 @@ end tell
 EOFAPPLE
 }
 
-function gwt-fzf() {
-  if ! command -v fzf >/dev/null 2>&1; then
-    echo "エラー: fzf がインストールされていません"
-    echo "brew install fzf でインストールしてください"
-    return 1
-  fi
+# zoxide のインタラクティブ検索で選んだディレクトリに cd する
+fzf-zoxide-cd() {
+  require_command zoxide "zoxide が見つかりません (brew install zoxide)" || return 1
+  local dir
+  dir=$(zoxide query -i) || return
+  BUFFER+="cd -- ${dir:q}"
+  zle accept-line
+}
+
+# ghq のリポジトリ一覧を fzf で選んで cd する
+ghq_cd() {
+  require_command ghq "ghq が見つかりません (brew install ghq)" || return 1
+  require_command fzf "fzf が見つかりません (brew install fzf)" || return 1
+
+  local selected_dir
+  selected_dir=$(ghq list -p | fzf --reverse --height 40%) || return
+  [[ -n "$selected_dir" ]] && cd "$selected_dir"
+}
+
+# git worktree を fzf で選択してジャンプする
+gwt-fzf() {
+  require_command fzf "fzf が見つかりません (brew install fzf)" || return 1
 
   if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "エラー: git リポジトリ内で実行してください" >&2
@@ -129,18 +151,4 @@ function gwt-fzf() {
     cd "$target_path"
     echo "✓ ${selected_branch} -> ${target_path} に移動しました"
   fi
-}
-
-ls() {
-  if command -v eza >/dev/null 2>&1; then
-    local hide='Applications|Desktop|Documents|Downloads|Movies|Music|Pictures|Public|Library'
-    if (( $# == 0 )) && [[ $PWD == $HOME ]]; then
-      command eza --icons --group-directories-first --grid --color=auto --ignore-glob "$hide"
-    else
-      command eza --icons --group-directories-first --grid --color=auto "$@"
-    fi
-    return
-  fi
-
-  command ls "$@"
 }
