@@ -65,10 +65,17 @@ alias realrm='/bin/rm'
 # Git 操作用
 alias g='git'
 alias gs='git status'
+alias ga='git add .'
 alias gc='git commit -m'
+alias gp='git pull'
 alias gw='gwt-fzf'  # fzf でワークツリーを選択して移動
+
 alias vim='nvim'
 alias vi='nvim'
+alias v.='nvim .'
+alias m='nvim ~/Memo/memo.md'
+
+alias ai='claude'
 
 if (( $+commands[nvim] )); then
   export EDITOR='nvim'
