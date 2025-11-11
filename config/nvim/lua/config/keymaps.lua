@@ -42,6 +42,9 @@ map("n", "<ESC><ESC>", "<cmd>nohlsearch<CR><Esc>", { silent = true })
 map("n", "<leader>w", "<C-w>", { remap = true, desc = "ウィンドウ操作" })
 map("n", "G", "Gzz")
 map("n", "<C-o>", "<C-o>zz")
+map({ "n", "v", "i" }, "<D-s>", function()
+  vim.cmd.update()
+end, { desc = "保存" })
 
 map("n", "<leader>mm", "<cmd>edit ~/Memo/memo.md<CR>", { desc = "メモ" })
 
@@ -63,3 +66,12 @@ map("n", "<leader>fp", function()
     telescope("find_files")()
   end
 end, { desc = "Git ルートで検索" })
+
+-- Insert mode shortcuts for quickly dropping in timestamps
+vim.cmd([[
+  inoreabbrev <expr> dd strftime("%Y-%m-%d")
+  inoreabbrev <expr> dt strftime("%H:%M")
+]])
+
+map("i", "<D-k>", "<C-]>", { desc = "Abbreviation expand (Cmd-k)" })
+map("i", "<C-k>", "<C-]>", { desc = "Abbreviation expand (Cmd/Ctrl-k)" })
