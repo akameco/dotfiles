@@ -1,2 +1,4 @@
 [commit]
 	template = ~/.config/git/gitmessage
+[core]
+	hooksPath = ~/.config/git/hooks

@@ -50,6 +50,7 @@ ln -s "${DOT_DIR}/.zshenv" "${HOME}/.zshenv"
 ln -s "${DOT_DIR}/config" "${HOME}/.config"
 
 git config --global commit.template "${HOME}/.config/git/gitmessage"
+git config --global core.hooksPath "${HOME}/.config/git/hooks"
 
 GHOSTTY_CONFIG_DIR="${HOME}/Library/Application Support/com.mitchellh.ghostty"
 mkdir -p "${GHOSTTY_CONFIG_DIR}"

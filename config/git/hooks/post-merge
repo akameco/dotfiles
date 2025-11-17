@@ -1,0 +1,7 @@
+#!/bin/sh
+# Run gwt-clean-merged (gwc) after pull/merge to prune merged worktrees.
+
+# Require zsh and function source; fail silently if unavailable.
+if command -v zsh >/dev/null 2>&1; then
+  zsh -lc 'source ~/.config/zsh/functions.zsh && gwt-clean-merged' >/dev/null 2>&1 || true
+fi

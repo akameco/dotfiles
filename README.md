@@ -72,6 +72,7 @@ brew bundle cleanup --force   # 削除するものがあるか確認した上で
 - **Zsh 設定**: `.zshenv` で `ZDOTDIR` を `~/.config/zsh` に切り替えているため、`config/zsh/` 以下を書き換えれば次のシェル起動で反映されます。関数は `config/zsh/functions.zsh` に集約しています。
 - **Neovim 設定**: `config/nvim/init.lua` が本体で、`lua/` 以下にオプション・キーマップ・プラグイン定義を分割。
 - **Git コミットテンプレ**: `config/git/gitmessage` がコミット作成時にテンプレートとして開くよう、`.macos` が `git config --global commit.template ~/.config/git/gitmessage` を自動設定します。必要に応じてこのファイルを編集してください。
+- **Git フック**: `.macos` で `core.hooksPath ~/.config/git/hooks` を設定します。`post-merge`/`post-rewrite` で `gwc` (gwt-clean-merged) を自動実行し、基準ブランチにマージ済み worktree をクリーンアップします。zsh が無い環境では自動スキップ。
 
 ## トラブルシューティング
 - `.macos` 実行中に `xcode-select: note: install requested for command line developer tools` が出て進まない → ポップアップでインストール完了後、ターミナルに戻って Enter を押してください。

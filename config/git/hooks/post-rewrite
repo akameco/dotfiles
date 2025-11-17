@@ -1,0 +1,6 @@
+#!/bin/sh
+# Run gwt-clean-merged (gwc) after rebase/amend (invoked by git pull --rebase).
+
+if command -v zsh >/dev/null 2>&1; then
+  zsh -lc 'source ~/.config/zsh/functions.zsh && gwt-clean-merged' >/dev/null 2>&1 || true
+fi
