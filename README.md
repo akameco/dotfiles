@@ -56,6 +56,15 @@ brew bundle dump -f --file Brewfile
 ```
 
 `--file Brewfile` を付与するとリポジトリ直下のファイルが更新されるため、忘れずにコミットします。
+Homebrew の更新を待たずに吐き出したい場合は `HOMEBREW_NO_AUTO_UPDATE=1 brew bundle dump -f --file Brewfile` としても OK です。
+
+### 定期メンテナンス例
+```sh
+# パッケージを最新化して Brewfile に反映し、不要パッケージを洗い出す
+brew upgrade
+brew bundle dump -f --file Brewfile
+brew bundle cleanup --force   # 削除するものがあるか確認した上で実行
+```
 
 ## メンテナンスとアップデート
 - **Brewfile の同期**: 新規に入れたパッケージは上記 `brew bundle dump` で追記し、不要になったものは `brew bundle cleanup` で整理します。
