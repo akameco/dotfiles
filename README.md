@@ -97,6 +97,8 @@ brew bundle cleanup --force   # 削除するものがあるか確認した上で
 | `ghq` | Git リポジトリを規則的なディレクトリに集約管理するツール | [x-motemen/ghq](https://github.com/x-motemen/ghq) |
 | `git` | バージョン管理システム。CLI での基本操作を担う | [git/git](https://github.com/git/git) |
 | `jq` | JSON の抽出や変形を行うフィルタ | [jqlang/jq](https://github.com/jqlang/jq) |
+| `cloudflared` | Cloudflare Tunnel クライアント | [cloudflare/cloudflared](https://github.com/cloudflare/cloudflared) |
+| `oven-sh/bun/bun` | Bun ランタイムとパッケージマネージャ | [oven-sh/bun](https://github.com/oven-sh/bun) |
 | `mise` | Node/Python など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
 | `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
 | `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
@@ -107,13 +109,16 @@ brew bundle cleanup --force   # 削除するものがあるか確認した上で
 | 名前 | 用途 | GitHub |
 | --- | --- | --- |
 | `bettertouchtool` | トラックパッド・キーボード・マウスジェスチャの高度なカスタマイズ | - |
+| `block-goose` | Raycast ゴミ箱防止ユーティリティ | - |
 | `claude-code` | Claude Code クライアント。AI ペアプロやコード生成をデスクトップで利用 | - |
 | `codex` | Codex CLI のデスクトップアプリ。ローカル開発補助エージェントとの連携用 | - |
+| `figma` | UI デザインツール | - |
 | `ghostty` | GPU レンダリングに対応した高速ターミナルエミュレータ | [mitchellh/ghostty](https://github.com/mitchellh/ghostty) |
 | `google-japanese-ime` | Google 日本語入力。辞書や変換精度を重視した IME | - |
 | `karabiner-elements` | 修飾キー入れ替えや多段マクロが可能なキーボードリマッパ | [pqrs-org/Karabiner-Elements](https://github.com/pqrs-org/Karabiner-Elements) |
 | `raycast` | Spotlight 代替のランチャー。スクリプト拡張やワークフロー集約向け | [raycast/extensions](https://github.com/raycast/extensions) |
 | `slack` | チームコミュニケーションクライアント | - |
+| `visual-studio-code` | VS Code 本体 | [microsoft/vscode](https://github.com/microsoft/vscode) |
 | `vanilla` | メニューバーアイコンの表示/非表示を整理するユーティリティ | - |
 
 ## ライセンス
