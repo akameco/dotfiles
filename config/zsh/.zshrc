@@ -35,6 +35,13 @@ if [[ $- == *i* ]]; then
     eval "$(zoxide init zsh)"
   fi
 
+  # fzf キーバインド（Ctrl-R で履歴検索など）
+  if (( $+commands[fzf] )); then
+    # Ctrl-R: 行番号を隠し、コマンドだけを見やすく並べる
+    FZF_CTRL_R_OPTS=$'--height 50% --reverse --border --info=inline --prompt="履歴 > " --with-nth=2.. --exact'
+    [[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+  fi
+
   # ghq + fzf jump
   if [[ -n ${functions[fzf-zoxide-cd]} ]]; then
     zle -N fzf-zoxide-cd
