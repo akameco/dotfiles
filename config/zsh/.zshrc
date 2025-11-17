@@ -68,6 +68,7 @@ alias gs='git status'
 alias ga='git add .'
 alias gc='git commit -m'
 alias gp='git pull'
+alias gwc='gwt-clean-merged'  # マージ済み worktree を一括削除
 alias gw='gwt-fzf'  # fzf でワークツリーを選択して移動
 
 alias vim='nvim'
