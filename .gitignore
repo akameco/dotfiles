@@ -29,4 +29,5 @@ Temporary Items
 config/raycast/*
 config/zsh/.zcompdump
 config/zsh/.zsh_history
+config/zsh/.zcompcache/
 config/goose/config.yaml.*
