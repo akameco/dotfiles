@@ -197,6 +197,9 @@ gwt-clean-merged() {
   local repo_root
   repo_root=$("$git_cmd" rev-parse --show-toplevel)
 
+  local current_branch
+  current_branch=$("$git_cmd" symbolic-ref --quiet --short HEAD 2>/dev/null || true)
+
   local -a merged_branches=()
   while IFS= read -r br; do
     [[ -z "$br" || "$br" == "$default_branch" ]] && continue
@@ -209,6 +212,7 @@ gwt-clean-merged() {
   fi
 
   local removed=0
+  local remove_output branch_output
   local wt_path wt_branch
   # porcelain 出力を path<TAB>branch に整形して読みやすくする
   while IFS=$'\t' read -r wt_path wt_branch; do
@@ -220,6 +224,16 @@ gwt-clean-merged() {
       if remove_output=$("$git_cmd" worktree remove "$wt_path" --force 2>&1); then
         [[ -n "$remove_output" ]] && echo "$remove_output"
         ((removed++))
+
+        if [[ "$current_branch" == "$wt_branch" ]]; then
+          echo "ブランチ削除をスキップしました (現在チェックアウト中): ${wt_branch}"
+        elif "$git_cmd" show-ref --verify --quiet "refs/heads/${wt_branch}"; then
+          if branch_output=$("$git_cmd" branch -d "$wt_branch" 2>&1); then
+            [[ -n "$branch_output" ]] && echo "$branch_output"
+          else
+            [[ -n "$branch_output" ]] && echo "$branch_output" >&2
+          fi
+        fi
       else
         [[ -n "$remove_output" ]] && echo "$remove_output" >&2
       fi

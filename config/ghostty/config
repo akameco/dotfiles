@@ -48,3 +48,8 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 theme = TokyoNight
+
+# Prefer fonts with Japanese glyph coverage so glyphs don't break
+font-family = ""
+font-family = "UDEV Gothic 35NFLG"
+font-family = "Hiragino Sans"
