@@ -73,6 +73,7 @@ alias realrm='/bin/rm'
 alias g='git'
 alias gs='git status'
 alias ga='git add .'
+alias gb='git branch'
 alias gc='git commit -m'
 alias gp='git pull'
 alias gwc='gwt-clean-merged'  # マージ済み worktree を一括削除
