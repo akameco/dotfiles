@@ -42,6 +42,10 @@ if [[ $- == *i* ]]; then
     [[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
   fi
 
+  # Shift+Enter を通常の改行として扱う（ターミナルからの独自コード対策）
+  bindkey -M emacs '\e[27;2;13~' accept-line
+  bindkey -M viins '\e[27;2;13~' accept-line
+
   # ghq + fzf jump
   if [[ -n ${functions[fzf-zoxide-cd]} ]]; then
     zle -N fzf-zoxide-cd

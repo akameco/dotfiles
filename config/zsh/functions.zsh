@@ -213,6 +213,8 @@ gwt-clean-merged() {
 
   local removed=0
   local remove_output branch_output
+  # worktree 削除時にすでに落としたブランチを記録して二重削除を防ぐ
+  local -a deleted_branches=()
   local wt_path wt_branch
   # porcelain 出力を path<TAB>branch に整形して読みやすくする
   while IFS=$'\t' read -r wt_path wt_branch; do
@@ -230,6 +232,7 @@ gwt-clean-merged() {
         elif "$git_cmd" show-ref --verify --quiet "refs/heads/${wt_branch}"; then
           if branch_output=$("$git_cmd" branch -d "$wt_branch" 2>&1); then
             [[ -n "$branch_output" ]] && echo "$branch_output"
+            deleted_branches+=("$wt_branch")
           else
             [[ -n "$branch_output" ]] && echo "$branch_output" >&2
           fi
@@ -245,4 +248,23 @@ gwt-clean-merged() {
   else
     echo "完了: ${removed} 件のワークツリーを削除しました (基準: ${default_branch})"
   fi
+
+  # worktree が存在しないマージ済みブランチもまとめて削除
+  local br
+  for br in "${merged_branches[@]}"; do
+    [[ "$br" == "$current_branch" ]] && continue
+    [[ "$br" == "$default_branch" ]] && continue
+    if printf '%s\n' "${deleted_branches[@]}" | grep -Fx -- "$br" >/dev/null; then
+      continue
+    fi
+
+    if "$git_cmd" show-ref --verify --quiet "refs/heads/${br}"; then
+      echo "ローカルブランチ削除: ${br}"
+      if branch_output=$("$git_cmd" branch -d "$br" 2>&1); then
+        [[ -n "$branch_output" ]] && echo "$branch_output"
+      else
+        [[ -n "$branch_output" ]] && echo "$branch_output" >&2
+      fi
+    fi
+  done
 }
