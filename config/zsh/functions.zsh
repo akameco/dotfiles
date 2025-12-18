@@ -67,6 +67,22 @@ end tell
 EOFAPPLE
 }
 
+gho() {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    local branch default_branch
+    branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || echo "")
+    default_branch=$(git rev-parse --abbrev-ref origin/HEAD 2>/dev/null || echo "")
+    default_branch=${default_branch#origin/}
+
+    if [[ -n "$default_branch" && "$branch" == "$default_branch" ]]; then
+      gh repo view --web
+      return
+    fi
+  fi
+
+  gh pr view --web
+}
+
 # zoxide のインタラクティブ検索で選んだディレクトリに cd する
 fzf-zoxide-cd() {
   require_command zoxide "zoxide が見つかりません (brew install zoxide)" || return 1
