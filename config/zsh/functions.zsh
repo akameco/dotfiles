@@ -83,6 +83,69 @@ gho() {
   gh pr view --web
 }
 
+# `git branch` 実行時に PR タイトルも表示する（引数なしのときだけ）
+git__branch_list_with_pr_titles() {
+  if ! command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    command git branch
+    return $?
+  fi
+
+  local -a refs
+  refs=("${(@f)$(command git for-each-ref refs/heads --format='%(HEAD)|%(refname:short)' 2>/dev/null)}")
+
+  local -A pr_by_branch=()
+  if command -v gh >/dev/null 2>&1; then
+    local pr_lines
+    pr_lines=$(
+      gh pr list \
+        --state all \
+        --limit 200 \
+        --json headRefName,number,title \
+        --jq '.[] | [.headRefName, (.number|tostring), .title] | @tsv' 2>/dev/null || true
+    )
+
+    local head_ref pr_number pr_title
+    while IFS=$'\t' read -r head_ref pr_number pr_title; do
+      [[ -z "$head_ref" || -z "$pr_number" ]] && continue
+      pr_title=${pr_title//$'\t'/ }
+      pr_by_branch[$head_ref]="#${pr_number} ${pr_title}"
+    done <<< "$pr_lines"
+  fi
+
+  local -a lines=()
+  local ref head_mark branch_name
+  for ref in "${refs[@]}"; do
+    IFS='|' read -r head_mark branch_name <<< "$ref"
+    [[ -z "$branch_name" ]] && continue
+
+    local marker="  "
+    [[ "$head_mark" == "*" ]] && marker="* "
+
+    local pr="${pr_by_branch[$branch_name]}"
+    if [[ -n "$pr" ]]; then
+      lines+=("${marker}${branch_name}"$'\t'"${pr}")
+    else
+      lines+=("${marker}${branch_name}")
+    fi
+  done
+
+  if command -v column >/dev/null 2>&1; then
+    printf '%s\n' "${lines[@]}" | column -t -s $'\t'
+  else
+    printf '%s\n' "${lines[@]}"
+  fi
+}
+
+# `git` を薄くラップして、`git branch` (引数なし) のときだけ表示を拡張する
+git() {
+  if [[ $- == *i* && "$1" == "branch" && $# -eq 1 ]]; then
+    git__branch_list_with_pr_titles
+    return $?
+  fi
+
+  command git "$@"
+}
+
 # zoxide のインタラクティブ検索で選んだディレクトリに cd する
 fzf-zoxide-cd() {
   require_command zoxide "zoxide が見つかりません (brew install zoxide)" || return 1
