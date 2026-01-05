@@ -174,6 +174,25 @@ gwt-fzf() {
     return 1
   fi
 
+  local -A pr_by_branch=()
+  if command -v gh >/dev/null 2>&1; then
+    local pr_lines
+    pr_lines=$(
+      gh pr list \
+        --state all \
+        --limit 200 \
+        --json headRefName,number,title \
+        --jq '.[] | [.headRefName, (.number|tostring), .title] | @tsv' 2>/dev/null || true
+    )
+
+    local head_ref pr_number pr_title
+    while IFS=$'\t' read -r head_ref pr_number pr_title; do
+      [[ -z "$head_ref" || -z "$pr_number" ]] && continue
+      pr_title=${pr_title//$'\t'/ }
+      pr_by_branch[$head_ref]="#${pr_number} ${pr_title}"
+    done <<< "$pr_lines"
+  fi
+
   local -a worktree_entries=()
   local current_path=""
   local current_branch=""
@@ -183,7 +202,8 @@ gwt-fzf() {
       worktree\ *)
         if [[ -n "$current_path" ]]; then
           local branch_label="${current_branch:-"(detached)"}"
-          worktree_entries+=("${branch_label}"$'\t'"${current_path}")
+          local pr="${pr_by_branch[$branch_label]}"
+          worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
         fi
         current_path="${line#worktree }"
         current_branch=""
@@ -201,7 +221,8 @@ gwt-fzf() {
       '')
         if [[ -n "$current_path" ]]; then
           local branch_label="${current_branch:-"(detached)"}"
-          worktree_entries+=("${branch_label}"$'\t'"${current_path}")
+          local pr="${pr_by_branch[$branch_label]}"
+          worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
           current_path=""
           current_branch=""
         fi
@@ -211,7 +232,8 @@ gwt-fzf() {
 
   if [[ -n "$current_path" ]]; then
     local branch_label="${current_branch:-"(detached)"}"
-    worktree_entries+=("${branch_label}"$'\t'"${current_path}")
+    local pr="${pr_by_branch[$branch_label]}"
+    worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
   fi
 
   if (( ${#worktree_entries[@]} == 0 )); then
@@ -220,15 +242,41 @@ gwt-fzf() {
   fi
 
   local selected_entry
-  selected_entry=$(printf '%s\n' "${worktree_entries[@]}" | fzf --height 40% --reverse --border --prompt="ワークツリーを選択: " --delimiter=$'\t' --with-nth=1,2)
+  selected_entry=$(printf '%s\n' "${worktree_entries[@]}" | fzf --height 40% --reverse --border --prompt="ワークツリーを選択: " --delimiter=$'\t' --with-nth=1,2,3)
   [[ -z "$selected_entry" ]] && return 0
 
-  local selected_branch="${selected_entry%%$'\t'*}"
-  local target_path="${selected_entry#*$'\t'}"
+  local selected_branch selected_pr target_path
+  selected_branch="${selected_entry%%$'\t'*}"
+  target_path="${selected_entry##*$'\t'}"
+  selected_pr="${selected_entry#*$'\t'}"
+  selected_pr="${selected_pr%$'\t'*}"
 
   if [[ -n "$target_path" && -d "$target_path" ]]; then
     cd "$target_path"
-    echo "✓ ${selected_branch} -> ${target_path} に移動しました"
+
+    if [[ -n "$selected_branch" && "$selected_branch" != "(detached)" && "$selected_branch" != "(bare)" ]]; then
+      local git_cmd
+      git_cmd=$(command -v git) || true
+      if [[ -n "$git_cmd" ]]; then
+        local switch_output=""
+        if switch_output=$("$git_cmd" switch "$selected_branch" 2>&1); then
+          [[ -n "$switch_output" ]] && echo "$switch_output"
+        else
+          # 古い git / switch 不可環境向けのフォールバック
+          if switch_output=$("$git_cmd" checkout "$selected_branch" 2>&1); then
+            [[ -n "$switch_output" ]] && echo "$switch_output"
+          else
+            [[ -n "$switch_output" ]] && echo "$switch_output" >&2
+          fi
+        fi
+      fi
+    fi
+
+    if [[ -n "$selected_pr" ]]; then
+      echo "✓ ${selected_branch} (${selected_pr}) -> ${target_path} に移動しました"
+    else
+      echo "✓ ${selected_branch} -> ${target_path} に移動しました"
+    fi
   fi
 }
 

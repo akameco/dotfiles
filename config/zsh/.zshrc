@@ -81,7 +81,7 @@ alias gb='git branch'
 alias gc='git commit -m'
 alias gp='git pull'
 alias gwc='gwt-clean-merged'  # マージ済み worktree を一括削除
-alias gw='gwt-fzf'  # fzf でワークツリーを選択して移動
+alias gw='gwt-fzf'  # fzf で worktree を選択 (PR title 表示) してブランチごと移動
 
 alias vim='nvim'
 alias vi='nvim'
