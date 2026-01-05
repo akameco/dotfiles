@@ -52,6 +52,11 @@ if [[ $- == *i* ]]; then
     bindkey '^G' fzf-zoxide-cd
   fi
 
+  # Ctrl+eで外部エディタを開く
+  autoload -U edit-command-line
+  zle -N edit-command-line
+  bindkey '^E' edit-command-line
+
   # GitHub CLI 補完 (必要ならアンコメント)
   # (( $+commands[gh] )) && eval "$(gh completion -s zsh)"
 fi
