@@ -280,6 +280,77 @@ gwt-fzf() {
   fi
 }
 
+# git branch を fzf で選択して switch する
+gb-fzf() {
+  require_command fzf "fzf が見つかりません (brew install fzf)" || return 1
+
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "エラー: git リポジトリ内で実行してください" >&2
+    return 1
+  fi
+
+  local -A pr_by_branch=()
+  if command -v gh >/dev/null 2>&1; then
+    local pr_lines
+    pr_lines=$(
+      gh pr list \
+        --state all \
+        --limit 200 \
+        --json headRefName,number,title \
+        --jq '.[] | [.headRefName, (.number|tostring), .title] | @tsv' 2>/dev/null || true
+    )
+
+    local head_ref pr_number pr_title
+    while IFS=$'\t' read -r head_ref pr_number pr_title; do
+      [[ -z "$head_ref" || -z "$pr_number" ]] && continue
+      pr_title=${pr_title//$'\t'/ }
+      pr_by_branch[$head_ref]="#${pr_number} ${pr_title}"
+    done <<< "$pr_lines"
+  fi
+
+  local -a branches=()
+  local ref head_mark branch_name
+
+  while IFS='|' read -r head_mark branch_name; do
+    [[ -z "$branch_name" ]] && continue
+
+    local marker="  "
+    [[ "$head_mark" == "*" ]] && marker="* "
+
+    local pr="${pr_by_branch[$branch_name]}"
+    if [[ -n "$pr" ]]; then
+      branches+=("${marker}${branch_name}"$'\t'"${pr}")
+    else
+      branches+=("${marker}${branch_name}")
+    fi
+  done < <(git for-each-ref refs/heads --format='%(HEAD)|%(refname:short)' 2>/dev/null)
+
+  if (( ${#branches[@]} == 0 )); then
+    echo "ブランチが見つかりません" >&2
+    return 1
+  fi
+
+  local selected_entry
+  selected_entry=$(printf '%s\n' "${branches[@]}" | fzf --height 40% --reverse --border --prompt="ブランチを選択: " --delimiter=$'\t' --with-nth=1,2)
+  [[ -z "$selected_entry" ]] && return 0
+
+  local selected_branch
+  selected_branch="${selected_entry%%$'\t'*}"
+  selected_branch="${selected_branch:2}" # 先頭のマーカー(* またはスペース)を除去
+
+  if [[ -n "$selected_branch" ]]; then
+    local git_cmd
+    git_cmd=$(command -v git) || true
+    if [[ -n "$git_cmd" ]]; then
+       if "$git_cmd" switch "$selected_branch" 2>/dev/null; then
+         : # success
+       else
+         "$git_cmd" checkout "$selected_branch"
+       fi
+    fi
+  fi
+}
+
 # 基準ブランチを判定する: origin/HEAD -> main -> master -> 現在のブランチ
 gwt__detect_default_branch() {
   local git_cmd="$1"
