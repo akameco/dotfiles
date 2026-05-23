@@ -165,14 +165,135 @@ ghq_cd() {
   [[ -n "$selected_dir" ]] && cd "$selected_dir"
 }
 
+gwt_usage_file() {
+  local state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+  printf '%s\n' "${state_dir}/git-worktree-usage.tsv"
+}
+
+gwt_cleanup_state_file() {
+  local state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+  printf '%s\n' "${state_dir}/git-worktree-cleanup.tsv"
+}
+
+gwt_cleanup_log_file() {
+  local state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+  printf '%s\n' "${state_dir}/git-worktree-cleanup.log"
+}
+
+gwt_usage_now() {
+  zmodload zsh/datetime 2>/dev/null || return 1
+  printf '%s\n' "$EPOCHSECONDS"
+}
+
+gwt_record_usage() {
+  local git_root
+  git_root=$(command git rev-parse --show-toplevel 2>/dev/null) || return 0
+
+  local usage_file
+  usage_file=$(gwt_usage_file)
+  /bin/mkdir -p "${usage_file:h}" 2>/dev/null || return 0
+
+  local now
+  now=$(gwt_usage_now) || return 0
+
+  local -A latest_by_path=()
+  if [[ -f "$usage_file" ]]; then
+    local usage_ts usage_path
+    while IFS=$'\t' read -r usage_ts usage_path; do
+      [[ "$usage_ts" == <-> && -n "$usage_path" ]] || continue
+      latest_by_path[$usage_path]="$usage_ts"
+    done < "$usage_file"
+  fi
+
+  latest_by_path[$git_root]="$now"
+
+  local path
+  if [[ -e "$usage_file" ]]; then
+    [[ -w "$usage_file" ]] || return 0
+  else
+    [[ -w "${usage_file:h}" ]] || return 0
+  fi
+
+  {
+    for path in "${(@k)latest_by_path}"; do
+      printf '%s\t%s\n' "${latest_by_path[$path]}" "$path"
+    done
+  } >| "$usage_file"
+}
+
+gwt_maybe_cleanup_merged_async() {
+  setopt localoptions nobgnice
+
+  local repo_root
+  repo_root=$(command git rev-parse --show-toplevel 2>/dev/null) || return 0
+
+  local now
+  now=$(gwt_usage_now) || return 0
+
+  local state_file
+  state_file=$(gwt_cleanup_state_file)
+  /bin/mkdir -p "${state_file:h}" 2>/dev/null || return 0
+
+  local last_run=0 state_repo state_ts
+  if [[ -f "$state_file" ]]; then
+    while IFS=$'\t' read -r state_repo state_ts; do
+      [[ "$state_repo" == "$repo_root" && "$state_ts" == <-> ]] || continue
+      last_run="$state_ts"
+      break
+    done < "$state_file"
+  fi
+
+  (( now - last_run >= 86400 )) || return 0
+
+  local -A cleanup_by_repo=()
+  if [[ -f "$state_file" ]]; then
+    while IFS=$'\t' read -r state_repo state_ts; do
+      [[ -n "$state_repo" && "$state_ts" == <-> ]] || continue
+      cleanup_by_repo[$state_repo]="$state_ts"
+    done < "$state_file"
+  fi
+  cleanup_by_repo[$repo_root]="$now"
+
+  if [[ -e "$state_file" ]]; then
+    [[ -w "$state_file" ]] || return 0
+  else
+    [[ -w "${state_file:h}" ]] || return 0
+  fi
+
+  local repo
+  {
+    for repo in "${(@k)cleanup_by_repo}"; do
+      printf '%s\t%s\n' "$repo" "${cleanup_by_repo[$repo]}"
+    done
+  } >| "$state_file"
+
+  local log_file
+  log_file=$(gwt_cleanup_log_file)
+  (
+    printf '\n[%s] cleanup start: %s\n' "$(/bin/date '+%Y-%m-%d %H:%M:%S')" "$repo_root"
+    cd "$repo_root" && gwt-clean-merged --auto
+  ) >> "$log_file" 2>&1 &!
+}
+
+if [[ -o interactive ]]; then
+  autoload -Uz add-zsh-hook
+  add-zsh-hook chpwd gwt_record_usage
+  gwt_record_usage
+fi
+
 # git worktree を fzf で選択してジャンプする
 gwt-fzf() {
   require_command fzf "fzf が見つかりません (brew install fzf)" || return 1
 
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if ! command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     echo "エラー: git リポジトリ内で実行してください" >&2
     return 1
   fi
+
+  gwt_maybe_cleanup_merged_async
+
+  local current_worktree_path
+  current_worktree_path=$(command git rev-parse --show-toplevel 2>/dev/null)
 
   local -A pr_by_branch=()
   if command -v gh >/dev/null 2>&1; then
@@ -197,13 +318,20 @@ gwt-fzf() {
   local current_path=""
   local current_branch=""
 
+  gwt_add_entry() {
+    [[ -n "$current_worktree_path" && "$current_path" == "$current_worktree_path" ]] && return
+
+    local branch_label="${current_branch:-"(detached)"}"
+
+    local pr="${pr_by_branch[$branch_label]}"
+    worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
+  }
+
   while IFS= read -r line; do
     case "$line" in
       worktree\ *)
         if [[ -n "$current_path" ]]; then
-          local branch_label="${current_branch:-"(detached)"}"
-          local pr="${pr_by_branch[$branch_label]}"
-          worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
+          gwt_add_entry
         fi
         current_path="${line#worktree }"
         current_branch=""
@@ -220,20 +348,16 @@ gwt-fzf() {
         ;;
       '')
         if [[ -n "$current_path" ]]; then
-          local branch_label="${current_branch:-"(detached)"}"
-          local pr="${pr_by_branch[$branch_label]}"
-          worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
+          gwt_add_entry
           current_path=""
           current_branch=""
         fi
         ;;
     esac
-  done < <(git worktree list --porcelain 2>/dev/null)
+  done < <(command git worktree list --porcelain 2>/dev/null)
 
   if [[ -n "$current_path" ]]; then
-    local branch_label="${current_branch:-"(detached)"}"
-    local pr="${pr_by_branch[$branch_label]}"
-    worktree_entries+=("${branch_label}"$'\t'"${pr}"$'\t'"${current_path}")
+    gwt_add_entry
   fi
 
   if (( ${#worktree_entries[@]} == 0 )); then
@@ -241,15 +365,44 @@ gwt-fzf() {
     return 1
   fi
 
+  local usage_file
+  usage_file=$(gwt_usage_file)
+  local -A usage_by_path=()
+  if [[ -f "$usage_file" ]]; then
+    local usage_ts usage_path
+    while IFS=$'\t' read -r usage_ts usage_path; do
+      [[ -z "$usage_ts" || -z "$usage_path" ]] && continue
+      usage_by_path[$usage_path]="$usage_ts"
+    done < "$usage_file"
+  fi
+
+  local -a sorted_entries=()
+  local entry entry_branch entry_pr entry_path entry_ts entry_sort_key entry_index=0
+  for entry in "${worktree_entries[@]}"; do
+    (( entry_index++ ))
+    entry_branch="${entry%%$'\t'*}"
+    entry_pr="${entry#*$'\t'}"
+    entry_pr="${entry_pr%$'\t'*}"
+    entry_path="${entry##*$'\t'}"
+    entry_ts="${usage_by_path[$entry_path]:-0}"
+    [[ "$entry_ts" == <-> ]] || entry_ts=0
+    entry_sort_key=$(printf '%012d:%012d' $(( 999999999999 - entry_ts )) "$entry_index")
+    sorted_entries+=("${entry_sort_key}"$'\t'"${entry_branch}"$'\t'"${entry_pr}"$'\t'"${entry_path}")
+  done
+
+  worktree_entries=("${(@o)sorted_entries}")
+
   local selected_entry
-  selected_entry=$(printf '%s\n' "${worktree_entries[@]}" | fzf --height 40% --reverse --border --prompt="ワークツリーを選択: " --delimiter=$'\t' --with-nth=1,2,3)
+  selected_entry=$(printf '%s\n' "${worktree_entries[@]}" | fzf --height 40% --reverse --border --prompt="ワークツリーを選択: " --delimiter=$'\t' --with-nth=2,3,4)
   [[ -z "$selected_entry" ]] && return 0
 
   local selected_branch selected_pr target_path
-  selected_branch="${selected_entry%%$'\t'*}"
-  target_path="${selected_entry##*$'\t'}"
+  selected_branch="${selected_entry#*$'\t'}"
+  selected_branch="${selected_branch%%$'\t'*}"
   selected_pr="${selected_entry#*$'\t'}"
-  selected_pr="${selected_pr%$'\t'*}"
+  selected_pr="${selected_pr#*$'\t'}"
+  selected_pr="${selected_pr%%$'\t'*}"
+  target_path="${selected_entry##*$'\t'}"
 
   if [[ -n "$target_path" && -d "$target_path" ]]; then
     cd "$target_path"
@@ -375,6 +528,11 @@ gwt__detect_default_branch() {
 
 # 基準ブランチにマージ済みの git worktree をまとめて削除する
 gwt-clean-merged() {
+  local auto_cleanup=0
+  if [[ "$1" == "--auto" ]]; then
+    auto_cleanup=1
+  fi
+
   local git_cmd
   git_cmd=$(command -v git) || {
     echo "エラー: git コマンドが見つかりません" >&2
@@ -394,6 +552,10 @@ gwt-clean-merged() {
 
   local repo_root
   repo_root=$("$git_cmd" rev-parse --show-toplevel)
+
+  if (( auto_cleanup )); then
+    "$git_cmd" fetch --prune origin >/dev/null 2>&1 || true
+  fi
 
   local current_branch
   current_branch=$("$git_cmd" symbolic-ref --quiet --short HEAD 2>/dev/null || true)
@@ -419,9 +581,12 @@ gwt-clean-merged() {
     [[ -z "$wt_path" || -z "$wt_branch" ]] && continue
     [[ "$wt_path" == "$repo_root" ]] && continue
 
-    if printf '%s\n' "${merged_branches[@]}" | grep -Fx -- "$wt_branch" >/dev/null; then
+    if printf '%s\n' "${merged_branches[@]}" | /usr/bin/grep -Fx -- "$wt_branch" >/dev/null; then
       echo "削除: ${wt_branch} (${wt_path})"
-      if remove_output=$("$git_cmd" worktree remove "$wt_path" --force 2>&1); then
+      local -a remove_args=("worktree" "remove" "$wt_path")
+      (( auto_cleanup )) || remove_args+=("--force")
+
+      if remove_output=$("$git_cmd" "${remove_args[@]}" 2>&1); then
         [[ -n "$remove_output" ]] && echo "$remove_output"
         ((removed++))
 
@@ -439,7 +604,7 @@ gwt-clean-merged() {
         [[ -n "$remove_output" ]] && echo "$remove_output" >&2
       fi
     fi
-  done < <("$git_cmd" worktree list --porcelain | awk '/^worktree /{wt=$2}/^branch refs\/heads\//{br=$2; sub("refs/heads/","",br); print wt "\t" br}')
+  done < <("$git_cmd" worktree list --porcelain | /usr/bin/awk '/^worktree /{wt=$2}/^branch refs\/heads\//{br=$2; sub("refs/heads/","",br); print wt "\t" br}')
 
   if (( removed == 0 )); then
     echo "削除対象のワークツリーはありませんでした (基準: ${default_branch})"
@@ -452,7 +617,7 @@ gwt-clean-merged() {
   for br in "${merged_branches[@]}"; do
     [[ "$br" == "$current_branch" ]] && continue
     [[ "$br" == "$default_branch" ]] && continue
-    if printf '%s\n' "${deleted_branches[@]}" | grep -Fx -- "$br" >/dev/null; then
+    if printf '%s\n' "${deleted_branches[@]}" | /usr/bin/grep -Fx -- "$br" >/dev/null; then
       continue
     fi
 
