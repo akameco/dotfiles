@@ -1,3 +1,4 @@
 [tools]
 node = "lts"
+"npm:vercel" = "latest"
 pnpm = "latest"

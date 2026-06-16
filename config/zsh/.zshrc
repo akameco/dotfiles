@@ -112,3 +112,11 @@ else
   alias la='ls -alh'
   alias lad='ls -alh'
 fi
+
+# pnpm
+export PNPM_HOME="/Users/akameco/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
