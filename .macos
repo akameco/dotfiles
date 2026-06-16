@@ -44,7 +44,7 @@ echo "cd ${DOT_DIR}"
 cd "${DOT_DIR}"
 
 echo "brew bundle"
-brew bundle --global
+brew bundle --file Brewfile
 
 ln -s "${DOT_DIR}/.zshenv" "${HOME}/.zshenv"
 ln -s "${DOT_DIR}/config" "${HOME}/.config"
