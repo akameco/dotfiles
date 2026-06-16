@@ -27,6 +27,7 @@ Temporary Items
 
 **/.claude/settings.local.json
 config/raycast/*
+config/finicky/
 config/zsh/.zcompdump
 config/zsh/.zsh_history
 config/zsh/.zcompcache/
