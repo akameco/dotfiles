@@ -53,3 +53,11 @@ theme = TokyoNight
 font-family = ""
 font-family = "UDEV Gothic 35NFLG"
 font-family = "Hiragino Sans"
+
+# window-status-bar-enabled = true
+# window-theme = dark
+
+# ステータスバーにタイトルを表示する設定
+# (Ghostty のバージョンによってデフォルトが異なる場合があるため)
+# また、表示位置を下にするなどの調整
+# window-status-bar-position = bottom

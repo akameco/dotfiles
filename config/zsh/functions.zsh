@@ -136,6 +136,47 @@ git__branch_list_with_pr_titles() {
   fi
 }
 
+# カレントブランチの PR タイトルを取得する
+git__current_pr_title() {
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    return
+  fi
+
+  if command -v gh >/dev/null 2>&1; then
+    # 毎回たたくと重いので、ある程度のキャッシュを考慮したいが、まずはシンプルに取得
+    gh pr view --json number,title --jq '"#\(.number) \(.title)"' 2>/dev/null
+  fi
+}
+
+# Ghostty のステータスバーを更新する
+update_ghostty_status_bar() {
+  # Ghostty または tmux 内で実行されているか確認
+  [[ -z "$GHOSTTY_RESOURCES_DIR" && "$TERM_PROGRAM" != "Ghostty" && -z "$TMUX" ]] && return
+
+  local pr_title
+  pr_title=$(git__current_pr_title)
+
+  # Ghostty のステータスバー（またはウィンドウタイトル）を更新
+  # tmux の場合はラップして送信
+  if [[ -n "$TMUX" ]]; then
+    if [[ -n "$pr_title" ]]; then
+      printf "\ePtmux;\e\e]2;%s\a\e\\" "$pr_title"
+    else
+      printf "\ePtmux;\e\e]2;\a\e\\"
+    fi
+  else
+    if [[ -n "$pr_title" ]]; then
+      printf "\e]2;%s\a" "$pr_title"
+    else
+      printf "\e]2;\a"
+    fi
+  fi
+}
+
+# zsh の precmd フックに登録
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd update_ghostty_status_bar
+
 # `git` を薄くラップして、`git branch` (引数なし) のときだけ表示を拡張する
 git() {
   if [[ $- == *i* && "$1" == "branch" && $# -eq 1 ]]; then
