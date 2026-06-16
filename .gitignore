@@ -30,4 +30,8 @@ config/raycast/*
 config/zsh/.zcompdump
 config/zsh/.zsh_history
 config/zsh/.zcompcache/
+config/zsh/.zprofile
 config/goose/config.yaml.*
+config/cagent/
+config/goose/skills/
+config/vercel-plugin/
