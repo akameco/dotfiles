@@ -31,7 +31,7 @@ ln -sF ~/.dotfiles/config ~/.config
 1. System Settings を終了し、Xcode Command Line Tools の有無を確認（無い場合は `xcode-select --install` を起動し完了待ち）
 2. `sudo -v` と keep-alive で管理者権限を維持したまま Homebrew/gh/git をセットアップ
 3. `~/dev/github.com/akameco/dotfiles` へリポジトリをクローン (未取得の場合のみ)
-4. `brew bundle --global` で CLI / GUI パッケージをまとめて適用
+4. `brew bundle --file Brewfile` で CLI / GUI パッケージをまとめて適用
 5. `.zshenv` と `config/` ディレクトリをホームディレクトリにシンボリックリンク
 6. Finder / Dock / 入力設定などの macOS defaults を `defaults write` で一括変更し、Finder / Dock / SystemUIServer を再起動
 
@@ -110,7 +110,6 @@ brew bundle cleanup --force   # 削除するものがあるか確認した上で
 | 名前 | 用途 | GitHub |
 | --- | --- | --- |
 | `bettertouchtool` | トラックパッド・キーボード・マウスジェスチャの高度なカスタマイズ | - |
-| `block-goose` | Raycast ゴミ箱防止ユーティリティ | - |
 | `claude-code` | Claude Code クライアント。AI ペアプロやコード生成をデスクトップで利用 | - |
 | `codex` | Codex CLI のデスクトップアプリ。ローカル開発補助エージェントとの連携用 | - |
 | `figma` | UI デザインツール | - |
