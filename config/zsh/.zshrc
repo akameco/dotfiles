@@ -94,6 +94,7 @@ alias v.='nvim .'
 alias m='nvim ~/Memo/memo.md'
 
 alias ai='claude'
+alias gemini='agy'
 
 if (( $+commands[nvim] )); then
   export EDITOR='nvim'
@@ -114,7 +115,7 @@ else
 fi
 
 # pnpm
-export PNPM_HOME="/Users/akameco/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
