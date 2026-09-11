@@ -1,5 +1,6 @@
 tap "oven-sh/bun"
 brew "bat"
+brew "chezmoi"
 brew "cloudflared"
 brew "eza"
 brew "fzf"

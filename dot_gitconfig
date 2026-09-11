@@ -1,0 +1,81 @@
+[user]
+  name = akameco
+  email = akameco.t@gmail.com
+
+# --- Core ---
+[core]
+  ; macOS & JS系で安全
+  autocrlf = input
+  ; 日本語ファイル名のクォートを無効化（既存どおり）
+  quotepath = false
+  ; グローバル .gitignore は XDG パスに
+  excludesfile = ~/.config/git/ignore
+  ; VSCodeをデフォルトエディタに（vim派ならそのままでOK）
+  editor = vim
+
+[color]
+  ui = auto
+
+[init]
+  defaultBranch = main
+  ; 必要になったらテンプレ有効化
+  ; templatedir = ~/.git_template
+
+# --- Pull/Fetch/Merge まわり（好みでONにしてOK）---
+[pull]
+  rebase = false
+[rebase]
+  autostash = true
+[fetch]
+  prune = true
+[merge]
+  conflictStyle = zdiff3   # コンフリクト表示が見やすい
+
+# --- Push ---
+[push]
+  default = simple
+
+# --- ghq ---
+[ghq]
+  root = ~/dev
+
+# --- LFS ---
+[filter "lfs"]
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+
+# --- Commit template（使っているなら）---
+[commit]
+#  template = ~/.gitmessage
+  gpgsign = true
+
+[gpg]
+	format = ssh
+[user]
+	signingkey = /Users/akameco/.ssh/id_ed25519.pub
+
+# --- Aliases（hub を gh に置き換え）---
+[alias]
+  s = status -sb
+  c = commit -m
+  amend = commit --amend --reuse-message=HEAD
+  co = checkout
+  b = branch
+  d = "!git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %"
+  pro = "!git push -u origin \"$(git symbolic-ref --short HEAD)\" && gh browse"
+  open = "!gh browse"
+  mkpr = "!f(){ git switch -c \"$1\" && git commit --allow-empty -m 'WIP' && git push -u origin \"$1\" && gh pr create --fill && gh browse; }; f"
+  lg = log --oneline --graph --decorate --all
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+# 会社用ディレクトリ配下（~/dev/work/）では暗号化された設定を上書き適用
+[includeIf "gitdir:~/dev/work/"]
+	path = ~/.config/git/config.work
+

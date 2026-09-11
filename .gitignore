@@ -26,11 +26,10 @@ Temporary Items
 .apdisk
 
 **/.claude/settings.local.json
-config/raycast/*
-config/finicky/
-config/zsh/.zcompdump
-config/zsh/.zsh_history
-config/zsh/.zcompcache/
-config/zsh/.zprofile
-config/cagent/
-config/vercel-plugin/
+
+# Age encryption private keys (never commit private keys)
+*.key
+key.txt
+.config_real
+.zshenv_real
+

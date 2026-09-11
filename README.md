@@ -2,8 +2,9 @@
 自分用の macOS (Apple Silicon) 向けドットファイル。
 
 ## 概要
-- `.macos` に Xcode Command Line Tools の導入、Homebrew インストール、`brew bundle`、macOS defaults、dotfiles のリンク処理をまとめてあり、新規マシンの初期化を 1 コマンドで再現できます。
-- Zsh や Git、Raycast、Karabiner などの設定は `config/` 以下にアプリ単位で格納しているので、必要なものだけリンクして使い回せます。
+- `.macos` に Xcode Command Line Tools の導入、Homebrew インストール、`brew bundle`、macOS defaults、chezmoi による dotfiles 適用処理をまとめてあり、新規マシンの初期化を 1 コマンドで再現できます。
+- 設定ファイルは [chezmoi](https://www.chezmoi.io/) で管理しており、`dot_config/` や `dot_zshenv` から `$HOME` へ展開されます。
+- 会社の情報や秘密設定（社内 Git 設定、社内環境変数など）は chezmoi 内蔵の **[age](https://age-encryption.org/)** により暗号化されてリポジトリに保存されます。
 - `Brewfile` で CLI / GUI ツールを宣言的に管理し、アップデートや別マシンへの展開時も同一バージョンを担保できます。
 
 ## 前提条件
@@ -13,15 +14,15 @@
 
 ## セットアップ手順
 ```sh
-git clone https://github.com/akameco/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/akameco/dotfiles.git ~/dev/github.com/akameco/dotfiles
+cd ~/dev/github.com/akameco/dotfiles
 
-# 1) 必要な設定をリンク（例）
-ln -sf ~/.dotfiles/.zshenv ~/.zshenv
-ln -sF ~/.dotfiles/config ~/.config
-
-# 2) 自動化スクリプトを実行（内容を確認してから）
+# 1) 自動化スクリプトを実行（Homebrew、chezmoi、defaults 等を一括適用）
 ./.macos
+
+# 2) 暗号化ファイル（会社設定など）を利用する場合
+# パスワードマネージャー等から ~/.config/chezmoi/key.txt に age 秘密鍵を配置して再適用
+chezmoi apply
 ```
 
 - `.macos` は **sudo パスワードを要求し、Homebrew や GUI アプリをインストールし、macOS の各種 defaults を書き換える**。毎回中身を眺めてから実行すること。
@@ -32,7 +33,7 @@ ln -sF ~/.dotfiles/config ~/.config
 2. `sudo -v` と keep-alive で管理者権限を維持したまま Homebrew/gh/git をセットアップ
 3. `~/dev/github.com/akameco/dotfiles` へリポジトリをクローン (未取得の場合のみ)
 4. `brew bundle --file Brewfile` で CLI / GUI パッケージをまとめて適用
-5. `.zshenv` と `config/` ディレクトリをホームディレクトリにシンボリックリンク
+5. chezmoi により `dot_zshenv` と `dot_config/` をホームディレクトリに展開
 6. Finder / Dock / 入力設定などの macOS defaults を `defaults write` で一括変更し、Finder / Dock / SystemUIServer を再起動
 
 > メモ: まとめて走らせたくないときは上記ステップを個別に実行する。
@@ -41,11 +42,32 @@ ln -sF ~/.dotfiles/config ~/.config
 | パス | 役割 |
 | --- | --- |
 | `.macos` | macOS 初期設定および Homebrew セットアップスクリプト |
-| `Brewfile` | 使用する CLI / GUI アプリの一覧 |
-| `config/` | アプリ／ツールごとの設定群 (例: `config/zsh`, `config/nvim`, `config/raycast`) |
-| `.zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
+| `Brewfile` | 使用する CLI / GUI アプリの一覧（`chezmoi` 含む） |
+| `dot_config/` | アプリ／ツールごとの設定群 (例: `dot_config/zsh`, `dot_config/nvim`) |
+| `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
+| `.chezmoi.toml.tmpl` | chezmoi の設定テンプレート（age 暗号化の受信者キー等） |
 
-`config` にファイルを追加した場合は、`.macos` の「シンボリックリンク」セクションへ追記しておくと次回実行時に自動的にリンクされます。
+## 秘密情報の暗号化管理 (age)
+会社の Git 設定や環境変数などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。
+
+### 鍵の管理
+- 秘密鍵: `~/.config/chezmoi/key.txt`（**絶対にコミットしないこと**。パスワードマネージャーにバックアップ）
+- 公開鍵（Recipient）: `.chezmoi.toml.tmpl` に設定
+
+### 暗号化ファイルの編集
+暗号化されたファイル（`encrypted_*`）を編集する際は、直接ファイルを開かず `chezmoi edit` を使用します。自動的に一時復号されてエディタが開き、保存終了時に自動で再暗号化されます:
+
+```sh
+# 会社用 Git 設定の編集
+chezmoi edit ~/.config/git/config.work
+
+# 会社用環境変数の編集
+chezmoi edit ~/.config/zsh/work.zsh
+
+# 差分確認と反映
+chezmoi diff
+chezmoi apply
+```
 
 ## Brewfile の更新
 手元の Homebrew 環境をリポジトリに反映する際は以下を実行してください:

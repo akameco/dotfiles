@@ -46,15 +46,26 @@ cd "${DOT_DIR}"
 echo "brew bundle"
 brew bundle --file Brewfile
 
-ln -s "${DOT_DIR}/.zshenv" "${HOME}/.zshenv"
-ln -s "${DOT_DIR}/config" "${HOME}/.config"
+echo "setting up chezmoi"
+mkdir -p "${HOME}/.local/share"
+if [ ! -e "${HOME}/.local/share/chezmoi" ]; then
+  ln -s "${DOT_DIR}" "${HOME}/.local/share/chezmoi"
+fi
+
+if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
+  echo "注意: age 秘密鍵 (~/.config/chezmoi/key.txt) がまだ配置されていません。"
+  echo "新規マシンの場合はパスワードマネージャー等から key.txt を配置してから chezmoi apply してください。"
+fi
+
+echo "applying dotfiles via chezmoi"
+chezmoi apply --source="${DOT_DIR}"
 
 git config --global commit.template "${HOME}/.config/git/gitmessage"
 git config --global core.hooksPath "${HOME}/.config/git/hooks"
 
 GHOSTTY_CONFIG_DIR="${HOME}/Library/Application Support/com.mitchellh.ghostty"
 mkdir -p "${GHOSTTY_CONFIG_DIR}"
-ln -sf "${DOT_DIR}/config/ghostty/config" "${GHOSTTY_CONFIG_DIR}/config"
+ln -sf "${HOME}/.config/ghostty/config" "${GHOSTTY_CONFIG_DIR}/config"
 
 ###############################################################################
 # 入力・キーボード・トラックパッド
