@@ -29,23 +29,26 @@ chezmoi apply
 - 一部処理で `gh repo clone akameco/dotfiles` を叩くので GitHub の認証準備は済ませておく。`gh` が不要なら適宜コメントアウト。
 
 ### `.macos` が行う主な処理
-1. System Settings を終了し、Xcode Command Line Tools の有無を確認（無い場合は `xcode-select --install` を起動し完了待ち）
-2. `sudo -v` と keep-alive で管理者権限を維持したまま Homebrew/gh/git をセットアップ
-3. `~/dev/github.com/akameco/dotfiles` へリポジトリをクローン (未取得の場合のみ)
-4. `brew bundle --file Brewfile` で CLI / GUI パッケージをまとめて適用
-5. chezmoi により `dot_zshenv` と `dot_config/` をホームディレクトリに展開
-6. Finder / Dock / 入力設定などの macOS defaults を `defaults write` で一括変更し、Finder / Dock / SystemUIServer を再起動
-
-> メモ: まとめて走らせたくないときは上記ステップを個別に実行する。
+1. Xcode Command Line Tools の有無を確認し、未導入ならインストール
+2. Homebrew の有無を確認し、未導入ならインストール
+3. `chezmoi`, `git`, `gh` を Homebrew でインストール
+4. `~/dev/github.com/akameco/dotfiles` へリポジトリをクローン (未取得の場合のみ)
+5. `chezmoi apply` を実行
+   - dotfiles（`dot_zshenv`, `dot_config/`）の展開
+   - `.chezmoiscripts/run_onchange_after_10_brew-bundle.sh.tmpl` による `brew bundle` の自動実行
+   - `.chezmoiscripts/run_once_after_00_macos-defaults.sh.tmpl` による macOS defaults（Finder, Dock, キーリピート等）の一度きり適用
 
 ## ディレクトリ構成
 | パス | 役割 |
 | --- | --- |
-| `.macos` | macOS 初期設定および Homebrew セットアップスクリプト |
-| `Brewfile` | 使用する CLI / GUI アプリの一覧（`chezmoi` 含む） |
+| `.macos` | 新規マシン用の最小ブートストラップスクリプト (Xcode CLT / Homebrew / chezmoi 導入) |
+| `Brewfile` | 使用する CLI / GUI アプリの一覧 |
+| `.chezmoiscripts/` | chezmoi スクリプト（macOS defaults 設定の一度きり適用、Brewfile 変更時の `brew bundle` 自動同期） |
 | `dot_config/` | アプリ／ツールごとの設定群 (例: `dot_config/zsh`, `dot_config/nvim`) |
+| `dot_gitconfig` | グローバル Git 設定（`includeIf` で会社設定を自動切替） |
 | `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 | `.chezmoi.toml.tmpl` | chezmoi の設定テンプレート（age 暗号化の受信者キー等） |
+| `.chezmoiignore` | リポジトリ管理用ファイルをホームに展開しないための除外ルール |
 
 ## 秘密情報の暗号化管理 (age)
 会社の Git 設定や環境変数などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。

@@ -12,6 +12,7 @@
   excludesfile = ~/.config/git/ignore
   ; VSCodeをデフォルトエディタに（vim派ならそのままでOK）
   editor = vim
+  hooksPath = ~/.config/git/hooks
 
 [color]
   ui = auto
@@ -46,9 +47,9 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
 
-# --- Commit template（使っているなら）---
+# --- Commit template ---
 [commit]
-#  template = ~/.gitmessage
+  template = ~/.config/git/gitmessage
   gpgsign = true
 
 [gpg]
