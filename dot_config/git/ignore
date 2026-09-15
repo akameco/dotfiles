@@ -1,3 +1,5 @@
 **/.claude/settings.local.json
 .claude.local/*
 **/mise.local.toml
+
+**/.claude/.cc-writes/

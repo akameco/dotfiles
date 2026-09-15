@@ -6,7 +6,7 @@
     <string>com.akameco.brewupdate</string>
     <key>ProgramArguments</key>
     <array>
-      <string>/Users/akameco/dev/github.com/akameco/dotfiles/config/launchd/homebrew-update.sh</string>
+      <string>/Users/akameco/.config/launchd/homebrew-update.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
