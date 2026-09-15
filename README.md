@@ -49,9 +49,10 @@ chezmoi apply
 | `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 | `.chezmoi.toml.tmpl` | chezmoi の設定テンプレート（age 暗号化の受信者キー等） |
 | `.chezmoiignore` | リポジトリ管理用ファイルをホームに展開しないための除外ルール |
+| `symlink_dot_finicky.js` | `~/.finicky.js` を `~/.config/finicky/.finicky.js` にリンクする定義 |
 
 ## 秘密情報の暗号化管理 (age)
-会社の Git 設定や環境変数などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。
+会社の Git 設定、環境変数、Finicky の業務ドメイン振り分け設定などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。
 
 ### 鍵の管理
 - 秘密鍵: `~/.config/chezmoi/key.txt`（**絶対にコミットしないこと**。パスワードマネージャーにバックアップ）
@@ -66,6 +67,9 @@ chezmoi edit ~/.config/git/config.work
 
 # 会社用環境変数の編集
 chezmoi edit ~/.config/zsh/work.zsh
+
+# Finicky 設定（業務URL・プロファイル振り分け等）の編集
+chezmoi edit ~/.config/finicky/.finicky.js
 
 # 差分確認と反映
 chezmoi diff
