@@ -69,20 +69,20 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | ├ `finicky/` | Finicky 設定（`encrypted_dot_finicky.js.age` で暗号化管理） |
 | ├ `gh/` | GitHub CLI 設定 (`private_config.yml`, `private_hosts.yml`) |
 | ├ `ghostty/` | Ghostty ターミナル設定 |
-| ├ `git/` | Git 設定（テンプレート、フック、暗号化された会社設定 `encrypted_config.work.age`） |
+| ├ `git/` | Git 設定（テンプレート、フック、グローバル ignore） |
 | ├ `karabiner/` | Karabiner-Elements 設定（SpaceFn、Esc/英数切り替えなど） |
 | ├ `launchd/` | 定期実行スクリプト（Homebrew アップデート用の `homebrew-update.sh`） |
 | ├ `mise/` | ランタイム管理設定（Node.js, pnpm, Vercel CLI） |
 | ├ `nvim/` | Neovim 設定（lazy.nvim, telescope, oil.nvim, gitsigns, tokyonight） |
 | └ `zsh/` | Zsh 設定（`.zshrc`、`functions.zsh`、暗号化された会社用環境変数 `encrypted_work.zsh.age`） |
-| `dot_gitconfig` | グローバル Git 設定（`includeIf` で会社設定を自動切替、テンプレート・フック設定） |
+| `dot_gitconfig` | グローバル Git 設定（ユーザー情報、エイリアス、テンプレート・フック設定） |
 | `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 | `symlink_dot_finicky.js` | `~/.finicky.js` を `~/.config/finicky/.finicky.js` にリンクする定義 |
 | `.chezmoi.toml.tmpl` | chezmoi の設定テンプレート（age 暗号化の受信者キー等） |
 | `.chezmoiignore` | リポジトリ管理用ファイルをホームに展開しないための除外ルール |
 
 ## 秘密情報の暗号化管理 (age)
-会社の Git 設定、環境変数、Finicky の業務ドメイン振り分け設定などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。
+環境変数や Finicky のドメイン振り分け設定などの機密情報は、chezmoi 内蔵の **age** 暗号化機能で保護されています。
 
 ### 鍵の管理
 - 秘密鍵: `~/.config/chezmoi/key.txt`（**絶対にコミットしないこと**。パスワードマネージャーにバックアップ）
@@ -92,9 +92,6 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 暗号化されたファイル（`encrypted_*`）を編集する際は、直接ファイルを開かず `chezmoi edit` を使用します。自動的に一時復号されてエディタが開き、保存終了時に自動で再暗号化されます:
 
 ```sh
-# 会社用 Git 設定の編集
-chezmoi edit ~/.config/git/config.work
-
 # 会社用環境変数の編集
 chezmoi edit ~/.config/zsh/work.zsh
 
