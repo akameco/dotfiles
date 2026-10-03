@@ -40,14 +40,41 @@ if [ ! -e "${HOME}/.local/share/chezmoi" ]; then
   ln -s "${DOT_DIR}" "${HOME}/.local/share/chezmoi"
 fi
 
+# 4. age 秘密鍵の確認と配置
+mkdir -p "${HOME}/.config/chezmoi"
+EXCLUDE_FLAG=""
+
 if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
-  echo "注意: age 秘密鍵 (~/.config/chezmoi/key.txt) がまだ配置されていません。"
-  echo "新規マシンの場合はパスワードマネージャー等から key.txt を配置してから chezmoi apply してください。"
+  echo ""
+  echo "=================================================================="
+  echo "⚠️ age 秘密鍵 (~/.config/chezmoi/key.txt) が見つかりません。"
+  echo "会社用設定や環境変数などの暗号化ファイルを復号するために必要です。"
+  echo ""
+  echo "【配置手順】"
+  echo "  1. 既存マシンから AirDrop やパスワードマネージャー等で秘密鍵を取得"
+  echo "  2. ~/.config/chezmoi/key.txt に保存"
+  echo "=================================================================="
+  read -rp "秘密鍵を配置したら Enter を押してください（スキップする場合は 's'）: " input
+
+  if [ -f "${HOME}/.config/chezmoi/key.txt" ]; then
+    chmod 600 "${HOME}/.config/chezmoi/key.txt"
+    echo "秘密鍵を確認しました (chmod 600 適用)。"
+  else
+    echo "暗号化ファイルをスキップしてセットアップを続行します。"
+    echo "後ほど ~/.config/chezmoi/key.txt を配置し、'chezmoi apply' を実行してください。"
+    EXCLUDE_FLAG="--exclude=encrypted"
+  fi
+else
+  chmod 600 "${HOME}/.config/chezmoi/key.txt"
 fi
 
-# 4. chezmoi 初期化と適用
+# 5. chezmoi 初期化と適用
 # （Brewfile パッケージのインストールや macOS defaults 設定も chezmoi scripts 経由で自動実行されます）
 echo "Applying chezmoi dotfiles..."
-chezmoi apply --source="${DOT_DIR}"
+if [ -n "${EXCLUDE_FLAG}" ]; then
+  chezmoi apply --source="${DOT_DIR}" "${EXCLUDE_FLAG}"
+else
+  chezmoi apply --source="${DOT_DIR}"
+fi
 
 echo "Setup completed! 必要に応じてログアウトまたは再起動してください。"
