@@ -114,13 +114,6 @@ else
   alias lad='ls -alh'
 fi
 
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
 
 # 会社・秘密の環境変数や設定（age で暗号化管理）
 if [[ -f "${ZDOTDIR:-$HOME/.config/zsh}/work.zsh" ]]; then

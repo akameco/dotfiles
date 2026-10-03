@@ -2,3 +2,4 @@
 node = "lts"
 "npm:vercel" = "latest"
 pnpm = "latest"
+bun = "latest"

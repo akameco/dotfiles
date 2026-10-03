@@ -62,8 +62,8 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | --- | --- |
 | `.macos` | 新規マシン用の最小ブートストラップスクリプト (Xcode CLT / Homebrew / chezmoi 導入) |
 | `Brewfile` | 使用する CLI / GUI アプリ / VS Code 拡張の一覧 |
-| `.chezmoiscripts/` | chezmoi スクリプト（macOS defaults 設定の一度きり適用、Brewfile 変更時の `brew bundle` 自動同期） |
-| `Library/LaunchAgents/` | 定期実行 LaunchAgent（Homebrew 自動更新用 `com.akameco.brewupdate.plist`） |
+| `.chezmoiscripts/` | chezmoi スクリプト（macOS defaults 設定変更時の自動再適用、Brewfile 変更時の `brew bundle` 自動同期） |
+| `Library/LaunchAgents/` | 定期実行 LaunchAgent（Homebrew 自動更新用テンプレート `com.akameco.brewupdate.plist.tmpl`） |
 | `dot_config/` | アプリ／ツールごとの設定群 |
 | ├ `bat/` | `bat` 設定 |
 | ├ `finicky/` | Finicky 設定（`encrypted_dot_finicky.js.age` で暗号化管理） |
@@ -71,7 +71,7 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | ├ `ghostty/` | Ghostty ターミナル設定 |
 | ├ `git/` | Git 設定（テンプレート、フック、グローバル ignore、暗号化禁止ワードリスト `encrypted_private_deny_words.age`） |
 | ├ `hammerspoon/` | Hammerspoon 設定（Lua による macOS 自動化） |
-| ├ `karabiner/` | Karabiner-Elements 設定（SpaceFn、Esc/英数切り替えなど） |
+| ├ `private_karabiner/` | Karabiner-Elements 設定（パーミッション 700 で管理。SpaceFn、Esc/英数切り替えなど） |
 | ├ `launchd/` | 定期実行スクリプト（Homebrew アップデート用の `homebrew-update.sh`） |
 | ├ `mise/` | ランタイム管理設定（Node.js, pnpm, Vercel CLI） |
 | ├ `nvim/` | Neovim 設定（lazy.nvim, telescope, oil.nvim, gitsigns, tokyonight） |
@@ -181,10 +181,11 @@ brew bundle dump -f --file Brewfile
 `~/.config/mise/config.toml` にて以下のツールバージョンを宣言的に管理しています:
 - `node`: `lts`
 - `pnpm`: `latest`
+- `bun`: `latest`
 - `npm:vercel`: `latest`
 
 ### 4. キーリマップ (Karabiner-Elements)
-`dot_config/karabiner/` 配下で複雑なキーリマップを定義:
+`dot_config/private_karabiner/` 配下で複雑なキーリマップを定義:
 - **SpaceFn**: スペースキーの長押しでカーソル移動（H/J/K/L）などのレイヤーに切り替え
 - **Esc / 英数**: Esc キー押下時に自動で英数入力モードに切り替え
 - **Shift + Esc**: チルダ (`~`) を入力
@@ -230,17 +231,15 @@ brew bundle dump -f --file Brewfile
 | `cloudflared` | Cloudflare Tunnel クライアント | [cloudflare/cloudflared](https://github.com/cloudflare/cloudflared) |
 | `eza` | `ls` 互換のモダンなファイルリスト表示 | [eza-community/eza](https://github.com/eza-community/eza) |
 | `fzf` | シェルで使える汎用ファジーファインダ | [junegunn/fzf](https://github.com/junegunn/fzf) |
-| `gawk` | GNU awk。テキスト処理や集計用の AWK 実装 | - |
 | `gh` | GitHub CLI。Issue/PR 操作や Actions 実行をターミナルから行う | [cli/cli](https://github.com/cli/cli) |
 | `ghq` | Git リポジトリを規則的なディレクトリに集約管理するツール | [x-motemen/ghq](https://github.com/x-motemen/ghq) |
 | `git` | バージョン管理システム。CLI での基本操作を担う | [git/git](https://github.com/git/git) |
 | `jq` | JSON の抽出や変形を行うフィルタ | [jqlang/jq](https://github.com/jqlang/jq) |
-| `mise` | Node/Python など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
+| `mise` | Node/Python/Bun など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
 | `neovim` | Vim 互換のモダンなターミナルエディタ。Lua ベースで設定 | [neovim/neovim](https://github.com/neovim/neovim) |
 | `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
 | `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
 | `zoxide` | 頻繁に使うディレクトリへ学習ベースでジャンプできる `cd` 代替 | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide) |
-| `oven-sh/bun/bun` | Bun ランタイムとパッケージマネージャ | [oven-sh/bun](https://github.com/oven-sh/bun) |
 
 ### GUI / バックグラウンドアプリ (cask)
 | 名前 | 用途 | GitHub |
@@ -257,7 +256,6 @@ brew bundle dump -f --file Brewfile
 | `karabiner-elements` | 修飾キー入れ替えや多段マクロが可能なキーボードリマッパ | [pqrs-org/Karabiner-Elements](https://github.com/pqrs-org/Karabiner-Elements) |
 | `raycast` | Spotlight 代替のランチャー。スクリプト拡張やワークフロー集約向け | [raycast/extensions](https://github.com/raycast/extensions) |
 | `slack` | チームコミュニケーションクライアント | - |
-| `vanilla` | メニューバーアイコンの表示/非表示を整理するユーティリティ | - |
 | `visual-studio-code` | VS Code 本体 | [microsoft/vscode](https://github.com/microsoft/vscode) |
 
 ### VS Code 拡張機能 (vscode)
