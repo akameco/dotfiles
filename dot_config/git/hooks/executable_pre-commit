@@ -1,0 +1,67 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# Git Hook: pre-commit
+# 暗号化されていない平文ファイルに機密キーワードが含まれていないか検査
+# -----------------------------------------------------------------------------
+
+# スキップ用環境変数
+if [ "${SKIP_SECRET_CHECK:-0}" = "1" ]; then
+  exit 0
+fi
+
+DENY_FILE="${HOME}/.config/git/deny_words"
+[ -f "${DENY_FILE}" ] || exit 0
+
+# 個人・公開リポジトリのみを対象にし、業務リポジトリでの誤検知を防ぐ
+remote_url="$(git remote get-url origin 2>/dev/null || true)"
+repo_name="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo '')")"
+user_email="$(git config user.email 2>/dev/null || true)"
+
+is_target=0
+if echo "${remote_url}" | grep -Eq 'github\.com[:/]akameco/'; then
+  is_target=1
+elif [ "${repo_name}" = "dotfiles" ]; then
+  is_target=1
+elif [ "${user_email}" = "akameco.t@gmail.com" ]; then
+  is_target=1
+fi
+
+[ "${is_target}" -eq 1 ] || exit 0
+
+# ステージされた平文ファイルを取得（*.age や *.gpg などの暗号化ファイルを除外）
+staged_files="$(git diff --cached --name-only --diff-filter=ACM | grep -vE '\.(age|gpg)$' || true)"
+[ -z "${staged_files}" ] && exit 0
+
+# パターンファイルの準備（コメント行と空行を除去）
+TMP_PAT="$(mktemp)"
+trap 'rm -f "${TMP_PAT}"' EXIT INT TERM
+grep -v '^[[:space:]]*#' "${DENY_FILE}" | grep -v '^[[:space:]]*$' > "${TMP_PAT}"
+
+[ -s "${TMP_PAT}" ] || exit 0
+
+# 平文ファイルの追加行（+で始まる行）を検査（diffヘッダ +++ は除外）
+matched=""
+for file in ${staged_files}; do
+  file_diff="$(git diff --cached -U0 -- "${file}" | grep '^+[^+]' | sed 's/^+//' || true)"
+  if [ -n "${file_diff}" ]; then
+    hit="$(echo "${file_diff}" | grep -i -F -f "${TMP_PAT}" || true)"
+    if [ -n "${hit}" ]; then
+      matched="${matched}\n[File: ${file}]\n${hit}"
+    fi
+  fi
+done
+
+if [ -n "${matched}" ]; then
+  echo ""
+  echo "❌ [SECURITY ERROR] 暗号化されていない平文ファイルに機密キーワードが検知されました！"
+  echo "--------------------------------------------------"
+  printf "%b\n" "${matched}"
+  echo "--------------------------------------------------"
+  echo "社名・組織名・案件ドメインなどは平文ファイルに含めず、"
+  echo "chezmoi の暗号化ファイル (*.age) に記述するか、汎用的な表現に置き換えてください。"
+  echo "※ 緊急回避する場合は SKIP_SECRET_CHECK=1 git commit または git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0

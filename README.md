@@ -69,7 +69,7 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | ├ `finicky/` | Finicky 設定（`encrypted_dot_finicky.js.age` で暗号化管理） |
 | ├ `gh/` | GitHub CLI 設定 (`private_config.yml`, `private_hosts.yml`) |
 | ├ `ghostty/` | Ghostty ターミナル設定 |
-| ├ `git/` | Git 設定（テンプレート、フック、グローバル ignore） |
+| ├ `git/` | Git 設定（テンプレート、フック、グローバル ignore、暗号化禁止ワードリスト `encrypted_private_deny_words.age`） |
 | ├ `hammerspoon/` | Hammerspoon 設定（Lua による macOS 自動化） |
 | ├ `karabiner/` | Karabiner-Elements 設定（SpaceFn、Esc/英数切り替えなど） |
 | ├ `launchd/` | 定期実行スクリプト（Homebrew アップデート用の `homebrew-update.sh`） |
@@ -100,10 +100,21 @@ chezmoi edit ~/.config/zsh/work.zsh
 # Finicky 設定（業務URL・プロファイル振り分け等）の編集
 chezmoi edit ~/.config/finicky/.finicky.js
 
+# 機密キーワード・禁止ワードリストの編集
+chezmoi edit ~/.config/git/deny_words
+
 # 差分確認と反映
 chezmoi diff
 chezmoi apply
 ```
+
+### 機密情報の誤コミット防止 (Git フック)
+平文ファイルやコミットメッセージへの社名・プロジェクト名・社内ドメインの混入を機械的にブロックするため、`pre-commit` および `commit-msg` フックが組み込まれています:
+- **暗号化禁止ワードリスト**: `dot_config/git/encrypted_private_deny_words.age`（展開先: `~/.config/git/deny_words`）に登録されたキーワードを照合。
+- **平文差分チェック (`pre-commit`)**: ステージされた平文ファイル（`*.age` などの暗号化ファイルを除く）の追加差分に禁止ワードが含まれているとコミットを中断。
+- **コミットメッセージチェック (`commit-msg`)**: コミットメッセージ内に禁止ワードが含まれているとコミットを中断。
+- **誤爆防止**: 個人用／公開リポジトリ（`github.com/akameco/*` や `dotfiles`）でのみフックが発動し、社用業務リポジトリでは通常通り作業可能。
+
 
 ## Brewfile とパッケージ管理
 

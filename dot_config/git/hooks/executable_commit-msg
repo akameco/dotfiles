@@ -1,0 +1,59 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# Git Hook: commit-msg
+# コミットメッセージに機密キーワード（社名・プロジェクト名等）が含まれていないか検査
+# -----------------------------------------------------------------------------
+
+# スキップ用環境変数
+if [ "${SKIP_SECRET_CHECK:-0}" = "1" ]; then
+  exit 0
+fi
+
+DENY_FILE="${HOME}/.config/git/deny_words"
+[ -f "${DENY_FILE}" ] || exit 0
+
+# 個人・公開リポジトリのみを対象にし、業務リポジトリでの誤検知を防ぐ
+remote_url="$(git remote get-url origin 2>/dev/null || true)"
+repo_name="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo '')")"
+user_email="$(git config user.email 2>/dev/null || true)"
+
+is_target=0
+if echo "${remote_url}" | grep -Eq 'github\.com[:/]akameco/'; then
+  is_target=1
+elif [ "${repo_name}" = "dotfiles" ]; then
+  is_target=1
+elif [ "${user_email}" = "akameco.t@gmail.com" ]; then
+  is_target=1
+fi
+
+[ "${is_target}" -eq 1 ] || exit 0
+
+MSG_FILE="$1"
+[ -r "${MSG_FILE}" ] || exit 0
+
+# パターンファイルの準備（コメント行と空行を除去）
+TMP_PAT="$(mktemp)"
+trap 'rm -f "${TMP_PAT}"' EXIT INT TERM
+grep -v '^[[:space:]]*#' "${DENY_FILE}" | grep -v '^[[:space:]]*$' > "${TMP_PAT}"
+
+# パターンが空なら終了
+[ -s "${TMP_PAT}" ] || exit 0
+
+# コミットメッセージ（コメント行を除去）を検査
+matched_lines="$(grep -v '^[[:space:]]*#' "${MSG_FILE}" | grep -i -F -f "${TMP_PAT}" || true)"
+
+if [ -n "${matched_lines}" ]; then
+  echo ""
+  echo "❌ [SECURITY ERROR] コミットメッセージに機密キーワードが検知されました！"
+  echo "--------------------------------------------------"
+  echo "該当箇所:"
+  echo "${matched_lines}"
+  echo "--------------------------------------------------"
+  echo "社名・組織名・案件名等はコミットメッセージに含めず、"
+  echo "「work」「project」などの汎用的な名称に置き換えてください。"
+  echo "※ 緊急回避する場合は SKIP_SECRET_CHECK=1 git commit または git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0
