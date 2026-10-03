@@ -41,6 +41,8 @@ defaults write com.apple.screensaver askForPasswordDelay -int 0
 mkdir -p "$HOME/Screenshots"
 defaults write com.apple.screencapture location -string "$HOME/Screenshots"
 defaults write com.apple.screencapture type -string "png"
+# 撮影後に右下へ出るフローティングサムネイルを出さない（すぐファイルに保存）
+defaults write com.apple.screencapture show-thumbnail -bool false
 # 影を付けない（必要なら）
 # defaults write com.apple.screencapture disable-shadow -bool true
 
