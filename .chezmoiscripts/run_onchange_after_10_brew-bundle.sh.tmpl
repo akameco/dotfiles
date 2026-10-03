@@ -5,6 +5,7 @@ set -euo pipefail
 
 if command -v brew >/dev/null 2>&1; then
   echo "==> Brewfile changed, running brew bundle..."
+  export HOMEBREW_PATH="/opt/homebrew/bin:${PATH:-}"
   brew bundle --file={{ joinPath .chezmoi.sourceDir "Brewfile" | quote }}
 fi
 {{ end -}}
