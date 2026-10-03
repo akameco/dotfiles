@@ -70,6 +70,7 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | ├ `gh/` | GitHub CLI 設定 (`private_config.yml`, `private_hosts.yml`) |
 | ├ `ghostty/` | Ghostty ターミナル設定 |
 | ├ `git/` | Git 設定（テンプレート、フック、グローバル ignore） |
+| ├ `hammerspoon/` | Hammerspoon 設定（Lua による macOS 自動化） |
 | ├ `karabiner/` | Karabiner-Elements 設定（SpaceFn、Esc/英数切り替えなど） |
 | ├ `launchd/` | 定期実行スクリプト（Homebrew アップデート用の `homebrew-update.sh`） |
 | ├ `mise/` | ランタイム管理設定（Node.js, pnpm, Vercel CLI） |
@@ -78,6 +79,7 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | `dot_gitconfig` | グローバル Git 設定（ユーザー情報、エイリアス、テンプレート・フック設定） |
 | `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 | `symlink_dot_finicky.js` | `~/.finicky.js` を `~/.config/finicky/.finicky.js` にリンクする定義 |
+| `symlink_dot_hammerspoon` | `~/.hammerspoon` を `~/.config/hammerspoon` にリンクする定義 |
 | `.chezmoi.toml.tmpl` | chezmoi の設定テンプレート（age 暗号化の受信者キー等） |
 | `.chezmoiignore` | リポジトリ管理用ファイルをホームに展開しないための除外ルール |
 
@@ -176,6 +178,11 @@ brew bundle dump -f --file Brewfile
 - **Esc / 英数**: Esc キー押下時に自動で英数入力モードに切り替え
 - **Shift + Esc**: チルダ (`~`) を入力
 
+### 5. macOS 自動化 (Hammerspoon)
+`dot_config/hammerspoon/` 配下に設定を配置し、`symlink_dot_hammerspoon` 経由で `~/.hammerspoon` を `~/.config/hammerspoon` にリンク:
+- **自動リロード**: `~/.config/hammerspoon/` 配下の Lua ファイル変更を検知して自動でリロード
+- **CLI 連携**: コマンドラインツール `hs` を自動インストールしてターミナルからの連携を有効化
+
 ## Neovim 利用メモ
 軽量かつ素早いコード閲覧・編集用のエディタ設定（メインの開発は VS Code 前提）。初回起動時に `lazy.nvim` が自動セットアップされます。
 
@@ -235,6 +242,7 @@ brew bundle dump -f --file Brewfile
 | `font-udev-gothic-nf` | UDEV Gothic + Nerd Fonts プログラミング向け日本語等幅フォント | [yuru7/udev-gothic](https://github.com/yuru7/udev-gothic) |
 | `ghostty` | GPU レンダリングに対応した高速ターミナルエミュレータ | [mitchellh/ghostty](https://github.com/mitchellh/ghostty) |
 | `google-japanese-ime` | Google 日本語入力。辞書や変換精度を重視した IME | - |
+| `hammerspoon` | Lua スクリプトによる macOS 自動化・拡張環境 | [Hammerspoon/hammerspoon](https://github.com/Hammerspoon/hammerspoon) |
 | `karabiner-elements` | 修飾キー入れ替えや多段マクロが可能なキーボードリマッパ | [pqrs-org/Karabiner-Elements](https://github.com/pqrs-org/Karabiner-Elements) |
 | `raycast` | Spotlight 代替のランチャー。スクリプト拡張やワークフロー集約向け | [raycast/extensions](https://github.com/raycast/extensions) |
 | `slack` | チームコミュニケーションクライアント | - |
