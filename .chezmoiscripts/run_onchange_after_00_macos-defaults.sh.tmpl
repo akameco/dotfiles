@@ -84,6 +84,12 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
 defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 
+###############################################################################
+# Ghostty 設定のリンク
+###############################################################################
+GHOSTTY_APP_SUPPORT="$HOME/Library/Application Support/com.mitchellh.ghostty"
+mkdir -p "$GHOSTTY_APP_SUPPORT"
+ln -sf "$HOME/.config/ghostty/config" "$GHOSTTY_APP_SUPPORT/config"
 
 # 反映
 killall Finder 2>/dev/null || true
