@@ -37,7 +37,7 @@ cd ~/dev/github.com/akameco/dotfiles
 5. `~/.local/share/chezmoi` へソースディレクトリのシンボリックリンクを作成
 6. `chezmoi apply` を実行:
    - dotfiles（`~/.zshenv`, `~/.config/`, `~/Library/LaunchAgents/` 等）の展開
-   - `.chezmoiscripts/run_once_after_00_macos-defaults.sh.tmpl` による macOS defaults 設定（Finder, Dock, キーリピート等）の一度きり適用
+   - `.chezmoiscripts/run_onchange_after_00_macos-defaults.sh.tmpl` による macOS defaults 設定（Finder, Dock, キーリピート等）の自動適用
    - `.chezmoiscripts/run_onchange_after_10_brew-bundle.sh.tmpl` による `brew bundle` の自動実行
 
 ### 2. 暗号化ファイル（会社設定など）の復号
