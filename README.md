@@ -234,9 +234,11 @@ brew bundle dump -f --file Brewfile
 | `gh` | GitHub CLI。Issue/PR 操作や Actions 実行をターミナルから行う | [cli/cli](https://github.com/cli/cli) |
 | `ghq` | Git リポジトリを規則的なディレクトリに集約管理するツール | [x-motemen/ghq](https://github.com/x-motemen/ghq) |
 | `git` | バージョン管理システム。CLI での基本操作を担う | [git/git](https://github.com/git/git) |
+| `git-lfs` | 大容量ファイルを Git で追跡管理するための拡張 | [git-lfs/git-lfs](https://github.com/git-lfs/git-lfs) |
 | `jq` | JSON の抽出や変形を行うフィルタ | [jqlang/jq](https://github.com/jqlang/jq) |
 | `mise` | Node/Python/Bun など複数ランタイムを管理できるバージョンマネージャ | [jdx/mise](https://github.com/jdx/mise) |
 | `neovim` | Vim 互換のモダンなターミナルエディタ。Lua ベースで設定 | [neovim/neovim](https://github.com/neovim/neovim) |
+| `ripgrep` | Rust 製の超高速行指向検索ツール (grep 代替) | [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep) |
 | `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
 | `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
 | `zoxide` | 頻繁に使うディレクトリへ学習ベースでジャンプできる `cd` 代替 | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide) |
