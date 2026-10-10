@@ -645,7 +645,7 @@ gwt-clean-merged() {
         [[ -n "$remove_output" ]] && echo "$remove_output" >&2
       fi
     fi
-  done < <("$git_cmd" worktree list --porcelain | /usr/bin/awk '/^worktree /{wt=$2}/^branch refs\/heads\//{br=$2; sub("refs/heads/","",br); print wt "\t" br}')
+  done < <("$git_cmd" worktree list --porcelain | /usr/bin/awk '/^worktree /{sub(/^worktree /, ""); wt=$0} /^branch refs\/heads\//{sub(/^branch refs\/heads\//, ""); print wt "\t" $0}')
 
   if (( removed == 0 )); then
     echo "削除対象のワークツリーはありませんでした (基準: ${default_branch})"
