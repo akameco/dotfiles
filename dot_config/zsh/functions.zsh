@@ -136,15 +136,51 @@ git__branch_list_with_pr_titles() {
   fi
 }
 
-# カレントブランチの PR タイトルを取得する
+# カレントブランチの PR タイトルを取得する（キャッシュ・非同期更新対応）
 git__current_pr_title() {
-  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    return
+  local repo_root branch
+  repo_root=$(command git rev-parse --show-toplevel 2>/dev/null) || return
+  branch=$(command git symbolic-ref --quiet --short HEAD 2>/dev/null || echo "")
+  [[ -z "$branch" ]] && return
+
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  local safe_key
+  safe_key=$(printf '%s:%s' "$repo_root" "$branch" | /sbin/md5 -q 2>/dev/null || printf '%s:%s' "$repo_root" "$branch" | tr '/:' '__')
+  local cache_file="${cache_dir}/pr_title_${safe_key}"
+
+  local now
+  now=$(gwt_usage_now 2>/dev/null || /bin/date +%s)
+
+  if [[ -f "$cache_file" ]]; then
+    local cache_time pr_title
+    IFS=$'\t' read -r cache_time pr_title < "$cache_file" 2>/dev/null
+    if [[ "$cache_time" == <-> ]]; then
+      # 300秒以内ならキャッシュをそのまま返す
+      if (( now - cache_time < 300 )); then
+        printf '%s\n' "$pr_title"
+        return
+      fi
+
+      # 期限切れの場合はバックグラウンドで非同期更新し、古いキャッシュを即座に返す (Stale-While-Revalidate)
+      if command -v gh >/dev/null 2>&1; then
+        (
+          local fetched
+          fetched=$(gh pr view --json number,title --jq '"#\(.number) \(.title)"' 2>/dev/null || echo "")
+          printf '%s\t%s\n' "$now" "$fetched" >| "$cache_file" 2>/dev/null
+        ) &!
+      fi
+      printf '%s\n' "$pr_title"
+      return
+    fi
   fi
 
+  # キャッシュ初回のみ同期取得
   if command -v gh >/dev/null 2>&1; then
-    # 毎回たたくと重いので、ある程度のキャッシュを考慮したいが、まずはシンプルに取得
-    gh pr view --json number,title --jq '"#\(.number) \(.title)"' 2>/dev/null
+    local new_title
+    new_title=$(gh pr view --json number,title --jq '"#\(.number) \(.title)"' 2>/dev/null || echo "")
+    /bin/mkdir -p "${cache_dir}" 2>/dev/null
+    printf '%s\t%s\n' "$now" "$new_title" >| "$cache_file" 2>/dev/null
+    printf '%s\n' "$new_title"
   fi
 }
 
