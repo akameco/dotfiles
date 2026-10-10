@@ -63,7 +63,7 @@
   amend = commit --amend --reuse-message=HEAD
   co = checkout
   b = branch
-  d = "!git branch --merged | grep -vE '^\\*|master$|develop$' | xargs -I % git branch -d %"
+  d = "!git branch --merged | grep -vE '^\\*|main$|master$|develop$' | xargs -I % git branch -d %"
   pro = "!git push -u origin \"$(git symbolic-ref --short HEAD)\" && gh browse"
   open = "!gh browse"
   mkpr = "!f(){ git switch -c \"$1\" && git commit --allow-empty -m 'WIP' && git push -u origin \"$1\" && gh pr create --fill && gh browse; }; f"
