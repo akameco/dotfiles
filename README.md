@@ -76,7 +76,7 @@ launchctl load ~/Library/LaunchAgents/com.akameco.brewupdate.plist
 | ├ `mise/` | ランタイム管理設定（Node.js, pnpm, Vercel CLI） |
 | ├ `nvim/` | Neovim 設定（lazy.nvim, telescope, oil.nvim, gitsigns, tokyonight） |
 | └ `zsh/` | Zsh 設定（`.zshrc`、`functions.zsh`、暗号化された会社用環境変数 `encrypted_work.zsh.age`） |
-| `dot_gitconfig` | グローバル Git 設定（ユーザー情報、エイリアス、テンプレート・フック設定） |
+| `dot_gitconfig.tmpl` | グローバル Git 設定（ユーザー情報、エイリアス、テンプレート・フック設定） |
 | `dot_zshenv` | ZDOTDIR を `~/.config/zsh` に切り替えるためのシェルエントリ |
 | `symlink_dot_finicky.js` | `~/.finicky.js` を `~/.config/finicky/.finicky.js` にリンクする定義 |
 | `symlink_dot_hammerspoon` | `~/.hammerspoon` を `~/.config/hammerspoon` にリンクする定義 |
