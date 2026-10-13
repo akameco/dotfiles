@@ -77,16 +77,19 @@ if [[ $- == *i* ]]; then
     bindkey -M viins '^F' autosuggest-accept
 
     # Tab: サジェストがあれば確定、無ければ通常の補完を実行
-    autosuggest-accept-or-complete() {
+    # ※ _ で始まるウィジェット名にすることで zsh-autosuggestions の自動ラップによる POSTDISPLAY の事前クリアを防ぐ
+    _autosuggest_tab() {
       if [[ -n "$POSTDISPLAY" ]]; then
         zle autosuggest-accept
       else
         zle fzf-completion 2>/dev/null || zle expand-or-complete
       fi
     }
-    zle -N autosuggest-accept-or-complete
-    bindkey -M emacs '^I' autosuggest-accept-or-complete
-    bindkey -M viins '^I' autosuggest-accept-or-complete
+    zle -N _autosuggest_tab
+    bindkey -M emacs '^I' _autosuggest_tab
+    bindkey -M viins '^I' _autosuggest_tab
+    bindkey -M emacs '\t' _autosuggest_tab
+    bindkey -M viins '\t' _autosuggest_tab
   fi
 fi
 
