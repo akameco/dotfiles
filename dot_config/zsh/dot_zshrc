@@ -35,10 +35,18 @@ if [[ $- == *i* ]]; then
     eval "$(zoxide init zsh)"
   fi
 
-  # fzf キーバインド・補完（Ctrl-R で履歴検索など）
+  # fzf キーバインド・補完（Ctrl-R: 履歴検索, Ctrl-T: ファイル選択, Alt-C: ディレクトリ移動）
   if (( $+commands[fzf] )); then
+    if (( $+commands[rg] )); then
+      export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    fi
+
     # Ctrl-R: 行番号を隠し、コマンドだけを見やすく並べる
-    FZF_CTRL_R_OPTS=$'--height 50% --reverse --border --info=inline --prompt="履歴 > " --with-nth=2.. --exact'
+    export FZF_CTRL_R_OPTS=$'--height 50% --reverse --border --info=inline --prompt="履歴 > " --with-nth=2.. --exact'
+    export FZF_CTRL_T_OPTS=$'--height 50% --reverse --border --info=inline --prompt="ファイル > "'
+    export FZF_ALT_C_OPTS=$'--height 50% --reverse --border --info=inline --prompt="ディレクトリ > "'
+
     eval "$(fzf --zsh)"
   fi
 
