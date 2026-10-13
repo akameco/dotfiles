@@ -72,6 +72,9 @@ if [[ $- == *i* ]]; then
   if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
     source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+    # Ctrl+F でサジェストを確定
+    bindkey -M emacs '^F' autosuggest-accept
+    bindkey -M viins '^F' autosuggest-accept
   fi
 fi
 
