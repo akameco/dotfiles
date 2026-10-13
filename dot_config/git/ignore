@@ -3,3 +3,6 @@
 **/mise.local.toml
 
 **/.claude/.cc-writes/
+
+# Next.js のビルド出力（public-repo-guard が未追跡ファイルとして検査しないように）
+.next/

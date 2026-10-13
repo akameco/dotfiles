@@ -107,8 +107,11 @@ alias vi='nvim'
 alias v.='nvim .'
 alias m='nvim ~/Memo/memo.md'
 
-alias ai='claude'
-alias gemini='agy'
+# herdr-companion の plugin（hook と /companion）を常に読み込む。リポジトリのファイルを直接読むので git pull で更新される
+alias claude='claude --plugin-dir "$HOME/dev/github.com/akameco/herdr-companion/plugins/herdr-companion"'
+alias ai='claude --dangerously-skip-permissions'
+alias gemini='agy --dangerously-skip-permissions'
+alias agy='agy --dangerously-skip-permissions'
 
 if (( $+commands[nvim] )); then
   export EDITOR='nvim'
