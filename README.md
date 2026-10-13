@@ -176,6 +176,7 @@ brew bundle dump -f --file Brewfile
   - `Ctrl + T`: ファイル検索してパスをカーソル位置に挿入（`ripgrep` による `.gitignore`・隠しファイル対応の高速検索）
   - `Alt + C` (または `Esc + C`): カレントディレクトリ配下のディレクトリを検索して `cd`
 - **zoxide**: 学習型ディレクトリ移動。`Ctrl + G` で対話検索ジャンプ (`fzf-zoxide-cd`)。
+- **zsh-autosuggestions**: 入力履歴から薄字でコマンドを先読み提案（`→` キーや `Ctrl + F` で即時補完）。
 - **安全な削除**: `rm` は `trash` コマンドにエイリアスされており、誤削除防止のため Finder 経由でゴミ箱へ移動（本来の `/bin/rm` は `realrm` で実行可能）。
 - **AI ツールエイリアス**:
   - `ai`: `claude`
@@ -246,6 +247,7 @@ brew bundle dump -f --file Brewfile
 | `starship` | 高機能かつ高速なクロスシェルプロンプト | [starship/starship](https://github.com/starship/starship) |
 | `tig` | Git 履歴を対話的に参照する TUI クライアント | [jonas/tig](https://github.com/jonas/tig) |
 | `zoxide` | 頻繁に使うディレクトリへ学習ベースでジャンプできる `cd` 代替 | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide) |
+| `zsh-autosuggestions` | 入力履歴に基づくコマンド自動提案 (右矢印で補完) | [zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
 
 ### GUI / バックグラウンドアプリ (cask)
 | 名前 | 用途 | GitHub |

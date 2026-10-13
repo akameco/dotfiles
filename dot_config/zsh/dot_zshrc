@@ -67,6 +67,12 @@ if [[ $- == *i* ]]; then
 
   # GitHub CLI 補完 (必要ならアンコメント)
   # (( $+commands[gh] )) && eval "$(gh completion -s zsh)"
+
+  # zsh-autosuggestions (入力履歴からの補完サジェスト)
+  if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+  fi
 fi
 
 (( $+commands[bat] )) && alias cat='bat'
