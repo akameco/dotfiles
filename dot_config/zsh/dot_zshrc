@@ -75,6 +75,18 @@ if [[ $- == *i* ]]; then
     # Ctrl+F でサジェストを確定
     bindkey -M emacs '^F' autosuggest-accept
     bindkey -M viins '^F' autosuggest-accept
+
+    # Tab: サジェストがあれば確定、無ければ通常の補完を実行
+    autosuggest-accept-or-complete() {
+      if [[ -n "$POSTDISPLAY" ]]; then
+        zle autosuggest-accept
+      else
+        zle fzf-completion 2>/dev/null || zle expand-or-complete
+      fi
+    }
+    zle -N autosuggest-accept-or-complete
+    bindkey -M emacs '^I' autosuggest-accept-or-complete
+    bindkey -M viins '^I' autosuggest-accept-or-complete
   fi
 fi
 
