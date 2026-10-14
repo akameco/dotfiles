@@ -215,6 +215,10 @@ brew bundle dump -f --file Brewfile
   - `<D-s>` (Cmd-s): ファイル保存
   - `<leader>mm`: `~/Memo/memo.md` を開く（シェルエイリアス `m` でも可）
   - 挿入モード略記: `dd` で日付 (`YYYY-MM-DD`)、`dt` で時刻 (`HH:MM`) を入力し、`Cmd-k` または `Ctrl-k` で展開
+- **文章オートサジェスト (Claude 履歴 & メモ連携)**:
+  - `~/.claude/history.jsonl` や `~/Memo/memo.md` から過去の指示文・文章をインラインで薄字サジェスト
+  - `<Tab>` または `<Ctrl-f>`: サジェストを確定して一発挿入（サジェストが無い場合は通常の Tab）
+  - `<Ctrl-e>`: サジェストをキャンセル
 
 ## トラブルシューティング
 - **`.macos` 実行中に `xcode-select: note: install requested...` が出て進まない**:
