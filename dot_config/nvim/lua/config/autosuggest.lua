@@ -96,6 +96,50 @@ function M.accept()
   return nil
 end
 
+-- Markdown 記号 (- , * , # , 1. , > 等) や先頭空白を除去
+local function clean_prefix(line_prefix)
+  local cleaned = line_prefix:gsub("^%s*[%-%*#>]%s*", "")
+  cleaned = cleaned:gsub("^%s*%d+%.%s*", "")
+  return vim.trim(cleaned)
+end
+
+-- 入力行からマッチ判定に使うフレーズ候補を抽出 (文単位、読点単位、単語単位)
+local function get_clauses(text)
+  local clauses = {}
+  if #text >= 2 then
+    table.insert(clauses, text)
+  end
+
+  -- 日本語の句点「。」で分割した最後の文
+  local dot_parts = vim.split(text, "。")
+  local last_dot = dot_parts[#dot_parts]
+  if last_dot and #last_dot >= 2 and last_dot ~= text then
+    table.insert(clauses, vim.trim(last_dot))
+  end
+
+  -- 日本語の読点「、」で分割した最後の節
+  local comma_parts = vim.split(text, "、")
+  local last_comma = comma_parts[#comma_parts]
+  if last_comma and #last_comma >= 2 and last_comma ~= text and last_comma ~= last_dot then
+    table.insert(clauses, vim.trim(last_comma))
+  end
+
+  -- 全角スペース「　」で分割した最後の節
+  local zen_parts = vim.split(text, "　")
+  local last_zen = zen_parts[#zen_parts]
+  if last_zen and #last_zen >= 2 and last_zen ~= text and last_zen ~= last_dot and last_zen ~= last_comma then
+    table.insert(clauses, vim.trim(last_zen))
+  end
+
+  -- 半角スペース、コロン等 (ASCII) で区切った最後の単語
+  local last_word = text:match("[^%s:;]+$")
+  if last_word and #last_word >= 2 and last_word ~= text and last_word ~= last_dot and last_word ~= last_comma and last_word ~= last_zen then
+    table.insert(clauses, vim.trim(last_word))
+  end
+
+  return clauses
+end
+
 -- 挿入モード中のサジェスト更新
 function M.update()
   if not is_loaded then
@@ -115,20 +159,44 @@ function M.update()
   local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
   local prefix = line:sub(1, col)
 
-  -- インデントを除いた prefix
-  local trimmed_prefix = prefix:match("^%s*(.-)$") or ""
-  -- 2バイト（日本語1文字、または英字2文字）以上で検索開始
-  if #trimmed_prefix < 2 then
+  local cleaned = clean_prefix(prefix)
+  local clauses = get_clauses(cleaned)
+  if #clauses == 0 then
     M.clear()
     return
   end
 
-  -- 前方一致で最も最新のマッチを検索
+  -- 1. 前方一致（クエリで始まる履歴）を優先して検索
   local match_suffix = nil
-  for _, item in ipairs(history_lines) do
-    if vim.startswith(item, trimmed_prefix) and #item > #trimmed_prefix then
-      match_suffix = item:sub(#trimmed_prefix + 1)
-      break
+  for _, query in ipairs(clauses) do
+    if #query >= 2 then
+      for _, item in ipairs(history_lines) do
+        if vim.startswith(item, query) and #item > #query then
+          match_suffix = item:sub(#query + 1)
+          break
+        end
+      end
+      if match_suffix then
+        break
+      end
+    end
+  end
+
+  -- 2. 前方一致がない場合、ある程度の長さ（6バイト以上＝日本語2文字/英字6文字）があれば部分一致を検索
+  if not match_suffix then
+    for _, query in ipairs(clauses) do
+      if #query >= 6 then
+        for _, item in ipairs(history_lines) do
+          local s, e = item:find(query, 1, true)
+          if s and #item > e then
+            match_suffix = item:sub(e + 1)
+            break
+          end
+        end
+        if match_suffix then
+          break
+        end
+      end
     end
   end
 
