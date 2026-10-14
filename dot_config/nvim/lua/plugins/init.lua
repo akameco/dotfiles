@@ -64,4 +64,45 @@ return {
       },
     },
   },
+  {
+    "saghen/blink.cmp",
+    version = "1.*",
+    event = { "InsertEnter" },
+    opts = {
+      keymap = {
+        preset = "super-tab",
+        ["<CR>"] = { "accept", "fallback" },
+      },
+      appearance = {
+        nerd_font_variant = "mono",
+      },
+      completion = {
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        ghost_text = {
+          enabled = true,
+        },
+        keyword = {
+          range = "prefix",
+          regex = "[-_]\\|\\k|[ぁ-んァ-ン一-龯]",
+        },
+        menu = {
+          auto_show = true,
+        },
+      },
+      sources = {
+        default = { "claude", "buffer", "path" },
+        providers = {
+          claude = {
+            name = "Claude",
+            module = "blink.sources.claude",
+            score_offset = 20,
+            min_keyword_length = 2,
+          },
+        },
+      },
+    },
+  },
 }

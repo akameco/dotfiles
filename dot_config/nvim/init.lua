@@ -17,6 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 require("config.options")
 require("config.keymaps")
 require("config.autocmds")
-require("config.autosuggest").setup()
+-- autosuggest は blink.cmp (lua/blink/sources/claude.lua) に移行済み
+-- require("config.autosuggest").setup()
 
 require("lazy").setup(require("plugins"))
