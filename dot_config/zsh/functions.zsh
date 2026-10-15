@@ -737,25 +737,34 @@ raycast-import-snippets() {
         set frontmost to true
       end tell
 
-      -- ファイル選択ダイアログで Cmd + Shift + G (Go to folder)
-      keystroke "g" using {command down, shift down}
-      delay 0.6
-
-      -- パスをペースト (Cmd + V)
-      keystroke "v" using {command down}
-      delay 0.4
-
-      -- パス決定 (Go) -> シートが閉じるのを待機
+      -- 1. Raycast の Import Snippets 初期画面で「Select File」を実行 (Enter)
       key code 36
       delay 1.0
 
-      -- ファイル選択 (Open) -> ダイアログが閉じるのを待機
-      key code 36
-      delay 1.2
+      -- 2. 開いたファイル選択ダイアログで Cmd + Shift + G (Go to folder)
+      keystroke "g" using {command down, shift down}
+      delay 0.6
 
-      -- Raycast プレビュー画面で確定 (Import)
+      -- 3. パスをペースト (Cmd + V)
+      keystroke "v" using {command down}
+      delay 0.4
+
+      -- 4. パス決定 (Go) -> シートが閉じるのを待機
       key code 36
-      delay 0.5
+      delay 1.0
+
+      -- 5. ファイルを開く (Open) -> ダイアログが閉じるのを待機
+      key code 36
+      delay 1.5
+
+      -- 6. Raycast プレビュー画面で確定 (Import)
+      key code 36
+      delay 1.0
+
+      -- 7. ウィンドウが残っていれば Esc で閉じる
+      key code 53
+      delay 0.2
+      key code 53
     end tell
 EOF
 
