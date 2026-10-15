@@ -33,5 +33,10 @@
     "name": "現在日時 (ISO)",
     "text": "{date format=\"yyyy-MM-dd HH:mm\"}",
     "keyword": ";now"
+  },
+  {
+    "name": "現状報告",
+    "text": "現状報告",
+    "keyword": ";hou"
   }
 ]
