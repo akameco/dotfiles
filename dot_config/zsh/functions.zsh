@@ -709,7 +709,55 @@ gwt-clean-merged() {
   done
 }
 
-# Raycast にスニペットを登録する (Deep Link 経由)
+# Raycast のスニペットを JSON ファイルから完全自動でインポートする (AppleScript UI自動化)
+# Usage: raycast-import-snippets [json_file]
+raycast-import-snippets() {
+  local json_file="${1:-$HOME/.config/raycast/snippets.json}"
+  if [[ ! -f "$json_file" ]]; then
+    echo "エラー: $json_file が見つかりません" >&2
+    return 1
+  fi
+
+  local abs_path
+  abs_path=$(cd "$(dirname "$json_file")" && pwd)/$(basename "$json_file")
+
+  # クリップボードを退避してパスをコピー
+  local old_clip
+  old_clip=$(pbpaste 2>/dev/null)
+  printf '%s' "$abs_path" | pbcopy
+
+  echo "Raycast にスニペットを自動インポート中..."
+  open "raycast://extensions/raycast/snippets/import-snippets"
+
+  osascript <<'EOF' >/dev/null 2>&1
+    delay 0.8
+    tell application "System Events"
+      -- ファイル選択シートで Cmd + Shift + G
+      keystroke "g" using {command down, shift down}
+      delay 0.4
+      -- パスをペースト
+      keystroke "v" using {command down}
+      delay 0.3
+      -- パス決定 (Go)
+      key code 36
+      delay 0.4
+      -- ファイル選択 (Open)
+      key code 36
+      delay 0.6
+      -- Raycast プレビュー画面でインポート確定 (Import)
+      key code 36
+    end tell
+EOF
+
+  # クリップボードを復元
+  if [[ -n "$old_clip" ]]; then
+    printf '%s' "$old_clip" | pbcopy
+  fi
+
+  echo "✓ Raycast へのスニペット反映が完了しました！"
+}
+
+# Raycast のスニペットを JSON に登録し、即座に自動反映する
 # Usage:
 #   raycast-snippet <name> <text> [keyword]
 #   echo "長文..." | raycast-snippet <name> - [keyword]
@@ -734,25 +782,55 @@ raycast-snippet() {
     return 1
   fi
 
-  local encoded
-  encoded=$(python3 -c '
-import urllib.parse, json, sys
+  # JSON ファイルを自動更新 (実環境と dotfiles リポジトリの両方を更新)
+  python3 -c '
+import json, os, sys
 
 name = sys.argv[1]
 text = sys.argv[2]
 kw = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None
 
-payload = {"name": name, "text": text}
-if kw:
-    payload["keyword"] = kw
+targets = [
+    os.path.expanduser("~/.config/raycast/snippets.json"),
+    os.path.expanduser("~/dev/github.com/akameco/dotfiles/dot_config/raycast/snippets.json"),
+]
 
-print(urllib.parse.quote(json.dumps(payload)))
-' "$name" "$text" "$keyword") || return 1
+for p in targets:
+    if not os.path.exists(os.path.dirname(p)):
+        continue
+    items = []
+    if os.path.exists(p):
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                items = json.load(f)
+        except Exception:
+            items = []
+    found = False
+    for item in items:
+        if item.get("name") == name or (kw and item.get("keyword") == kw):
+            item["name"] = name
+            item["text"] = text
+            if kw:
+                item["keyword"] = kw
+            elif "keyword" in item:
+                del item["keyword"]
+            found = True
+            break
+    if not found:
+        new_item = {"name": name, "text": text}
+        if kw:
+            new_item["keyword"] = kw
+        items.append(new_item)
+    with open(p, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+' "$name" "$text" "$keyword" || return 1
 
-  open "raycast://extensions/raycast/snippets/create-snippet?context=${encoded}"
+  echo "✓ JSON ファイルにスニペットを登録しました: ${name} (${keyword:-no keyword})"
+  raycast-import-snippets
 }
 
-# クリップボードの内容をそのまま Raycast スニペットとして登録する
+# クリップボードの内容をそのまま Raycast スニペットとして登録・自動反映する
 # Usage: raycast-snippet-clip <name> [keyword]
 raycast-snippet-clip() {
   local name="$1"
@@ -771,16 +849,5 @@ raycast-snippet-clip() {
   fi
 
   raycast-snippet "$name" "$clip_text" "$keyword"
-}
-
-# Raycast のスニペットインポート画面を開く
-# 引数に JSON パスを渡すとパスをクリップボードにコピーしてダイアログで選びやすくする
-raycast-import-snippets() {
-  local json_file="${1:-$HOME/.config/raycast/snippets.json}"
-  if [[ -f "$json_file" ]]; then
-    printf '%s' "$json_file" | pbcopy
-    echo "✓ ファイルパスをクリップボードにコピーしました: $json_file"
-  fi
-  open "raycast://extensions/raycast/snippets/import-snippets"
 }
 
