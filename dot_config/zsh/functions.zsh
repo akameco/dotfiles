@@ -729,23 +729,33 @@ raycast-import-snippets() {
   echo "Raycast にスニペットを自動インポート中..."
   open "raycast://extensions/raycast/snippets/import-snippets"
 
-  osascript <<'EOF' >/dev/null 2>&1
-    delay 0.8
+  osascript <<'EOF'
+    delay 1.0
+    tell application "Raycast" to activate
     tell application "System Events"
-      -- ファイル選択シートで Cmd + Shift + G
+      tell process "Raycast"
+        set frontmost to true
+      end tell
+
+      -- ファイル選択ダイアログで Cmd + Shift + G (Go to folder)
       keystroke "g" using {command down, shift down}
-      delay 0.4
-      -- パスをペースト
-      keystroke "v" using {command down}
-      delay 0.3
-      -- パス決定 (Go)
-      key code 36
-      delay 0.4
-      -- ファイル選択 (Open)
-      key code 36
       delay 0.6
-      -- Raycast プレビュー画面でインポート確定 (Import)
+
+      -- パスをペースト (Cmd + V)
+      keystroke "v" using {command down}
+      delay 0.4
+
+      -- パス決定 (Go) -> シートが閉じるのを待機
       key code 36
+      delay 1.0
+
+      -- ファイル選択 (Open) -> ダイアログが閉じるのを待機
+      key code 36
+      delay 1.2
+
+      -- Raycast プレビュー画面で確定 (Import)
+      key code 36
+      delay 0.5
     end tell
 EOF
 
