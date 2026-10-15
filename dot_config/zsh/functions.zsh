@@ -708,3 +708,79 @@ gwt-clean-merged() {
     fi
   done
 }
+
+# Raycast にスニペットを登録する (Deep Link 経由)
+# Usage:
+#   raycast-snippet <name> <text> [keyword]
+#   echo "長文..." | raycast-snippet <name> - [keyword]
+raycast-snippet() {
+  local name="$1"
+  local text="$2"
+  local keyword="$3"
+
+  if [[ -z "$name" ]]; then
+    echo "Usage: raycast-snippet <name> <text> [keyword]" >&2
+    echo "       echo '...' | raycast-snippet <name> - [keyword]" >&2
+    return 1
+  fi
+
+  # 第2引数が "-" または省略かつパイプ入力がある場合は標準入力から読み込む
+  if [[ "$text" == "-" ]] || { [[ -z "$text" ]] && [[ ! -t 0 ]]; }; then
+    text=$(cat)
+  fi
+
+  if [[ -z "$text" ]]; then
+    echo "エラー: スニペットのテキストが指定されていません" >&2
+    return 1
+  fi
+
+  local encoded
+  encoded=$(python3 -c '
+import urllib.parse, json, sys
+
+name = sys.argv[1]
+text = sys.argv[2]
+kw = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None
+
+payload = {"name": name, "text": text}
+if kw:
+    payload["keyword"] = kw
+
+print(urllib.parse.quote(json.dumps(payload)))
+' "$name" "$text" "$keyword") || return 1
+
+  open "raycast://extensions/raycast/snippets/create-snippet?context=${encoded}"
+}
+
+# クリップボードの内容をそのまま Raycast スニペットとして登録する
+# Usage: raycast-snippet-clip <name> [keyword]
+raycast-snippet-clip() {
+  local name="$1"
+  local keyword="$2"
+
+  if [[ -z "$name" ]]; then
+    echo "Usage: raycast-snippet-clip <name> [keyword]" >&2
+    return 1
+  fi
+
+  local clip_text
+  clip_text=$(pbpaste 2>/dev/null)
+  if [[ -z "$clip_text" ]]; then
+    echo "エラー: クリップボードが空です" >&2
+    return 1
+  fi
+
+  raycast-snippet "$name" "$clip_text" "$keyword"
+}
+
+# Raycast のスニペットインポート画面を開く
+# 引数に JSON パスを渡すとパスをクリップボードにコピーしてダイアログで選びやすくする
+raycast-import-snippets() {
+  local json_file="${1:-$HOME/.config/raycast/snippets.json}"
+  if [[ -f "$json_file" ]]; then
+    printf '%s' "$json_file" | pbcopy
+    echo "✓ ファイルパスをクリップボードにコピーしました: $json_file"
+  fi
+  open "raycast://extensions/raycast/snippets/import-snippets"
+}
+

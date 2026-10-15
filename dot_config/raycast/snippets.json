@@ -1,0 +1,27 @@
+[
+  {
+    "name": "PRレビュー依頼",
+    "text": "お疲れ様です！PR #{argument name=\"PR番号\"} のレビューをお願いします。\n{cursor}",
+    "keyword": ";rev"
+  },
+  {
+    "name": "Claude: PRレビュー依頼",
+    "text": "PR #{argument name=\"PR番号\"} の変更内容をレビューして、懸念点や改善案があれば指摘してください。\n{cursor}",
+    "keyword": ";crev"
+  },
+  {
+    "name": "Claude: HTMLレポート作成",
+    "text": "昨日のように今日のTODOおよび昨日の報告をHTMLレポートで作成して。{cursor}",
+    "keyword": ";rep"
+  },
+  {
+    "name": "Claude: 整理と修正指示",
+    "text": "{argument name=\"チケット番号\"} の内容を優先して整理して。また関連する修正が必要なものはそちらで対応して。\n{cursor}",
+    "keyword": ";fix"
+  },
+  {
+    "name": "現在日時 (ISO)",
+    "text": "{date format=\"yyyy-MM-dd HH:mm\"}",
+    "keyword": ";now"
+  }
+]
