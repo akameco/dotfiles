@@ -20,6 +20,16 @@
     "keyword": ";fix"
   },
   {
+    "name": "今日の日付 (Date)",
+    "text": "{date format=\"yyyy-MM-dd\"}",
+    "keyword": ";dd"
+  },
+  {
+    "name": "現在の日時 (DateTime)",
+    "text": "{date format=\"yyyy-MM-dd HH:mm\"}",
+    "keyword": ";dt"
+  },
+  {
     "name": "現在日時 (ISO)",
     "text": "{date format=\"yyyy-MM-dd HH:mm\"}",
     "keyword": ";now"
