@@ -48,6 +48,81 @@ if [[ $- == *i* ]]; then
     export FZF_ALT_C_OPTS=$'--height 50% --reverse --border --info=inline --prompt="ディレクトリ > "'
 
     eval "$(fzf --zsh)"
+
+    # cd の直後はカレントディレクトリ直下のディレクトリ一覧、cat/bat の直後は ls 結果（通常を先、隠しを後）を表示する
+    fzf-file-widget() {
+      local FZF_CTRL_T_COMMAND="$FZF_CTRL_T_COMMAND"
+      local is_local_ls=0
+      if [[ "$LBUFFER" =~ '(^|[;&|])[[:space:]]*(builtin[[:space:]]+|command[[:space:]]+)?cd([[:space:]]+-[^[:space:]]*)*[[:space:]]*$' ]]; then
+        FZF_CTRL_T_COMMAND='{ command ls -1ALp | /usr/bin/grep -E "^[^.].*[/]$" | /usr/bin/sed "s|[/]$||"; command ls -1ALp | /usr/bin/grep -E "^\..*[/]$" | /usr/bin/sed "s|[/]$||"; } || true'
+        is_local_ls=1
+      elif [[ "$LBUFFER" =~ '(^|[;&|])[[:space:]]*(builtin[[:space:]]+|command[[:space:]]+)?(cat|bat)([[:space:]]+-[^[:space:]]*)*[[:space:]]*$' ]]; then
+        FZF_CTRL_T_COMMAND='{ command ls -1A | /usr/bin/grep -v "^\."; command ls -1A | /usr/bin/grep "^\."; } || true'
+        is_local_ls=1
+      fi
+      local selected
+      selected=$(__fzf_select)
+      local ret=$?
+      if [[ -n "$selected" ]]; then
+        if (( is_local_ls )) && [[ "$LBUFFER" != *[[:space:]] ]]; then
+          LBUFFER="${LBUFFER} ${selected}"
+        else
+          LBUFFER="${LBUFFER}${selected}"
+        fi
+      fi
+      zle reset-prompt
+      return $ret
+    }
+
+    # Ctrl-R: 履歴表示時に $HOME を ~ に、~/dev/github.com を  に省略し、同一コマンドとして重複排除する（確定時は ~/dev/github.com/... として挿入）
+    fzf-history-widget() {
+      local selected extracted_with_perl=0
+      setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases no_glob no_sh_glob no_ksharrays extendedglob 2> /dev/null
+      if zmodload -F zsh/parameter p:{commands,history} 2>/dev/null && (( ${+commands[perl]} )); then
+        extracted_with_perl=1
+        selected="$(printf '%s\t%s\000' "${(kv)history[@]}" |
+          perl -0 -ne 's{(?:^|[\s=;:])\K\Q$ENV{HOME}\E(?=/|\s|$|\0)}{~}g; s{\bcd -- (?=~(?:/|\s|$|\0))}{cd }g; if (!$seen{(/^\s*[0-9]+\**\t(.*)/s, $1)}++) { s{(?:^|[\s=;:])\K~/dev/github\.com(?=/|\s|$|\0)}{\xef\x82\x9b}g; s/\n/\n\t/g; print; }' |
+          FZF_DEFAULT_OPTS=$(__fzf_defaults "" "-n2..,.. --scheme=history --bind=ctrl-r:toggle-sort,alt-r:toggle-raw --wrap-sign '\t↳ ' --highlight-line --multi ${FZF_CTRL_R_OPTS-} --query=${(qqq)LBUFFER} --read0") \
+          FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd))"
+      else
+        selected="$(fc -rl 1 | __fzf_exec_awk '{ cmd=$0; sub(/^[ \t]*[0-9]+\**[ \t]+/, "", cmd); if (!seen[cmd]++) print $0 }' |
+          FZF_DEFAULT_OPTS=$(__fzf_defaults "" "-n2..,.. --scheme=history --bind=ctrl-r:toggle-sort,alt-r:toggle-raw --wrap-sign '\t↳ ' --highlight-line --multi ${FZF_CTRL_R_OPTS-} --query=${(qqq)LBUFFER}") \
+          FZF_DEFAULT_OPTS_FILE='' $(__fzfcmd))"
+      fi
+      local ret=$?
+      local -a cmds
+      local -a mbegin mend match
+      if [ -n "$selected" ]; then
+        if ((( extracted_with_perl )) && [[ $selected == <->$'\t'* ]]) ||
+        ((( ! extracted_with_perl )) && [[ $selected == [[:blank:]]#<->(  |\* )* ]]); then
+          for line in ${(ps:\n:)selected}; do
+            if (( extracted_with_perl )); then
+              if [[ $line == (#b)(<->)(#B)$'\t'* ]]; then
+                if (( ${+history[${match[1]}]} )); then
+                  local cmd="${history[${match[1]}]}"
+                  cmd="$(printf '%s' "$cmd" | perl -0 -pe 's{(?:^|[\s=;:])\K\Q$ENV{HOME}\E(?=/|\s|$)}{~}g; s{\bcd -- (?=~(?:/|\s|$))}{cd }g')"
+                  cmds+=("$cmd")
+                fi
+              fi
+            elif [[ $line == [[:blank:]]#(#b)(<->)(#B)(  |\* )* ]]; then
+              zle .push-line
+              zle vi-fetch-history -n ${match[1]}
+              (( ${#BUFFER} )) && cmds+=("${BUFFER}")
+              BUFFER=""
+              zle .get-line
+            fi
+          done
+          if (( ${#cmds[@]} )); then
+            BUFFER="${(pj:\n:)${(@)cmds%%$'\n'#}}"
+            CURSOR=${#BUFFER}
+          fi
+        else
+          LBUFFER="$selected"
+        fi
+      fi
+      zle reset-prompt
+      return $ret
+    }
   fi
 
   # Shift+Enter を通常の改行として扱う（ターミナルからの独自コード対策）
@@ -76,10 +151,13 @@ if [[ $- == *i* ]]; then
     bindkey -M emacs '^F' autosuggest-accept
     bindkey -M viins '^F' autosuggest-accept
 
-    # Tab: サジェストがあれば確定、無ければ通常の補完を実行
+    # Tab: サジェストがあれば確定、無ければ通常の補完を実行（cd 入力中は履歴サジェストではなく通常の補完を優先）
     # ※ _ で始まるウィジェット名にすることで zsh-autosuggestions の自動ラップによる POSTDISPLAY の事前クリアを防ぐ
     _autosuggest_tab() {
-      if [[ -n "$POSTDISPLAY" ]]; then
+      if [[ "$LBUFFER" =~ '(^|[;&|])[[:space:]]*(builtin[[:space:]]+|command[[:space:]]+)?cd([[:space:]]+|$)' ]]; then
+        zle autosuggest-clear 2>/dev/null
+        zle fzf-completion 2>/dev/null || zle expand-or-complete
+      elif [[ -n "$POSTDISPLAY" ]]; then
         zle autosuggest-accept
       else
         zle fzf-completion 2>/dev/null || zle expand-or-complete

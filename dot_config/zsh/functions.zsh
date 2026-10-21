@@ -226,9 +226,20 @@ git() {
 # zoxide のインタラクティブ検索で選んだディレクトリに cd する
 fzf-zoxide-cd() {
   require_command zoxide "zoxide が見つかりません (brew install zoxide)" || return 1
+  require_command fzf "fzf が見つかりません (brew install fzf)" || return 1
+  local gh_icon=$'\uf09b'
   local dir
-  dir=$(zoxide query -i) || return
-  BUFFER+="cd -- ${dir:q}"
+  dir=$(zoxide query -l | /usr/bin/sed -e "s|^${HOME}/dev/github.com|${gh_icon}|" -e "s|^${HOME}|~|" | fzf --height 50% --reverse --border --info=inline --no-sort --prompt="zoxide > ") || return
+  local full_dir="$dir"
+  full_dir="${full_dir/#${gh_icon}/${HOME}/dev/github.com}"
+  full_dir="${full_dir/#\~/$HOME}"
+  if [[ "$full_dir" == "$HOME"/* ]]; then
+    BUFFER+="cd ~/${${full_dir#$HOME/}:q}"
+  elif [[ "$full_dir" == "$HOME" ]]; then
+    BUFFER+="cd ~"
+  else
+    BUFFER+="cd -- ${full_dir:q}"
+  fi
   zle accept-line
 }
 
