@@ -5,3 +5,9 @@
 if command -v zsh >/dev/null 2>&1; then
   zsh -lc 'source ~/.config/zsh/functions.zsh && gwt-clean-merged' >/dev/null 2>&1 || true
 fi
+
+# リポジトリ固有の .git/hooks/post-merge があれば続けて実行する（core.hooksPath でグローバルに向けると素通りされるため）
+repo_hook="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/post-merge"
+if [ -x "${repo_hook}" ] && [ "$(cd "$(dirname "${repo_hook}")" && pwd -P)" != "$(cd "$(dirname "$0")" && pwd -P)" ]; then
+  "${repo_hook}" "$@"
+fi

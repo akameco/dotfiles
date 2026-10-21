@@ -110,6 +110,12 @@ dotfiles_syntax_check() {
     echo "❌ [SYNTAX ERROR] ステージされた設定ファイルに構文エラーがあります。" >&2
     return 1
   fi
+
+  # dotfiles リポジトリで、ソースと $HOME の不一致を知らせる（止めない）
+  if command -v chezmoi >/dev/null 2>&1; then
+    drift="$(chezmoi status 2>/dev/null)"
+    [ -n "${drift}" ] && printf '⚠ chezmoi のソースと $HOME がずれています（apply か re-add）:\n%s\n' "${drift}" >&2
+  fi
   return 0
 }
 

@@ -1,5 +1,7 @@
 [tools]
-node = "lts"
+node = "latest"
 "npm:vercel" = "latest"
 pnpm = "latest"
 bun = "latest"
+"npm:portless" = "latest"
+"npm:agent-browser" = "latest"
