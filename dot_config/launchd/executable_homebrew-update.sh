@@ -10,18 +10,27 @@ brew update && brew upgrade
 echo "==> Cleaning up Homebrew cache..."
 brew cleanup -s
 
-# 2. Chromium / Electron の一時クローン削除 (今回の最大原因を毎日リセット)
+# 2. mise のツール（グローバルの設定のもの）を上げる。公開から 24 時間経っていない版は mise の minimum_release_age が外す
+echo "==> Upgrading mise tools..."
+# Node.js の最新版がセキュリティリリースのときは 24 時間待たずに上げる
+if curl -fsS https://nodejs.org/dist/index.json | jq -e '.[0].security' >/dev/null 2>&1; then
+  echo "==> Latest Node.js is a security release; upgrading node without minimum_release_age"
+  mise upgrade --global --minimum-release-age 0s node || echo "==> mise upgrade node failed (continuing)"
+fi
+mise upgrade --global || echo "==> mise upgrade failed (continuing)"
+
+# 3. Chromium / Electron の一時クローン削除 (今回の最大原因を毎日リセット)
 echo "==> Cleaning up Chromium/Electron code_sign_clone temporary files..."
 rm -rf /private/var/folders/*/*/*/*.code_sign_clone 2>/dev/null || true
 
-# 3. Docker のビルドキャッシュ & 未使用イメージ削除 (起動中のみ安全に実行)
+# 4. Docker のビルドキャッシュ & 未使用イメージ削除 (起動中のみ安全に実行)
 if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
   echo "==> Cleaning up Docker builder cache and dangling images..."
   docker builder prune -f >/dev/null 2>&1 || true
   docker image prune -f >/dev/null 2>&1 || true
 fi
 
-# 4. ディスク空き容量チェック & 低下時のデスクトップ通知
+# 5. ディスク空き容量チェック & 低下時のデスクトップ通知
 avail_gb=$(df -g /System/Volumes/Data 2>/dev/null | awk 'NR==2 {print $4}')
 echo "==> Current available storage: ${avail_gb}GB"
 
