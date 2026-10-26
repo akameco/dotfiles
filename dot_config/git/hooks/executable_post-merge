@@ -3,7 +3,8 @@
 
 # Require zsh and function source; fail silently if unavailable.
 if command -v zsh >/dev/null 2>&1; then
-  zsh -lc 'source ~/.config/zsh/functions.zsh && gwt-clean-merged' >/dev/null 2>&1 || true
+  # --auto: worktree remove に --force を付けない（未コミットの変更があれば消さない）
+  zsh -lc 'source ~/.config/zsh/functions.zsh && gwt-clean-merged --auto' >/dev/null 2>&1 || true
 fi
 
 # リポジトリ固有の .git/hooks/post-merge があれば続けて実行する（core.hooksPath でグローバルに向けると素通りされるため）

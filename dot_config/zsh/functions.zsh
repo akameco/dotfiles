@@ -648,11 +648,15 @@ gwt-clean-merged() {
   local current_branch
   current_branch=$("$git_cmd" symbolic-ref --quiet --short HEAD 2>/dev/null || true)
 
+  # upstream が消えた（[gone]）ものだけを対象にする。切った直後でコミットが 0 のブランチも
+  # --merged に入るので、それだけで選ぶと作業中のワークツリーを消してしまう
   local -a merged_branches=()
-  while IFS= read -r br; do
+  local track
+  while IFS=$'\t' read -r br track; do
     [[ -z "$br" || "$br" == "$default_branch" ]] && continue
+    [[ "$track" == "[gone]" ]] || continue
     merged_branches+=("$br")
-  done < <("$git_cmd" branch --merged "$default_branch" --format='%(refname:short)' 2>/dev/null)
+  done < <("$git_cmd" branch --merged "$default_branch" --format='%(refname:short)%09%(upstream:track)' 2>/dev/null)
 
   if (( ${#merged_branches[@]} == 0 )); then
     echo "マージ済みブランチが見つかりませんでした (基準: ${default_branch})"
@@ -670,6 +674,11 @@ gwt-clean-merged() {
     [[ "$wt_path" == "$repo_root" ]] && continue
 
     if printf '%s\n' "${merged_branches[@]}" | /usr/bin/grep -Fx -- "$wt_branch" >/dev/null; then
+      if [[ -n "$("$git_cmd" -C "$wt_path" status --porcelain 2>/dev/null)" ]]; then
+        echo "スキップ: ${wt_branch} (${wt_path}) に未コミットの変更があります" >&2
+        deleted_branches+=("$wt_branch") # 後段のブランチ削除でも飛ばす
+        continue
+      fi
       echo "削除: ${wt_branch} (${wt_path})"
       local -a remove_args=("worktree" "remove" "$wt_path")
       (( auto_cleanup )) || remove_args+=("--force")
