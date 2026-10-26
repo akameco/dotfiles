@@ -741,16 +741,12 @@ raycast-import-snippets() {
   local abs_path
   abs_path=$(cd "$(dirname "$json_file")" && pwd)/$(basename "$json_file")
 
-  local old_clip
-  old_clip=$(pbpaste 2>/dev/null)
-
   echo "Raycast にスニペットを自動インポート中... ($abs_path)"
   open "raycast://extensions/raycast/snippets/import-snippets"
 
   osascript - "$abs_path" <<'EOF'
 on run argv
   set targetPath to item 1 of argv
-  set the clipboard to targetPath
 
   delay 1.0
   tell application "Raycast" to activate
@@ -758,6 +754,10 @@ on run argv
     tell process "Raycast"
       set frontmost to true
     end tell
+
+    -- 日本語入力のままだとパスが変換されて崩れるので英数に切り替える
+    key code 102
+    delay 0.2
 
     -- 1. Raycast の Import Snippets 初期画面で「Select File」を実行 (Enter)
     key code 36
@@ -773,8 +773,8 @@ on run argv
     key code 51
     delay 0.2
 
-    -- 4. 正しいパスをペースト (Cmd + V)
-    keystroke "v" using {command down}
+    -- 4. 正しいパスを入力 (Cmd + V は効かないことがあるので直接打つ)
+    keystroke targetPath
     delay 0.4
 
     -- 5. パス決定 (Go) -> シートが閉じるのを待機
@@ -785,22 +785,13 @@ on run argv
     key code 36
     delay 1.5
 
-    -- 7. Raycast プレビュー画面で確定 (Import)
-    key code 36
-    delay 1.0
-
-    -- 8. ウィンドウが残っていれば Esc で閉じる
+    -- 7. ファイルを開いた時点で取り込まれる。ウィンドウが残っていれば Esc で閉じる
     key code 53
     delay 0.2
     key code 53
   end tell
 end run
 EOF
-
-  # クリップボードを復元
-  if [[ -n "$old_clip" ]]; then
-    printf '%s' "$old_clip" | pbcopy
-  fi
 
   echo "✓ Raycast へのスニペット反映が完了しました！"
 }
