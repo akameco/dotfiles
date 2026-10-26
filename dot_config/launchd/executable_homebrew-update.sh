@@ -12,9 +12,10 @@ brew cleanup -s
 
 # 2. mise のツール（グローバルの設定のもの）を上げる。公開から 24 時間経っていない版は mise の minimum_release_age が外す
 echo "==> Upgrading mise tools..."
-# Node.js の最新版がセキュリティリリースのときは 24 時間待たずに上げる
-if curl -fsS https://nodejs.org/dist/index.json | jq -e '.[0].security' >/dev/null 2>&1; then
-  echo "==> Latest Node.js is a security release; upgrading node without minimum_release_age"
+# Node.js の最新版がセキュリティリリースで、まだ入っていないときは 24 時間待たずに上げる
+node_security=$(curl -fsS https://nodejs.org/dist/index.json | jq -r '.[0] | select(.security) | .version' 2>/dev/null)
+if [[ -n "$node_security" ]] && ! mise where "node@${node_security#v}" >/dev/null 2>&1; then
+  echo "==> Node.js $node_security is a security release; upgrading node without minimum_release_age"
   mise upgrade --global --minimum-release-age 0s node || echo "==> mise upgrade node failed (continuing)"
 fi
 mise upgrade --global || echo "==> mise upgrade failed (continuing)"
