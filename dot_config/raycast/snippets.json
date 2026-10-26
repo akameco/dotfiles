@@ -38,5 +38,10 @@
     "name": "現状報告",
     "text": "現状報告",
     "keyword": ";hou"
+  },
+  {
+    "name": "メールアドレス (Gmail)",
+    "text": "akameco.t@gmail.com",
+    "keyword": ";mail"
   }
 ]
