@@ -18,6 +18,10 @@ secret_check() {
   repo_name="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo '')")"
   user_email="$(git config user.email 2>/dev/null || true)"
 
+  # リモートが 1 つも無いリポジトリ（~/.claude/retro-reports などローカルだけの記録）は push する先が無いので検査しない。
+  # 後でリモートを足すと、それまでの履歴は検査されていないことに注意
+  [ -n "$(git remote 2>/dev/null)" ] || return 0
+
   is_target=0
   if echo "${remote_url}" | grep -Eq 'github\.com[:/]akameco/'; then
     is_target=1
