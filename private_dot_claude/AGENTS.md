@@ -1,0 +1,64 @@
+# 基本方針
+
+- 回答は日本語で書く。ツールを続けて呼ぶ途中の経過報告も、英語のコードや出力・文書を読んだあとも日本語のまま書く
+- コード生成は変更部分のみをわかりやすく説明・提示すること
+- ドラフト（レビューコメント、PR説明文など）を作成したら自動で `pbcopy` にコピーすること
+- シークレット（APIキー・トークン・パスワード）は必ず環境変数で管理し、コードにハードコードしない
+- ライブラリをインストールするときは常に最新版にし、設定ファイルもそれに合わせた書き方にすること
+- Slack・Linear・Backlog に投稿する前に、チャンネル名・メンション先・本文をテキストで示してから tool を呼ぶ
+- CI を待つときは `gh pr checks <n> --watch` を run_in_background で実行し、条件を待つときは Monitor を使う。push し直したら前の監視を TaskStop で止めてから立て直す（残すと取り消された古い結果を通知してくる）
+- macOS に `timeout` コマンドは無い。時間を区切るときは Bash ツールの timeout 指定か run_in_background を使う
+- 相手に渡すドラフトと残作業の一覧には、相手の判断が要るものだけを書く。Linear・gh で確かめられる状態は先に確かめる。Issue の範囲外で自分から出す案のうち、採るかの判断待ちのものは TODO コメントとして commit せず、効果と不便を数字で並べてこの一覧に書く
+- ドキュメントに書くコマンド手順は、副作用が preview 程度で済むなら、書く前に一度実行して確かめる。実行できないものは「未検証」と書き、残作業に挙げる
+- 移行と他チームのリポジトリの修正では、既存の挙動とコードを保つ。変えたい点は PR の前に「元 / 変更後 / 理由」で示し、判断を仰ぐ
+- Claude はサブスクで使っている。費用はドルではなく、利用枠（5 時間・週）への影響で話す
+- 新しく書くスクリプトや使い捨ての処理は bun（TypeScript）で書く。JSON の取り出しは `jq` か `bun -e`、画像の切り出し・縮小は `sips` を使う。既存の Python のスクリプトはそのまま使う
+- `~/.config` などのドットファイルは chezmoi で管理している。変える前に `chezmoi managed` で確かめ、管理下ならソース（`~/dev/github.com/akameco/dotfiles`）を直して `chezmoi apply <path>` する。`mise use -g` のようにツールが書き換えたら `chezmoi re-add <path>` で取り込む
+
+# コードスタイル
+
+- コードスタイルはリポジトリの lint・既存コードに従う
+
+# ブランチ作成（全プロジェクト共通）
+
+git worktree 方式を利用すること。ブランチ名の `/` は `_` に置き換えること。
+
+```bash
+git worktree add .local/__worktree/{BRANCH_NAME} -b {BRANCH_NAME}
+cd .local/__worktree/{BRANCH_NAME}
+```
+
+ルートに `.env` が存在する場合はコピーすること。`.claude/settings.local.json`（hook など）が存在する場合はリンクすること（`.claude` を gitignore しているリポジトリでは worktree に入らない）。
+
+```bash
+cp .env .local/__worktree/{BRANCH_NAME}/
+mkdir -p .local/__worktree/{BRANCH_NAME}/.claude && ln -s "$PWD/.claude/settings.local.json" .local/__worktree/{BRANCH_NAME}/.claude/
+```
+
+pnpm workspace のリポジトリでは worktree 作成後に `pnpm install --recursive` を実行する（通常の `pnpm install` は lockfile 判定で内部パッケージの `node_modules` を作らず、tsconfig の `extends` が解決できなくなる）。
+
+# スキル作成
+
+スキルを作成・編集する場合は必ず `anthropic-skills:skill-creator` スキルを参照すること。
+
+- 説明よりコード例を優先する
+- README.md 等の補助ドキュメントは作成しない
+
+# 知見の保存（Knowledge Capture）
+
+- 個人のデバッグメモ・好み・一時的な文脈 → auto memory に保存
+- チーム・プロジェクト固有の知見（アーキテクチャ決定・API変更・実装手順）→ プロジェクトの既存ドキュメント構造に従う
+- 該当タスクで既に関連ドキュメント・コメント・例が生成される場合は重複して保存しない
+- 保存先が明確でない場合は、新規ドキュメント作成前にユーザーに確認する
+- 作業対象が cwd と別のリポジトリなら、知見はそのリポジトリの docs に書く
+
+## レビュー後の知見保存
+
+レビュー完了後、以下を必ず行うこと:
+
+1. 新規知見があれば `memory/review-pr{番号}-{トピック}.md` に保存
+2. MEMORY.md のレビュー知見の節にリンクと概要を追記（`memory/hub_reviews.md` があるリポジトリではそちら）
+
+保存すべき内容: 問題の背景と根本原因・検討したアプローチの比較・具体的な指摘ポイントと推奨改善案
+
+herdr のチーム（司令塔がいる）で動いているときは、保存するのは司令塔だけ。ほかの役割は、残すべき知見を報告に「知見:」として書く（各自が保存すると同じ内容が重複する）。
