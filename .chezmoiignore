@@ -6,3 +6,7 @@ README.md
 .config/karabiner/automatic_backups/**
 
 CLAUDE.local.md
+
+# herdr が上書きする
+.claude/hooks/herdr-agent-state.sh
+.claude/hooks/__pycache__
