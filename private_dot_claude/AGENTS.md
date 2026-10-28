@@ -21,19 +21,9 @@
 
 # ブランチ作成（全プロジェクト共通）
 
-git worktree 方式を利用すること。ブランチ名の `/` は `_` に置き換えること。
+worktree は `EnterWorktree`（起動時なら `claude -w <name>`）で作る。作ったら `git branch -m <BRANCH_NAME>` でブランチ名を付け直す（そのままだと `worktree-` が付き、`/` が `+` になる）。付け直したブランチは `ExitWorktree` の `remove` では消えないので、要らなくなったら `git branch -D` で消す。
 
-```bash
-git worktree add .local/__worktree/{BRANCH_NAME} -b {BRANCH_NAME}
-cd .local/__worktree/{BRANCH_NAME}
-```
-
-ルートに `.env` が存在する場合はコピーすること。`.claude/settings.local.json`（hook など）が存在する場合はリンクすること（`.claude` を gitignore しているリポジトリでは worktree に入らない）。
-
-```bash
-cp .env .local/__worktree/{BRANCH_NAME}/
-mkdir -p .local/__worktree/{BRANCH_NAME}/.claude && ln -s "$PWD/.claude/settings.local.json" .local/__worktree/{BRANCH_NAME}/.claude/
-```
+`.env` や `.claude/settings.local.json` を worktree に渡すときは、リポジトリのルートの `.worktreeinclude`（`.gitignore` と同じ書き方）に書く。
 
 pnpm workspace のリポジトリでは worktree 作成後に `pnpm install --recursive` を実行する（通常の `pnpm install` は lockfile 判定で内部パッケージの `node_modules` を作らず、tsconfig の `extends` が解決できなくなる）。
 

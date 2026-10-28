@@ -3,6 +3,7 @@
 **/mise.local.toml
 
 **/.claude/.cc-writes/
+**/.claude/worktrees/
 
 # Next.js のビルド出力（public-repo-guard が未追跡ファイルとして検査しないように）
 .next/
