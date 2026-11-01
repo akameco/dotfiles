@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- 毎朝 9:00 に前月の請求を通知する。前月を通知済みなら何もしない（kintai-log の docs/how-it-works.md） -->
+    <key>Label</key><string>dev.akameco.kintai-billing</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>{{ .chezmoi.homeDir }}/dev/github.com/akameco/kintai-log/kintai</string>
+      <string>--billing-notify</string>
+    </array>
+    <key>WorkingDirectory</key><string>{{ .chezmoi.homeDir }}/dev/github.com/akameco/kintai-log</string>
+    <key>StartCalendarInterval</key>
+    <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+    <key>StandardOutPath</key><string>{{ .chezmoi.homeDir }}/Library/Logs/kintai-billing.log</string>
+    <key>StandardErrorPath</key><string>{{ .chezmoi.homeDir }}/Library/Logs/kintai-billing.log</string>
+  </dict>
+</plist>
