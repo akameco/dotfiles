@@ -100,10 +100,13 @@ dotfiles_syntax_check() {
         ;;
       *.sh|*executable_*)
         first_line="$(head -n 1 "${full_path}" 2>/dev/null || true)"
-        case "${first_line}" in
-          *zsh*)  command -v zsh >/dev/null 2>&1 && { zsh -n "${full_path}" || syntax_err=1; } ;;
-          *bash*) command -v bash >/dev/null 2>&1 && { bash -n "${full_path}" || syntax_err=1; } ;;
-          *sh*)   sh -n "${full_path}" || syntax_err=1 ;;
+        # shebang のインタプリタ名で判定する（パスの途中の "shims" などに当たらないように）
+        set -- ${first_line#\#!}
+        [ "${1##*/}" = "env" ] && shift
+        case "${1##*/}" in
+          zsh)  command -v zsh >/dev/null 2>&1 && { zsh -n "${full_path}" || syntax_err=1; } ;;
+          bash) command -v bash >/dev/null 2>&1 && { bash -n "${full_path}" || syntax_err=1; } ;;
+          sh)   sh -n "${full_path}" || syntax_err=1 ;;
         esac
         ;;
       *.json)
