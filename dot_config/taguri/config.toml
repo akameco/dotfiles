@@ -47,3 +47,18 @@ command = ["$TAGURI_PLUGINS/claude.ts"]
 kind = "query"
 keyword = "ai"
 description = "Claude に聞く・クリップボードを要約／翻訳／返信案"
+
+# クリップボード履歴（taguri 本体が記録する）。Enter で貼り付け、⌘Enter でコピーだけ、⌃Enter で履歴から消す
+[[plugin]]
+name = "clipboard"
+command = ["builtin:clipboard"]
+keyword = "clip"
+description = "クリップボード履歴"
+
+# Raycast 形式の snippets.json。@sn rev 1234 で {argument} に入れて貼る
+[[plugin]]
+name = "snippets"
+command = ["$TAGURI_PLUGINS/snippets.ts"]
+kind = "query"
+keyword = "sn"
+description = "スニペットを貼る"
