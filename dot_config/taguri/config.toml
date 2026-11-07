@@ -1,0 +1,28 @@
+# taguri の設定。仕様は https://github.com/akameco/taguri/blob/main/docs/design.md
+# 変えたら `taguri reload` で読み直す。
+
+# Raycast と並べて使う間は cmd+shift+space。移行したら option+space にする
+hotkey = "cmd+shift+space"
+launch_at_login = true
+
+# Raycast Script Commands（@raycast.* のコメントを持つスクリプト）
+script_dirs = ["~/.config/raycast/scripts"]
+
+[[plugin]]
+name = "apps"
+command = ["$TAGURI_PLUGINS/apps.ts"]
+root = true
+
+# #5892 / owner/repo#12。既定のリポジトリは TAGURI_GITHUB_REPO（work.zsh）
+[[plugin]]
+name = "github"
+command = ["$TAGURI_PLUGINS/github-issue.ts"]
+kind = "query"
+match = '^(?:([\w.-]+/[\w.-]+))?#(\d+)$'
+
+# ABC-123。ワークスペースは LINEAR_WORKSPACE（work.zsh）
+[[plugin]]
+name = "linear"
+command = ["$TAGURI_PLUGINS/linear-issue.ts"]
+kind = "query"
+match = '^([A-Z][A-Z0-9]+-\d+)$'
