@@ -33,15 +33,17 @@ name = "repos"
 command = ["$TAGURI_PLUGINS/repos.ts"]
 root = true
 
-# 「pr 」で自分の PR とレビュー依頼
+# --- @ で始めるコマンド（@ だけを打つと一覧が出る）---
+
 [[plugin]]
 name = "prs"
 command = ["$TAGURI_PLUGINS/prs.ts"]
-prefix = "pr "
+keyword = "pr"
+description = "自分の PR とレビュー依頼"
 
-# 「ai 」で Claude に聞く（結果はクリップボードに入れて通知）
 [[plugin]]
 name = "claude"
 command = ["$TAGURI_PLUGINS/claude.ts"]
 kind = "query"
-prefix = "ai "
+keyword = "ai"
+description = "Claude に聞く・クリップボードを要約／翻訳／返信案"
