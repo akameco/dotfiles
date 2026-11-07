@@ -62,3 +62,27 @@ command = ["$TAGURI_PLUGINS/snippets.ts"]
 kind = "query"
 keyword = "sn"
 description = "スニペットを貼る"
+
+# Chrome のタブ。Enter で切り替え、⌘Enter で URL をコピー、⌃Enter で閉じる
+[[plugin]]
+name = "tabs"
+command = ["$TAGURI_PLUGINS/tabs.ts"]
+keyword = "tab"
+description = "Chrome のタブに切り替える"
+ttl = 5
+
+# herdr のエージェント。確認待ちが先頭。Enter でそのペインに移る
+[[plugin]]
+name = "agents"
+command = ["$TAGURI_PLUGINS/agents.ts"]
+keyword = "ag"
+description = "herdr のエージェントに移る"
+ttl = 5
+
+# TODO（~/Documents/todo.md のチェックリスト）。@todo 文 で追加、Enter で完了
+[[plugin]]
+name = "todo"
+command = ["$TAGURI_PLUGINS/todo.ts"]
+kind = "query"
+keyword = "todo"
+description = "TODO を追加・完了する"
