@@ -26,3 +26,22 @@ name = "linear"
 command = ["$TAGURI_PLUGINS/linear-issue.ts"]
 kind = "query"
 match = '^([A-Z][A-Z0-9]+-\d+)$'
+
+# ghq のリポジトリ。Enter で herdr、cmd+Enter で VS Code、option+Enter で GitHub
+[[plugin]]
+name = "repos"
+command = ["$TAGURI_PLUGINS/repos.ts"]
+root = true
+
+# 「pr 」で自分の PR とレビュー依頼
+[[plugin]]
+name = "prs"
+command = ["$TAGURI_PLUGINS/prs.ts"]
+prefix = "pr "
+
+# 「ai 」で Claude に聞く（結果はクリップボードに入れて通知）
+[[plugin]]
+name = "claude"
+command = ["$TAGURI_PLUGINS/claude.ts"]
+kind = "query"
+prefix = "ai "
