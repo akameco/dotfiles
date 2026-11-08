@@ -94,3 +94,12 @@ command = ["$TAGURI_PLUGINS/todo.ts"]
 kind = "query"
 keyword = "todo"
 description = "TODO を追加・完了する"
+
+# スクリーンショットを新しい順に。Enter で貼る、⌘ でコピー、⌥ で Finder、⌃ でプレビュー
+[[plugin]]
+name = "screenshots"
+command = ["$TAGURI_PLUGINS/screenshots.ts"]
+keyword = "ss"
+ttl = 3
+label = "スクショ"
+description = "スクリーンショットを選んで貼る"
