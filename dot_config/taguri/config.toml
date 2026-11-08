@@ -162,6 +162,13 @@ keyword = "bm"
 ttl = 300
 description = "ブックマークを開く"
 
+# 通貨の換算（100usd in jpy）。root で打つと、一覧の先頭に換算した額が出る。レートは open.er-api.com から 1 日 1 回取る
+[[plugin]]
+name = "currency"
+command = ["$TAGURI_PLUGINS/currency.ts"]
+kind = "inline"
+match = '^\s*[\d.,]+\s*[A-Za-z]{3}\s+(?:in|to|as)\s+[A-Za-z]{3}\s*$'
+
 # --- クイックリンク（名前を付けた URL・フォルダ・Web 検索）---
 
 # @g 語 で検索。fallback = true なので、何も前置きせずに打った語も一覧の最後から検索できる
