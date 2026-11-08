@@ -103,3 +103,12 @@ keyword = "ss"
 ttl = 3
 label = "スクショ"
 description = "スクリーンショットを選んで貼る"
+
+# Claude にプラグインを作ってもらう。Enter で herdr の新しいタブに Claude Code を開く
+[[plugin]]
+name = "new"
+command = ["$TAGURI_PLUGINS/new.ts"]
+kind = "query"
+keyword = "new"
+label = "Claude"
+description = "Claude にプラグインを作ってもらう"
