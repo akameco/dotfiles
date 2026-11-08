@@ -112,3 +112,79 @@ kind = "query"
 keyword = "new"
 label = "Claude"
 description = "Claude にプラグインを作ってもらう"
+
+# --- Raycast・Alfred の代わり（2026-11-09）---
+
+# スリープ・ロック・再起動・ゴミ箱を空に・ダークモード と、システム設定の各画面
+[[plugin]]
+name = "system"
+command = ["$TAGURI_PLUGINS/system.ts"]
+root = true
+ttl = 86400
+
+# ファイルを探す（Spotlight）。@f 名前 [パスの語]、空なら最近使ったファイル。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
+[[plugin]]
+name = "files"
+command = ["$TAGURI_PLUGINS/files.ts"]
+kind = "query"
+keyword = "f"
+description = "ファイルを探す"
+
+# 動いているアプリを終了する。⌃Enter で強制終了
+[[plugin]]
+name = "quit"
+command = ["$TAGURI_PLUGINS/quit.ts"]
+keyword = "quit"
+ttl = 2
+description = "アプリを終了する"
+
+# ウインドウに切り替える（アクセシビリティの許可が要る）。⌃Enter で閉じる
+[[plugin]]
+name = "windows"
+command = ["$TAGURI_PLUGINS/windows.ts"]
+keyword = "win"
+ttl = 2
+description = "ウインドウに切り替える"
+
+# 絵文字を日本語・英語の名前で探して貼る
+[[plugin]]
+name = "emoji"
+command = ["$TAGURI_PLUGINS/emoji.ts"]
+keyword = "emoji"
+ttl = 604800
+description = "絵文字を貼る"
+
+# Chrome のブックマーク
+[[plugin]]
+name = "bookmarks"
+command = ["$TAGURI_PLUGINS/bookmarks.ts"]
+keyword = "bm"
+ttl = 300
+description = "ブックマークを開く"
+
+# --- クイックリンク（名前を付けた URL・フォルダ・Web 検索）---
+
+# @g 語 で検索。fallback = true なので、何も前置きせずに打った語も一覧の最後から検索できる
+[[quicklink]]
+name = "Google"
+url = "https://www.google.com/search?q={query}"
+keyword = "g"
+fallback = true
+
+[[quicklink]]
+name = "GitHub を検索"
+url = "https://github.com/search?q={query}&type=repositories"
+keyword = "gh"
+icon = "🐙"
+
+[[quicklink]]
+name = "英和辞書（Weblio）"
+url = "https://ejje.weblio.jp/content/{query}"
+keyword = "ej"
+icon = "📖"
+
+# {query} の無いものは、そのまま root の候補に出る
+[[quicklink]]
+name = "ダウンロード"
+url = "~/Downloads"
+icon = "📥"
