@@ -183,6 +183,13 @@ url = "https://ejje.weblio.jp/content/{query}"
 keyword = "ej"
 icon = "📖"
 
+# macOS の辞書.app で引く
+[[quicklink]]
+name = "辞書"
+url = "dict://{query}"
+keyword = "d"
+icon = "📚"
+
 # {query} の無いものは、そのまま root の候補に出る
 [[quicklink]]
 name = "ダウンロード"
