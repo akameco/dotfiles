@@ -8,6 +8,12 @@ launch_at_login = true
 # Raycast Script Commands（@raycast.* のコメントを持つスクリプト）
 script_dirs = ["~/.config/raycast/scripts"]
 
+# パネルの大きさ。scale は文字・余白・幅の倍率（0.8〜1.6）、rows は一覧に見える行数（4〜15）。
+# 変えて `taguri reload` すると、アプリが起動し直して反映される
+[appearance]
+scale = 1.2
+rows = 8
+
 [[plugin]]
 name = "apps"
 command = ["$TAGURI_PLUGINS/apps.ts"]
