@@ -228,17 +228,19 @@ match = '^\s*[\d.,]+\s*[A-Za-z]{3}\s+(?:in|to|as)\s+[A-Za-z]{3}\s*$'
 
 # --- クイックリンク（名前を付けた URL・フォルダ・Web 検索）---
 
-# @g 語 で検索。fallback = true なので、何も前置きせずに打った語も一覧の最後から検索できる
+# @gg 語 で検索（1 文字の @g は @gh などの頭と重なり、空白を打つまで決まらないので 2 文字に）。
+# fallback = true なので、何も前置きせずに打った語も一覧の最後から検索できる
 [[quicklink]]
 name = "Google"
 url = "https://www.google.com/search?q={query}"
-keyword = "g"
+keyword = "gg"
 fallback = true
 
 [[quicklink]]
 name = "GitHub を検索"
 url = "https://github.com/search?q={query}&type=repositories"
-keyword = "gh"
+# @gh は PR・Issue の絞り込み（gh）が使うので、頭の重ならない名前にする
+keyword = "github"
 icon = "🐙"
 
 [[quicklink]]
