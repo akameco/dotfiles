@@ -113,6 +113,15 @@ keyword = "new"
 label = "Claude"
 description = "Claude にプラグインを作ってもらう"
 
+# AI に taguri を変えてもらう（@taguri 猫のスキンを足したい）。スキン・配色・キー・プラグインなど何でも
+[[plugin]]
+name = "taguri"
+command = ["$TAGURI_PLUGINS/taguri.ts"]
+kind = "query"
+keyword = "taguri"
+label = "AI"
+description = "AI に taguri を変えてもらう（スキン・配色・キーなど）"
+
 # --- Raycast・Alfred の代わり（2026-11-09）---
 
 # スリープ・ロック・再起動・ゴミ箱を空に・ダークモード と、システム設定の各画面
