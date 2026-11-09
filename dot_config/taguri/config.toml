@@ -143,12 +143,14 @@ command = ["builtin:system"]
 root = true
 ttl = 86400
 
-# ファイルを探す（Spotlight）。@f 名前 [パスの語]、空なら最近使ったファイル。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
+# ファイルを探す（Spotlight）。@f 名前 [パスの語]、空なら最近使ったファイル。~/名前 ならそのフォルダの中から。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
 [[plugin]]
 name = "files"
 command = ["builtin:files"]
 kind = "query"
 keyword = "f"
+# ~ で始めると、そのフォルダの中を名前で絞り込む（~/Pic → ホームの Pictures）。Tab でフォルダの中に入る
+match = '^(~.*)$'
 description = "ファイルを探す"
 
 # 動いているアプリを終了する。⌃Enter で強制終了
