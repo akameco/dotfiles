@@ -15,7 +15,7 @@ script_dirs = ["~/.config/raycast/scripts"]
 scale = 1.2
 text_scale = 0.85
 rows = 12
-skin = "sakura"
+skin = "sakura"  # 同梱。自作の "hana"（skins/hana）に戻すならここを変える
 
 [[plugin]]
 name = "apps"
