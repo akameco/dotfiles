@@ -6,7 +6,8 @@
 - シークレット（APIキー・トークン・パスワード）は必ず環境変数で管理し、コードにハードコードしない
 - ライブラリをインストールするときは常に最新版にし、設定ファイルもそれに合わせた書き方にすること
 - Slack・Linear・Backlog に投稿する前に、チャンネル名・メンション先・本文をテキストで示してから tool を呼ぶ
-- CI を待つときは `gh pr checks <n> --watch` を run_in_background で実行し、条件を待つときは Monitor を使う。push し直したら前の監視を TaskStop で止めてから立て直す（残すと取り消された古い結果を通知してくる）
+- CI を待つときは `gh pr checks <n> --watch` を run_in_background で実行し、条件を待つときは Monitor を使う。push し直したら前の監視を TaskStop で止めてから立て直す（残すと取り消された古い結果を通知してくる）。push の直後は前の run を拾うので、`gh run list -c <sha>` に run が出るのを until で待ってから watch する
+- Edit・Write の前に、対象を Read ツールで読む（cat・sed -n で見ただけでは既読にならず、同じメッセージの Edit がまとめて失敗する）
 - macOS に `timeout` コマンドは無い。時間を区切るときは Bash ツールの timeout 指定か run_in_background を使う
 - 相手に渡すドラフトと残作業の一覧には、相手の判断が要るものだけを書く。Linear・gh で確かめられる状態は先に確かめる。Issue の範囲外で自分から出す案のうち、採るかの判断待ちのものは TODO コメントとして commit せず、効果と不便を数字で並べてこの一覧に書く
 - ドキュメントに書くコマンド手順は、副作用が preview 程度で済むなら、書く前に一度実行して確かめる。実行できないものは「未検証」と書き、残作業に挙げる
@@ -22,6 +23,8 @@
 # ブランチ作成（全プロジェクト共通）
 
 worktree は `EnterWorktree`（起動時なら `claude -w <name>`）で作る。作ったら `git branch -m <BRANCH_NAME>` でブランチ名を付け直す（そのままだと `worktree-` が付き、`/` が `+` になる）。付け直したブランチは `ExitWorktree` の `remove` では消えないので、要らなくなったら `git branch -D` で消す。
+
+worktree の中では、Bash は変数・heredoc・for・`$(...)` を使わない 1 コマンドに分け、ファイルの作成・書き換えは Write/Edit で行う。本体・別の worktree・別の clone で git を動かすときは、先に ExitWorktree する。
 
 `.env` や `.claude/settings.local.json` を worktree に渡すときは、リポジトリのルートの `.worktreeinclude`（`.gitignore` と同じ書き方）に書く。
 
