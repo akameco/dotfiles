@@ -50,6 +50,17 @@ command = ["$TAGURI_PLUGINS/prs.ts"]
 keyword = "pr"
 description = "自分の PR とレビュー依頼"
 
+# @gh owner/repo 修正 で、そのリポジトリの open な PR・Issue を絞り込む。
+# repos と prs の候補で ⌘K →「PR・Issue を絞り込む」を選ぶと、ここへ来る
+[[plugin]]
+name = "gh"
+command = ["$TAGURI_PLUGINS/gh.ts"]
+kind = "query"
+keyword = "gh"
+# @ を付けずに gh owner/repo と打っても、ここへ来る（付け忘れると Google の検索になっていた）
+prefix = "gh "
+description = "リポジトリの PR・Issue を絞り込む"
+
 [[plugin]]
 name = "claude"
 command = ["$TAGURI_PLUGINS/claude.ts"]
