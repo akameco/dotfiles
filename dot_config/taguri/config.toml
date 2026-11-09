@@ -183,6 +183,15 @@ ttl = 30
 label = "エディタ"
 description = "エディタで最近開いたフォルダ"
 
+# Homebrew の formula と cask を探す（手元の一覧から。入っているものには「入っている」）。Enter でページ、⌘Enter で brew install をコピー
+[[plugin]]
+name = "brew"
+command = ["builtin:brew"]
+kind = "query"
+keyword = "brew"
+label = "Homebrew"
+description = "Homebrew を探す"
+
 # 絵文字を日本語・英語の名前で探して貼る
 [[plugin]]
 name = "emoji"
