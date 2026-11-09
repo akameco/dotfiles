@@ -19,7 +19,7 @@ skin = "sakura"  # 同梱。自作の "hana"（skins/hana）に戻すならこ�
 
 [[plugin]]
 name = "apps"
-command = ["$TAGURI_PLUGINS/apps.ts"]
+command = ["builtin:apps"]
 root = true
 
 # #5892 / owner/repo#12。既定のリポジトリは TAGURI_GITHUB_REPO（work.zsh）
@@ -128,14 +128,14 @@ description = "AI に taguri を変えてもらう（スキン・配色・キー
 # スリープ・ロック・再起動・ゴミ箱を空に・ダークモード と、システム設定の各画面
 [[plugin]]
 name = "system"
-command = ["$TAGURI_PLUGINS/system.ts"]
+command = ["builtin:system"]
 root = true
 ttl = 86400
 
 # ファイルを探す（Spotlight）。@f 名前 [パスの語]、空なら最近使ったファイル。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
 [[plugin]]
 name = "files"
-command = ["$TAGURI_PLUGINS/files.ts"]
+command = ["builtin:files"]
 kind = "query"
 keyword = "f"
 description = "ファイルを探す"
@@ -143,7 +143,7 @@ description = "ファイルを探す"
 # 動いているアプリを終了する。⌃Enter で強制終了
 [[plugin]]
 name = "quit"
-command = ["$TAGURI_PLUGINS/quit.ts"]
+command = ["builtin:quit"]
 keyword = "quit"
 ttl = 2
 description = "アプリを終了する"
@@ -151,10 +151,37 @@ description = "アプリを終了する"
 # ウインドウに切り替える（アクセシビリティの許可が要る）。⌃Enter で閉じる
 [[plugin]]
 name = "windows"
-command = ["$TAGURI_PLUGINS/windows.ts"]
+command = ["builtin:windows"]
 keyword = "win"
 ttl = 2
 description = "ウインドウに切り替える"
+
+# プロセスと、待ち受けているポート（@kill 3000 でポートからも探せる）。Enter で止める、⌃Enter で強制終了、⌥Enter で pid をコピー
+[[plugin]]
+name = "processes"
+command = ["builtin:processes"]
+keyword = "kill"
+ttl = 2
+label = "プロセス"
+description = "プロセスを止める（ポートからも探せる）"
+
+# 文字の変換（JSON の整形・大文字小文字・camelCase など・Base64・URL・UNIX 時刻・UUID）。何も打たなければクリップボードを変換
+[[plugin]]
+name = "text"
+command = ["builtin:text"]
+kind = "query"
+keyword = "tx"
+label = "変換"
+description = "文字を変換する（空ならクリップボード）"
+
+# VS Code・Cursor・Windsurf で最近開いたフォルダ。Enter でそのエディタで開く、⌘Enter で Finder、⌥Enter でパスをコピー
+[[plugin]]
+name = "editors"
+command = ["builtin:editors"]
+keyword = "code"
+ttl = 30
+label = "エディタ"
+description = "エディタで最近開いたフォルダ"
 
 # 絵文字を日本語・英語の名前で探して貼る
 [[plugin]]
@@ -175,7 +202,7 @@ description = "ブックマークを開く"
 # 通貨の換算（100usd in jpy）。root で打つと、一覧の先頭に換算した額が出る。レートは open.er-api.com から 1 日 1 回取る
 [[plugin]]
 name = "currency"
-command = ["$TAGURI_PLUGINS/currency.ts"]
+command = ["builtin:currency"]
 kind = "inline"
 match = '^\s*[\d.,]+\s*[A-Za-z]{3}\s+(?:in|to|as)\s+[A-Za-z]{3}\s*$'
 
