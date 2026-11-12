@@ -12,10 +12,17 @@ script_dirs = ["~/.config/raycast/scripts"]
 # rows は一覧に見える行数（4〜15）。
 # 変えて `taguri reload` すると、アプリが起動し直して反映される
 [appearance]
-scale = 1.2
-text_scale = 0.85
+scale = 1.0
+# 幅と大きさは pt で直接書く（前は scale = 1.3 を掛けていた: 820 × 1.3、400 × 1.3）
+width = 1066.0
+list_width = 520.0
+preview_icon_size = 36.0  # 詳細のアイコン（前は 48 × 1.3 ≒ 62 で大きすぎた）
+image_icon_size = 36.0    # 画像のアイコン（28 × 1.3）
 rows = 12
-skin = "sakura"  # 同梱。自作の "hana"（skins/hana）に戻すならここを変える
+skin = "yuzuha"  # 星夜（taguri-hoshiyo ブランチの skins/hoshiyo へのリンク）。ほかに "yuzuha" "rin"
+text_scale = 0.9
+top = 0.29
+remember_position = true  # 背景のドラッグで動かした位置に次も出す（覚えた位置が無い・画面に無ければ top の位置）
 
 [[plugin]]
 name = "apps"
@@ -83,13 +90,14 @@ kind = "query"
 keyword = "sn"
 description = "スニペットを貼る"
 
-# Chrome のタブ。Enter で切り替え、⌘Enter で URL をコピー、⌃Enter で閉じる
+# Chrome のタブ。Enter で切り替え、⌘Enter で URL をコピー、⌃Enter で閉じる。一番上は「新しいタブ」
 [[plugin]]
 name = "tabs"
 command = ["$TAGURI_PLUGINS/tabs.ts"]
 keyword = "tab"
 description = "Chrome のタブに切り替える"
 ttl = 5
+frecency = false  # Chrome の並び順のまま（「新しいタブ」を一番上に保つ）
 
 # herdr のエージェント。確認待ちが先頭。Enter でそのペインに移る
 [[plugin]]
@@ -99,20 +107,13 @@ keyword = "ag"
 description = "herdr のエージェントに移る"
 ttl = 5
 
-# TODO（~/Documents/todo.md のチェックリスト）。@todo 文 で追加、Enter で完了
-[[plugin]]
-name = "todo"
-command = ["$TAGURI_PLUGINS/todo.ts"]
-kind = "query"
-keyword = "todo"
-description = "TODO を追加・完了する"
-
 # スクリーンショットを新しい順に。Enter で貼る、⌘ でコピー、⌥ で Finder、⌃ でプレビュー
 [[plugin]]
 name = "screenshots"
 command = ["$TAGURI_PLUGINS/screenshots.ts"]
 keyword = "ss"
 ttl = 3
+frecency = false  # 使ったものを上げず、新しい順のまま
 label = "スクショ"
 description = "スクリーンショットを選んで貼る"
 
@@ -220,6 +221,24 @@ command = ["$TAGURI_PLUGINS/bookmarks.ts"]
 keyword = "bm"
 ttl = 300
 description = "ブックマークを開く"
+
+# Chrome の履歴。最後に開いた順。Enter で開く、⌘Enter で URL をコピー
+[[plugin]]
+name = "history"
+command = ["$TAGURI_PLUGINS/history.ts"]
+keyword = "hist"
+ttl = 60
+description = "Chrome の履歴を開く"
+label = "履歴"
+
+# Chrome の新しいタブ。@nt だけで空のタブ、URL ならそのページ、それ以外は検索
+[[plugin]]
+name = "newtab"
+command = ["$TAGURI_PLUGINS/newtab.ts"]
+kind = "query"
+keyword = "nt"
+description = "Chrome で新しいタブを開く"
+label = "新しいタブ"
 
 # 通貨の換算（100usd in jpy）。root で打つと、一覧の先頭に換算した額が出る。レートは open.er-api.com から 1 日 1 回取る
 [[plugin]]
