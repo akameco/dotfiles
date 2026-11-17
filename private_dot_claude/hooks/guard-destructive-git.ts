@@ -3,6 +3,8 @@
 // permissions.deny は前方一致なので `git reset -q --hard` や `git -C x reset --hard` をすり抜ける。
 // あわせて、zsh で必ず失敗する `B="agent-browser --session x"; $B open …` と `echo ====` の形、
 // python3 のヒアドキュメントでのファイルの書き換え（Edit ツールか bun を使う方針）を実行前に止める。
+// worktree の中（cwd に /.claude/worktrees/）では sed -i・heredoc での書き込みを、サブエージェント（入力に agent_id）
+// では cat・sed -n だけでファイルを見るコマンドを止め、Write/Edit・Read へ誘導する（2026-11-16 の retro）。
 
 const RULES: [RegExp, string][] = [
   [/\bgit\b[^;&|\n]*\breset\b[^;&|\n]*\s--hard\b/, "git reset --hard"],
@@ -45,9 +47,40 @@ export function pythonRewrite(command: string): boolean {
   return /\bpython3?(?:\s+-\w+)*\s+-\s*<</.test(command) && /\bopen\(/.test(command) && /\.write\(|\.write_text\(/.test(command);
 }
 
-export function decide(command: string): Decision | null {
+export function shellRewrite(command: string): string | null {
+  // `sed -i`・`cat > f <<EOF`・`tee f <<EOF` でのファイルの作成・書き換え。heredoc の本文は見ない
+  const code = command.replace(HEREDOC, "<<");
+  if (/(?:^|[;&|\n(]|\s)sed\s+(?:-\w*\s+)*-i\b|(?:^|[;&|\n(]|\s)sed\s+-\w*i\b/.test(code)) return "sed -i";
+  const catRedirect = /\bcat\b[^;&|\n]*>>?\s*\S+[^;&|\n]*<</.test(code) || /\bcat\b[^;&|\n]*<<[^;&|\n]*>>?\s*\S+/.test(code);
+  const teeFile = /\btee\s+(-a\s+)?[^\s<-][^;&|\n]*<</.test(code);
+  if (catRedirect || teeFile) {
+    return "heredoc での書き込み";
+  }
+  return null;
+}
+
+export type Ctx = { cwd?: string; agentId?: string };
+
+export function catForRead(command: string): boolean {
+  // サブエージェントが 1〜3 ファイルを cat・sed -n で見るだけのコマンド。Read を通さないと、あとの Edit・Write が
+  // 「File has not been read yet」で失敗する（2026-11-16 の retro: 119 回のうち 106 回がこの形と巻き添え）
+  const c = command.trim();
+  if (/[|;&<>`$]|\n/.test(c)) return false; // パイプ・つなぎ・リダイレクト・展開があるものは対象外
+  const file = String.raw`[^\s*?\[\-][^\s*?\[]*`; // オプションとグロブは対象外
+  if (new RegExp(String.raw`^cat(?:\s+${file}){1,3}$`).test(c)) return true;
+  return new RegExp(String.raw`^sed\s+-n\s+'?\d+(,\d+)?p'?\s+${file}$`).test(c);
+}
+
+export function decide(command: string, ctx: Ctx = {}): Decision | null {
   if (pythonRewrite(command)) {
     return ["deny", "ファイルの書き換えは Edit ツールで行う（複数箇所は replace_all）。使い捨ての処理は bun -e で書く（python3 は使わない方針）"];
+  }
+  if (ctx.cwd?.includes("/.claude/worktrees/")) {
+    const rw = shellRewrite(command);
+    if (rw) return ["deny", `worktree の中では ${rw} が拒否される。ファイルの作成は Write、書き換えは Read してから Edit ツールで行う`];
+  }
+  if (ctx.agentId && catForRead(command)) {
+    return ["deny", "ファイルは Read ツールで読む（範囲は offset・limit）。cat・sed -n で見ただけでは既読にならず、あとの Edit・Write が失敗する"];
   }
   const eq = equalsWord(command);
   if (eq) {
@@ -65,12 +98,14 @@ export function decide(command: string): Decision | null {
   }
   const stripped = stripLiterals(command);
   const hit = RULES.find(([pattern]) => pattern.test(stripped));
-  return hit ? ["ask", `${hit[1]} は他のセッションのコミットを消す恐れがあるため確認します`] : null;
+  if (!hit) return null;
+  const alt = hit[1] === "git reset --hard" ? "。最新の main に合わせるだけなら `git fetch origin main` のあと `git switch -C <ブランチ> origin/main`" : "";
+  return ["ask", `${hit[1]} は他のセッションのコミットを消す恐れがあるため確認します${alt}`];
 }
 
 if (import.meta.main) {
   const input = JSON.parse(await Bun.stdin.text());
-  const result = decide(input?.tool_input?.command ?? "");
+  const result = decide(input?.tool_input?.command ?? "", { cwd: input?.cwd, agentId: input?.agent_id });
   if (result) {
     console.log(JSON.stringify({
       hookSpecificOutput: {

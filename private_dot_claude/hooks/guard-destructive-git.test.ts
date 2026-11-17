@@ -54,8 +54,38 @@ const CASES: [string, "ask" | "deny" | null][] = [
   ["python3 scrape_dcatalog.py --out a.json", null],
 ];
 
-function run(command: string): string | null {
-  const out = Bun.spawnSync(["bun", HOOK], { stdin: Buffer.from(JSON.stringify({ tool_input: { command } })) });
+// worktree の中（cwd に /.claude/worktrees/）の sed -i・heredoc での書き込みは deny
+const WT = "/Users/x/dev/repo/.claude/worktrees/feat-a";
+// サブエージェント（agent_id あり）の cat・sed -n だけのコマンドは deny
+const SUB = "agent-123";
+const CTX_CASES: [string, { cwd?: string; agent_id?: string }, "ask" | "deny" | null][] = [
+  ["sed -i '' 's/a/b/' src/a.ts", { cwd: WT }, "deny"],
+  ["sed -i.bak -e 's/a/b/' a.ts", { cwd: WT }, "deny"],
+  ["cat > src/a.ts <<'EOF'\nexport const a = 1\nEOF", { cwd: WT }, "deny"],
+  ["cat >> notes.md <<EOF\nx\nEOF", { cwd: WT }, "deny"],
+  ["tee src/a.ts <<'EOF'\nx\nEOF", { cwd: WT }, "deny"],
+  // worktree の中でも通すもの・worktree の外は通す
+  ["sed -n '1,20p' a.ts", { cwd: WT }, null],
+  ["git commit -F - <<'EOF'\nfix: x\nEOF", { cwd: WT }, null],
+  ["cat a.ts | grep foo", { cwd: WT }, null],
+  ["sed -i '' 's/a/b/' a.ts", { cwd: "/Users/x/dev/repo" }, null],
+  ["cat > a.ts <<'EOF'\nx\nEOF", {}, null],
+  // サブエージェント
+  ["cat src/a.ts", { agent_id: SUB }, "deny"],
+  ["cat src/a.ts src/b.css tokens.css", { agent_id: SUB }, "deny"],
+  ["sed -n '10,80p' src/a.ts", { agent_id: SUB }, "deny"],
+  ["sed -n 10,80p src/a.ts", { agent_id: SUB }, "deny"],
+  // サブエージェントでも通すもの・main は通す
+  ["cat a.ts | head -20", { agent_id: SUB }, null],
+  ["cat a b c d", { agent_id: SUB }, null],
+  ["cat docs/*.md", { agent_id: SUB }, null],
+  ["cat -n a.ts", { agent_id: SUB }, null],
+  ["grep -n foo a.ts", { agent_id: SUB }, null],
+  ["cat src/a.ts", {}, null],
+];
+
+function run(command: string, extra: { cwd?: string; agent_id?: string } = {}): string | null {
+  const out = Bun.spawnSync(["bun", HOOK], { stdin: Buffer.from(JSON.stringify({ tool_input: { command }, ...extra })) });
   const text = out.stdout.toString().trim();
   return text ? JSON.parse(text).hookSpecificOutput.permissionDecision : null;
 }
@@ -65,3 +95,14 @@ for (const [command, want] of CASES) {
     expect(run(command)).toBe(want);
   });
 }
+
+for (const [command, extra, want] of CTX_CASES) {
+  test(`${want ?? "allow"} (${extra.agent_id ? "sub" : extra.cwd?.includes("worktrees") ? "wt" : "main"}): ${command.replaceAll("\n", "⏎")}`, () => {
+    expect(run(command, extra)).toBe(want);
+  });
+}
+
+test("reset --hard の ask に代わりの手順が付く", () => {
+  const out = Bun.spawnSync(["bun", HOOK], { stdin: Buffer.from(JSON.stringify({ tool_input: { command: "git reset --hard origin/main" } })) });
+  expect(JSON.parse(out.stdout.toString()).hookSpecificOutput.permissionDecisionReason).toContain("git switch -C");
+});
