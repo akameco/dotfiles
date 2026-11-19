@@ -19,7 +19,7 @@ list_width = 520.0
 preview_icon_size = 36.0  # 詳細のアイコン（前は 48 × 1.3 ≒ 62 で大きすぎた）
 image_icon_size = 36.0    # 画像のアイコン（28 × 1.3）
 rows = 12
-skin = "yuzuha"  # 星夜（taguri-hoshiyo ブランチの skins/hoshiyo へのリンク）。ほかに "yuzuha" "rin"
+skin = "relay"  # 通信屋のナギ（同梱）。前は "yuzuha"。ほかに "rin" "hoshiyo"
 text_scale = 0.9
 top = 0.29
 remember_position = true  # 背景のドラッグで動かした位置に次も出す（覚えた位置が無い・画面に無ければ top の位置）
@@ -79,15 +79,15 @@ description = "Claude に聞く・クリップボードを要約／翻訳／返�
 [[plugin]]
 name = "clipboard"
 command = ["builtin:clipboard"]
-keyword = "clip"
+keyword = "clipboard"
 description = "クリップボード履歴"
 
-# Raycast 形式の snippets.json。@sn rev 1234 で {argument} に入れて貼る
+# Raycast 形式の snippets.json。@snippet rev 1234 で {argument} に入れて貼る
 [[plugin]]
 name = "snippets"
 command = ["$TAGURI_PLUGINS/snippets.ts"]
 kind = "query"
-keyword = "sn"
+keyword = "snippet"
 description = "スニペットを貼る"
 
 # Chrome のタブ。Enter で切り替え、⌘Enter で URL をコピー、⌃Enter で閉じる。一番上は「新しいタブ」
@@ -103,7 +103,7 @@ frecency = false  # Chrome の並び順のまま（「新しいタブ」を一�
 [[plugin]]
 name = "agents"
 command = ["$TAGURI_PLUGINS/agents.ts"]
-keyword = "ag"
+keyword = "agent"
 description = "herdr のエージェントに移る"
 ttl = 5
 
@@ -111,7 +111,7 @@ ttl = 5
 [[plugin]]
 name = "screenshots"
 command = ["$TAGURI_PLUGINS/screenshots.ts"]
-keyword = "ss"
+keyword = "screenshot"
 ttl = 3
 frecency = false  # 使ったものを上げず、新しい順のまま
 label = "スクショ"
@@ -144,12 +144,12 @@ command = ["builtin:system"]
 root = true
 ttl = 86400
 
-# ファイルを探す（Spotlight）。@f 名前 [パスの語]、空なら最近使ったファイル。~/名前 ならそのフォルダの中から。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
+# ファイルを探す（Spotlight）。@file 名前 [パスの語]、空なら最近使ったファイル。~/名前 ならそのフォルダの中から。Enter で開く、⌘ で Finder、⌥ でパスをコピー、⌃ で貼る
 [[plugin]]
 name = "files"
 command = ["builtin:files"]
 kind = "query"
-keyword = "f"
+keyword = "file"
 # ~ で始めると、そのフォルダの中を名前で絞り込む（~/Pic → ホームの Pictures）。Tab でフォルダの中に入る
 match = '^(~.*)$'
 description = "ファイルを探す"
@@ -166,9 +166,16 @@ description = "アプリを終了する"
 [[plugin]]
 name = "windows"
 command = ["builtin:windows"]
-keyword = "win"
+keyword = "window"
 ttl = 2
 description = "ウインドウに切り替える"
+
+# 前面のアプリのメニューの項目を探して実行する（@menu 書き出し）。アクセシビリティの許可が要る
+[[plugin]]
+name = "menu"
+command = ["builtin:menu"]
+keyword = "menu"
+description = "前面のアプリのメニューを実行する"
 
 # プロセスと、待ち受けているポート（@kill 3000 でポートからも探せる）。Enter で止める、⌃Enter で強制終了、⌥Enter で pid をコピー
 [[plugin]]
@@ -184,7 +191,7 @@ description = "プロセスを止める（ポートからも探せる）"
 name = "text"
 command = ["builtin:text"]
 kind = "query"
-keyword = "tx"
+keyword = "text"
 label = "変換"
 description = "文字を変換する（空ならクリップボード）"
 
@@ -218,7 +225,7 @@ description = "絵文字を貼る"
 [[plugin]]
 name = "bookmarks"
 command = ["$TAGURI_PLUGINS/bookmarks.ts"]
-keyword = "bm"
+keyword = "bookmark"
 ttl = 300
 description = "ブックマークを開く"
 
@@ -226,19 +233,10 @@ description = "ブックマークを開く"
 [[plugin]]
 name = "history"
 command = ["$TAGURI_PLUGINS/history.ts"]
-keyword = "hist"
+keyword = "history"
 ttl = 60
 description = "Chrome の履歴を開く"
 label = "履歴"
-
-# Chrome の新しいタブ。@nt だけで空のタブ、URL ならそのページ、それ以外は検索
-[[plugin]]
-name = "newtab"
-command = ["$TAGURI_PLUGINS/newtab.ts"]
-kind = "query"
-keyword = "nt"
-description = "Chrome で新しいタブを開く"
-label = "新しいタブ"
 
 # 通貨の換算（100usd in jpy）。root で打つと、一覧の先頭に換算した額が出る。レートは open.er-api.com から 1 日 1 回取る
 [[plugin]]
@@ -282,3 +280,15 @@ icon = "📚"
 name = "ダウンロード"
 url = "~/Downloads"
 icon = "📥"
+
+[aliases]
+# 短い keyword。@f でも @file でも呼べる
+"@f" = "@file"
+"@sn" = "@snippet"
+"@bm" = "@bookmark"
+"@hist" = "@history"
+"@tx" = "@text"
+"@ag" = "@agent"
+"@ss" = "@screenshot"
+"@win" = "@window"
+"@clip" = "@clipboard"
