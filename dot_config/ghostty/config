@@ -54,6 +54,9 @@ font-family = ""
 font-family = "UDEV Gothic 35NFLG"
 font-family = "Hiragino Sans"
 
+# 信号機ボタン（閉じる・最小化・拡大）を隠す。操作は ⌘W / ⌘M / ⌃⌘F で行う
+macos-window-buttons = hidden
+
 # window-status-bar-enabled = true
 # window-theme = dark
 
