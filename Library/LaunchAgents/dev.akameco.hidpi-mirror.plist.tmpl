@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- 1080p のモバイルモニタを HiDPI の仮想ディスプレイ（見た目 1600x900）のミラーにする。モニタの抜き差しにも追従する -->
+    <key>Label</key><string>dev.akameco.hidpi-mirror</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>{{ .chezmoi.homeDir }}/dev/github.com/akameco/hidpi-mirror/hidpi-mirror</string>
+      <string>--size</string>
+      <string>1600x900</string>
+    </array>
+    <key>RunAtLoad</key><true/>
+    <key>KeepAlive</key><true/>
+    <key>ProcessType</key><string>Interactive</string>
+    <key>LimitLoadToSessionType</key><string>Aqua</string>
+    <key>StandardOutPath</key><string>{{ .chezmoi.homeDir }}/Library/Logs/hidpi-mirror.log</string>
+    <key>StandardErrorPath</key><string>{{ .chezmoi.homeDir }}/Library/Logs/hidpi-mirror.log</string>
+  </dict>
+</plist>
