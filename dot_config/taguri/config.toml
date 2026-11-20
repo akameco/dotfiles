@@ -24,6 +24,9 @@ text_scale = 0.9
 top = 0.29
 remember_position = true  # 背景のドラッグで動かした位置に次も出す（覚えた位置が無い・画面に無ければ top の位置）
 
+[behavior]
+max_results_empty = 100
+
 [[plugin]]
 name = "apps"
 command = ["builtin:apps"]
@@ -42,6 +45,7 @@ name = "linear"
 command = ["$TAGURI_PLUGINS/linear-issue.ts"]
 kind = "query"
 match = '^([A-Z][A-Z0-9]+-\d+)$'
+app = "com.linear"  # Linear のアプリのアイコンを出す
 
 # ghq のリポジトリ。Enter で herdr、cmd+Enter で VS Code、option+Enter で GitHub
 [[plugin]]
@@ -93,8 +97,9 @@ description = "スニペットを貼る"
 # Chrome のタブ。Enter で切り替え、⌘Enter で URL をコピー、⌃Enter で閉じる。一番上は「新しいタブ」
 [[plugin]]
 name = "tabs"
-command = ["$TAGURI_PLUGINS/tabs.ts"]
+command = ["builtin:tabs"]  # 前は $TAGURI_PLUGINS/tabs.ts。本体の組み込みはプレビューにページの絵・og:image を出す
 keyword = "tab"
+app = "com.google.Chrome"
 description = "Chrome のタブに切り替える"
 ttl = 5
 frecency = false  # Chrome の並び順のまま（「新しいタブ」を一番上に保つ）
@@ -292,3 +297,6 @@ icon = "📥"
 "@ss" = "@screenshot"
 "@win" = "@window"
 "@clip" = "@clipboard"
+
+[hotkeys]
+"cmd+shift+c" = "@clipboard "
