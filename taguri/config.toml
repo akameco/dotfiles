@@ -72,13 +72,6 @@ keyword = "gh"
 prefix = "gh "
 description = "リポジトリの PR・Issue を絞り込む"
 
-[[plugin]]
-name = "claude"
-command = ["$TAGURI_PLUGINS/claude.ts"]
-kind = "query"
-keyword = "ai"
-description = "Claude に聞く・クリップボードを要約／翻訳／返信案"
-
 # クリップボード履歴（taguri 本体が記録する）。Enter で貼り付け、⌘Enter でコピーだけ、⌃Enter で履歴から消す
 [[plugin]]
 name = "clipboard"
@@ -89,7 +82,7 @@ description = "クリップボード履歴"
 # Raycast 形式の snippets.json。@snippet rev 1234 で {argument} に入れて貼る
 [[plugin]]
 name = "snippets"
-command = ["$TAGURI_PLUGINS/snippets.ts"]
+command = ["builtin:snippets"]
 kind = "query"
 keyword = "snippet"
 description = "スニペットを貼る"
@@ -130,15 +123,6 @@ kind = "query"
 keyword = "new"
 label = "Claude"
 description = "Claude にプラグインを作ってもらう"
-
-# AI に taguri を変えてもらう（@taguri 猫のスキンを足したい）。スキン・配色・キー・プラグインなど何でも
-[[plugin]]
-name = "taguri"
-command = ["$TAGURI_PLUGINS/taguri.ts"]
-kind = "query"
-keyword = "taguri"
-label = "AI"
-description = "AI に taguri を変えてもらう（スキン・配色・キーなど）"
 
 # --- Raycast・Alfred の代わり（2026-11-09）---
 
@@ -266,6 +250,7 @@ url = "https://github.com/search?q={query}&type=repositories"
 # @gh は PR・Issue の絞り込み（gh）が使うので、頭の重ならない名前にする
 keyword = "github"
 icon = "🐙"
+group = "GitHub"  # root で github と打つと @pr・@gh と並んで出る
 
 [[quicklink]]
 name = "英和辞書（Weblio）"

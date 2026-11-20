@@ -7,6 +7,10 @@ README.md
 
 CLAUDE.local.md
 
+# taguri の設定の本物。~/.config/taguri/config.toml はここへのリンク（GUI で変えた値がそのままここに入る）
+taguri
+taguri/**
+
 # herdr が上書きする
 .claude/hooks/herdr-agent-state.sh
 .claude/hooks/__pycache__
