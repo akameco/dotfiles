@@ -8,6 +8,11 @@
 # 2. slim-worktree.clone に書いたパスのうち、本体と内容が同じファイルを本体からの APFS クローンに置き換える
 #    （中身を共有するので容量を使わない。編集すればその時点で分かれる）
 #    設定: git config --add slim-worktree.clone 'docs/screenshots/'
+#    256KB 未満は飛ばす。変える: git config slim-worktree.cloneMinSize 65536
+#
+# 本体で sparse-checkout を有効にしておくと、git worktree add がその設定を引き継ぎ、
+# 外したファイルを最初から書かない（1 を後からやるより速い）:
+#    本体で git sparse-checkout set --no-cone '/*' '!*-snapshots/'
 #
 # 全部無効にする: SLIM_WORKTREE=0 git worktree add ...
 
@@ -34,13 +39,16 @@ clone=$(git config --get-all slim-worktree.clone)
 [ -n "$clone" ] || exit 0
 main=$(git worktree list --porcelain | sed -n '1s/^worktree //p')
 wt=$(git rev-parse --show-toplevel)
+# 小さいファイルはクローンしても容量がほとんど減らず、置き換えの手間だけかかるので飛ばす（既定 256KB）
+min=$(git config --get slim-worktree.cloneMinSize || echo 262144)
 tmp=$(mktemp -d) || exit 0
 n=0
 for p in $clone; do
-  # 本体側でそのパスに未コミットの変更があれば、index と中身がずれている恐れがあるので飛ばす
-  git -C "$main" diff --quiet -- "$p" || continue
-  # "<hash> <path>" で両方の index を並べ、hash と path が一致するものだけ置き換える
-  git -C "$main" -c core.quotepath=false ls-files -s -- "$p" | awk -F'\t' '{split($1,a," "); print a[2]"\t"$2}' | sort >"$tmp/main"
+  # 本体側でそのパスが HEAD と違う（未コミットの変更・stage がある）なら、中身がずれている恐れがあるので飛ばす
+  git -C "$main" diff --quiet HEAD -- "$p" || continue
+  # "<hash> <path>" で、本体の HEAD（min 以上のもの）と新しいワークツリーの index を並べ、hash と path が一致するものだけ置き換える
+  git -C "$main" -c core.quotepath=false ls-tree -r -l HEAD -- "$p" |
+    awk -F'\t' -v min="$min" '{split($1,a," "); if (a[2]=="blob" && a[4]+0>=min) print a[3]"\t"$2}' | sort >"$tmp/main"
   git -c core.quotepath=false ls-files -s -- "$p" | awk -F'\t' '{split($1,a," "); print a[2]"\t"$2}' | sort |
     comm -12 - "$tmp/main" | cut -f2- | while IFS= read -r f; do
       [ -f "$wt/$f" ] && cp -c "$main/$f" "$wt/$f.slim.$$" && mv "$wt/$f.slim.$$" "$wt/$f" && echo x
