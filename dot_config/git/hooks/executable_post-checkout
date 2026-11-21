@@ -1,0 +1,9 @@
+#!/bin/sh
+# 新規ワークツリーを軽くする（husky のリポジトリは ~/.config/husky/init.sh から呼ぶ）
+"$HOME/.config/git/slim-worktree.sh" "$@"
+
+# リポジトリ固有の .git/hooks/post-checkout があれば続けて実行する（core.hooksPath でグローバルに向けると素通りされるため）
+repo_hook="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/post-checkout"
+if [ -x "${repo_hook}" ] && [ "$(cd "$(dirname "${repo_hook}")" && pwd -P)" != "$(cd "$(dirname "$0")" && pwd -P)" ]; then
+  "${repo_hook}" "$@"
+fi
