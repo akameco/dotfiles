@@ -5,6 +5,7 @@
 # 1. git 管理の VRT スナップショット（*-snapshots/）を sparse-checkout で外す
 #    ほかにも外す: git config --add slim-worktree.exclude 'path/to/dir/'
 #    戻す: そのワークツリーで git sparse-checkout disable
+#    外したファイルを消す（ストーリーを消したときなど）: git rm --sparse 'path/to/x.spec.ts-snapshots/<名前>*'
 # 2. slim-worktree.clone に書いたパスのうち、本体と内容が同じファイルを本体からの APFS クローンに置き換える
 #    （中身を共有するので容量を使わない。編集すればその時点で分かれる）
 #    設定: git config --add slim-worktree.clone 'docs/screenshots/'
@@ -31,7 +32,7 @@ if [ "$(git config --get core.sparseCheckout)" != true ] &&
   set -- '/*' '!*-snapshots/'
   for p in $extra; do set -- "$@" "!/${p#/}"; done
   git sparse-checkout set --no-cone "$@" &&
-    echo "slim-worktree: *-snapshots/ ${extra:+$extra }を外しました（戻すには git sparse-checkout disable）"
+    echo "slim-worktree: *-snapshots/ ${extra:+$extra }を外しました（消すときは git rm --sparse <path>、戻すには git sparse-checkout disable）"
 fi
 
 # --- 2. 本体からのクローン ---
