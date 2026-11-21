@@ -645,23 +645,50 @@ gwt-clean-merged() {
     "$git_cmd" fetch --prune origin >/dev/null 2>&1 || true
   fi
 
+  # ディレクトリが消えたワークツリーの登録を片付ける
+  "$git_cmd" worktree prune 2>/dev/null
+
   local current_branch
   current_branch=$("$git_cmd" symbolic-ref --quiet --short HEAD 2>/dev/null || true)
 
   # upstream が消えた（[gone]）ものだけを対象にする。切った直後でコミットが 0 のブランチも
   # --merged に入るので、それだけで選ぶと作業中のワークツリーを消してしまう
   local -a merged_branches=()
-  local track
+  # squash マージで --merged に出ないもの。PR がマージ済みで、その head とローカルの先端が同じなら対象にする
+  local -a squashed_branches=()
+  local -a gone_unmerged=()
+  local br track
   while IFS=$'\t' read -r br track; do
     [[ -z "$br" || "$br" == "$default_branch" ]] && continue
     [[ "$track" == "[gone]" ]] || continue
-    merged_branches+=("$br")
-  done < <("$git_cmd" branch --merged "$default_branch" --format='%(refname:short)%09%(upstream:track)' 2>/dev/null)
+    if "$git_cmd" merge-base --is-ancestor "refs/heads/${br}" "$default_branch" 2>/dev/null; then
+      merged_branches+=("$br")
+    else
+      gone_unmerged+=("$br")
+    fi
+  done < <("$git_cmd" branch --format='%(refname:short)%09%(upstream:track)' 2>/dev/null)
 
-  if (( ${#merged_branches[@]} == 0 )); then
-    echo "マージ済みブランチが見つかりませんでした (基準: ${default_branch})"
-    return 0
+  if (( ${#gone_unmerged[@]} > 0 )) && command -v gh >/dev/null 2>&1; then
+    local merged_heads
+    # "<branch>\t<head sha>" の一覧。gh が使えなければ空になり、squash 分は対象にしない
+    merged_heads=$(cd "$repo_root" && gh pr list --state merged --limit 500 --json headRefName,headRefOid \
+      -q '.[] | "\(.headRefName)\t\(.headRefOid)"' 2>/dev/null)
+    for br in "${gone_unmerged[@]}"; do
+      if printf '%s\n' "$merged_heads" | /usr/bin/grep -Fxq -- "${br}"$'\t'"$("$git_cmd" rev-parse "refs/heads/${br}")"; then
+        merged_branches+=("$br")
+        squashed_branches+=("$br")
+      fi
+    done
   fi
+
+  (( ${#merged_branches[@]} == 0 )) && echo "マージ済みブランチが見つかりませんでした (基準: ${default_branch})"
+
+  # squash マージ分は git から見るとマージされていないので、-D で消す
+  gwt__delete_branch() {
+    local flag=-d
+    printf '%s\n' "${squashed_branches[@]}" | /usr/bin/grep -Fxq -- "$1" && flag=-D
+    "$git_cmd" branch "$flag" "$1" 2>&1
+  }
 
   local removed=0
   local remove_output branch_output
@@ -690,7 +717,7 @@ gwt-clean-merged() {
         if [[ "$current_branch" == "$wt_branch" ]]; then
           echo "ブランチ削除をスキップしました (現在チェックアウト中): ${wt_branch}"
         elif "$git_cmd" show-ref --verify --quiet "refs/heads/${wt_branch}"; then
-          if branch_output=$("$git_cmd" branch -d "$wt_branch" 2>&1); then
+          if branch_output=$(gwt__delete_branch "$wt_branch"); then
             [[ -n "$branch_output" ]] && echo "$branch_output"
             deleted_branches+=("$wt_branch")
           else
@@ -703,6 +730,35 @@ gwt-clean-merged() {
     fi
   done < <("$git_cmd" worktree list --porcelain | /usr/bin/awk '/^worktree /{sub(/^worktree /, ""); wt=$0} /^branch refs\/heads\//{sub(/^branch refs\/heads\//, ""); print wt "\t" $0}')
 
+  # ブランチの無い（detached）ワークツリー: 変更が無く、HEAD がリモートにあり、7 日以上使っていないものを消す
+  # 「使った」は、そのワークツリーの HEAD・reflog（checkout・commit で更新）の新しいほうの時刻で見る
+  # （index は git status でも書き換わるので使わない）
+  local main_wt now wt_gitdir last_used t
+  main_wt=$("$git_cmd" worktree list --porcelain | /usr/bin/sed -n '1s/^worktree //p')
+  now=$(date +%s)
+  while IFS= read -r wt_path; do
+    [[ -z "$wt_path" || "$wt_path" == "$repo_root" || "$wt_path" == "$main_wt" ]] && continue
+    [[ -d "$wt_path" ]] || continue
+    [[ -z "$("$git_cmd" -C "$wt_path" status --porcelain 2>/dev/null)" ]] || continue
+    [[ "$("$git_cmd" -C "$wt_path" rev-list --count HEAD --not --remotes 2>/dev/null)" == 0 ]] || continue
+    wt_gitdir=$("$git_cmd" -C "$wt_path" rev-parse --absolute-git-dir 2>/dev/null) || continue
+    last_used=0
+    for t in "$wt_gitdir/HEAD" "$wt_gitdir/logs/HEAD"; do
+      [[ -e "$t" ]] || continue
+      t=$(/usr/bin/stat -f %m "$t")
+      (( t > last_used )) && last_used=$t
+    done
+    (( now - last_used >= 7 * 86400 )) || continue
+    echo "削除: (detached, $(( (now - last_used) / 86400 )) 日前) (${wt_path})"
+    local -a remove_args=("worktree" "remove" "$wt_path")
+    (( auto_cleanup )) || remove_args+=("--force")
+    if remove_output=$("$git_cmd" "${remove_args[@]}" 2>&1); then
+      ((removed++))
+    else
+      [[ -n "$remove_output" ]] && echo "$remove_output" >&2
+    fi
+  done < <("$git_cmd" worktree list --porcelain | /usr/bin/awk '/^worktree /{sub(/^worktree /, ""); wt=$0} /^detached$/{print wt}')
+
   if (( removed == 0 )); then
     echo "削除対象のワークツリーはありませんでした (基準: ${default_branch})"
   else
@@ -710,7 +766,6 @@ gwt-clean-merged() {
   fi
 
   # worktree が存在しないマージ済みブランチもまとめて削除
-  local br
   for br in "${merged_branches[@]}"; do
     [[ "$br" == "$current_branch" ]] && continue
     [[ "$br" == "$default_branch" ]] && continue
@@ -720,7 +775,7 @@ gwt-clean-merged() {
 
     if "$git_cmd" show-ref --verify --quiet "refs/heads/${br}"; then
       echo "ローカルブランチ削除: ${br}"
-      if branch_output=$("$git_cmd" branch -d "$br" 2>&1); then
+      if branch_output=$(gwt__delete_branch "$br"); then
         [[ -n "$branch_output" ]] && echo "$branch_output"
       else
         [[ -n "$branch_output" ]] && echo "$branch_output" >&2
